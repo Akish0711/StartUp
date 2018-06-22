@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.TakeAttendance">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/my_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <Button
+        android:id="@+id/mark_present"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:background="@color/colorPrimary"
+        android:text="SUBMIT ATTENDANCE"
+        android:textColor="#fff"
+        android:layout_alignParentLeft="true" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/attendance_list"
+        android:layout_width="match_parent"
+        android:layout_height="269dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="250dp" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="49dp"
+        android:indeterminateOnly="true"
+        android:layout_alignParentLeft="true" />
+
+    <Button
+        android:id="@+id/view_attendance"
+        android:layout_width="107dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="46dp"
+        android:layout_marginTop="100dp"
+        android:text="detailed analysis"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="46dp" />
+
+    <Button
+        android:id="@+id/update_attendance"
+        android:layout_width="116dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/view_attendance"
+        android:layout_marginEnd="51dp"
+        android:text="update attendance"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="51dp" />
+
+
+</RelativeLayout>
