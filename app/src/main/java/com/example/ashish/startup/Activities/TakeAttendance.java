@@ -33,6 +33,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -109,6 +110,8 @@ public class TakeAttendance extends AppCompatActivity {
                                                         DocumentSnapshot doc = task.getResult();
                                                         Attendance attendance = doc.toObject(Attendance.class);
                                                         attendanceList.add(attendance);
+                                                        Collections.sort(attendanceList, Attendance.BY_NAME_ALPHABETICAL);
+
                                                         attendanceListAdapter.notifyDataSetChanged();
                                                     }
                                                 }
