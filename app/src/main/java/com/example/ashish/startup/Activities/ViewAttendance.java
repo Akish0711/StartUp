@@ -77,6 +77,7 @@ public class ViewAttendance extends AppCompatActivity {
                                             progressBar.setVisibility(View.GONE);
                                             Status status = doc.toObject(Status.class);
                                             statusList.add(status);
+                                            Collections.sort(statusList, Status.BY_NAME_ALPHABETICAL);
                                             statusListAdapter.notifyDataSetChanged();
                                         }
                                     }
