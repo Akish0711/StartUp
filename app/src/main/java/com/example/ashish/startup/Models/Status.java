@@ -7,6 +7,13 @@ public class Status {
     public Status(){
     }
 
+    public static final Comparator<Status>BY_NAME_ALPHABETICAL = new Comparator<Status>() {
+        @Override
+        public int compare(Status status, Status t1) {
+            return status.Username.compareTo(t1.Username);
+        }
+    };
+
 private int Percentage;
     private String Name;
 
