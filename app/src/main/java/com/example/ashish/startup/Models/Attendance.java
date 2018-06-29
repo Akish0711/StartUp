@@ -1,5 +1,7 @@
 package com.example.ashish.startup.Models;
 
+import java.util.Comparator;
+
 public class Attendance {
 
     private String Name, Username;
@@ -8,6 +10,13 @@ public class Attendance {
     public Attendance(){
 
     }
+
+    public static final Comparator<Attendance> BY_NAME_ALPHABETICAL = new Comparator<Attendance>() {
+        @Override
+        public int compare(Attendance attendance, Attendance t1) {
+            return attendance.Username.compareTo(t1.Username);
+        }
+    };
 
     public boolean isSelected() {
         return isSelected;

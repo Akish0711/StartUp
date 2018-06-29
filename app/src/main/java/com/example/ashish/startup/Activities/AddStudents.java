@@ -47,6 +47,7 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
     private SearchView searchView;
     private Button selected;
     private ProgressBar progressBar;
+    private boolean ascending = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +106,7 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
                                                         DocumentSnapshot doc = task.getResult();
                                                         Users users = doc.toObject(Users.class);
                                                         usersList.add(users);
+                                                        Collections.sort(usersList, Users.BY_NAME_ALPHABETICAL);
                                                         usersListAdapter.notifyDataSetChanged();
                                                     }
                                                 }

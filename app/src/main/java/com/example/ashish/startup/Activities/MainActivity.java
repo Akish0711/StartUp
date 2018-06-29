@@ -54,8 +54,7 @@ public class MainActivity extends AppCompatActivity {
     com.github.clans.fab.FloatingActionButton create, attendance;
 
     // urls to load navigation header background image
-    private static final String urlNavHeaderBg = "https://firebasestorage.googleapis.com/v0/b/startup-ec618.appspot.com/o/Google-Abstract-HD-Wallpaper.jpg?alt=media&token=2fb6d92d-a1d8-47ae-accc-5be7a36eccc1";
-
+    private static final String urlNavHeaderBg = "https://firebasestorage.googleapis.com/v0/b/startup-ec618.appspot.com/o/Webp.net-compress-image%20(2).jpg?alt=media&token=582fb88d-ff5c-4609-b544-224a718bb67d";
     // index to identify current nav menu item
     public static int navItemIndex = 0;
 
