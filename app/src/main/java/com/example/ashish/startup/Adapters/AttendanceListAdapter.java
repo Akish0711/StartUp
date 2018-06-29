@@ -85,9 +85,9 @@ public class AttendanceListAdapter extends RecyclerView.Adapter<AttendanceListAd
             super(itemView);
             mView = itemView;
 
-            user_name = (TextView)mView.findViewById(R.id.user_name);
-            display_name = (TextView)mView.findViewById(R.id.display_name);
-            checkBox = (CheckBox)mView.findViewById(R.id.checkbox);
+            user_name = mView.findViewById(R.id.user_name);
+            display_name = mView.findViewById(R.id.display_name);
+            checkBox = mView.findViewById(R.id.checkbox);
 
         }
     }

@@ -1,13 +1,13 @@
 package com.example.ashish.startup.Activities;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,8 +45,8 @@ public class UpdateAttendance extends AppCompatActivity {
         if (getIntent().hasExtra("class_id")) {
             final String class_id = getIntent().getStringExtra("class_id");
 
-            selected_date = (TextView) findViewById(R.id.selected_date);
-            classes_taken = (TextView) findViewById(R.id.classes_taken);
+            selected_date = findViewById(R.id.selected_date);
+            classes_taken = findViewById(R.id.classes_taken);
 
             mAuth = FirebaseAuth.getInstance();
             rootRef = FirebaseFirestore.getInstance();
@@ -67,7 +67,9 @@ public class UpdateAttendance extends AppCompatActivity {
                     Calendar cal = Calendar.getInstance();
                     args.putInt(CaldroidFragment.MONTH, cal.get(Calendar.MONTH) + 1);
                     args.putInt(CaldroidFragment.YEAR, cal.get(Calendar.YEAR));
+                    args.putBoolean(CaldroidFragment.ENABLE_CLICK_ON_DISABLED_DATES, true);
                     caldroidFragment.setArguments(args);
+
 
                     android.support.v4.app.FragmentTransaction t = getSupportFragmentManager().beginTransaction();
                     t.replace(R.id.calendar1, caldroidFragment);
@@ -99,8 +101,41 @@ public class UpdateAttendance extends AppCompatActivity {
                                         i++;
                                     }
                                 }
+                                Toast.makeText(getApplicationContext(), formatter.format(date),
+                                        Toast.LENGTH_SHORT).show();
                                 classes_taken.setText("Total Lectures: "+i);
                                 selected_date.setText(formatter.format(date));
+                            }
+
+                            @Override
+                            public void onChangeMonth(int month, int year) {
+                                String text = "month: " + month + " year: " + year;
+                                Toast.makeText(getApplicationContext(), text,
+                                        Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onLongClickDate(Date date, View view) {
+                                Toast.makeText(getApplicationContext(),
+                                        "Long click " + formatter.format(date),
+                                        Toast.LENGTH_SHORT).show();
+                                AlertDialog.Builder builder = new AlertDialog.Builder(UpdateAttendance.this  );
+                                builder.setMessage("Look at this dialog!")
+                                        .setCancelable(false)
+                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                //do things
+                                            }
+                                        });
+                                AlertDialog alert = builder.create();
+                                alert.show();
+                            }
+
+                            @Override
+                            public void onCaldroidViewCreated() {
+                                Toast.makeText(getApplicationContext(),
+                                        "Caldroid view is created",
+                                        Toast.LENGTH_SHORT).show();
                             }
                         };
 

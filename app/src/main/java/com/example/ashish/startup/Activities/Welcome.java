@@ -56,12 +56,12 @@ public class Welcome extends AppCompatActivity {
 
         setContentView(R.layout.activity_welcome);
 
-        viewPager = (ViewPager) findViewById(R.id.view_pager);
-        dotsLayout = (LinearLayout) findViewById(R.id.layoutDots);
-        mNextBtn = (ImageButton)findViewById(R.id.nextBtn);
-        mBackBtn = (ImageButton)findViewById(R.id.prevBtn);
-        mSkipBtn = (Button)findViewById(R.id.skipBtn);
-        mfinishBtn = (Button)findViewById(R.id.finishBtn);
+        viewPager = findViewById(R.id.view_pager);
+        dotsLayout = findViewById(R.id.layoutDots);
+        mNextBtn = findViewById(R.id.nextBtn);
+        mBackBtn = findViewById(R.id.prevBtn);
+        mSkipBtn = findViewById(R.id.skipBtn);
+        mfinishBtn = findViewById(R.id.finishBtn);
 
 
         // layouts of all welcome sliders

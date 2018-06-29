@@ -52,9 +52,8 @@ public class ViewAttendance extends AppCompatActivity {
                 getSupportActionBar().setTitle("View Attendance");
             }
 
-
-            mMainList = (RecyclerView) findViewById(R.id.make_announcement);
-            progressBar = (ProgressBar)findViewById(R.id.progressBar);
+            mMainList = findViewById(R.id.make_announcement);
+            progressBar = findViewById(R.id.progressBar);
             progressBar.setVisibility(View.VISIBLE);
             progressBar.setScaleY(2f);
 
@@ -77,6 +76,7 @@ public class ViewAttendance extends AppCompatActivity {
                                             progressBar.setVisibility(View.GONE);
                                             Status status = doc.toObject(Status.class);
                                             statusList.add(status);
+                                            Collections.sort(statusList, Status.BY_NAME_ALPHABETICAL);
                                             statusListAdapter.notifyDataSetChanged();
                                         }
                                     }
@@ -88,6 +88,7 @@ public class ViewAttendance extends AppCompatActivity {
             });
         }
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -100,7 +101,6 @@ public class ViewAttendance extends AppCompatActivity {
             onBackPressed();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }

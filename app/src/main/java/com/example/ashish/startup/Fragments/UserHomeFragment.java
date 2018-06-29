@@ -2,17 +2,19 @@ package com.example.ashish.startup.Fragments;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.ashish.startup.Models.Classes;
-import com.example.ashish.startup.Adapters.ClassesListAdapter;
+import com.example.ashish.startup.Adapters.SubjectsListAdapter;
+import com.example.ashish.startup.Models.Subject;
 import com.example.ashish.startup.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -28,18 +30,15 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeFragment extends Fragment {
-
+public class UserHomeFragment extends android.support.v4.app.Fragment {
     private OnFragmentInteractionListener mListener;
-    private ClassesListAdapter classesListAdapter;
-    private List<Classes> classesList;
+    private SubjectsListAdapter subjectsListAdapter;
+    private List<Subject> subjectList;
     private FirebaseAuth firebaseAuth;
 
+    public UserHomeFragment() {
 
-    public HomeFragment() {
-        // Required empty public constructor
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,13 +46,14 @@ public class HomeFragment extends Fragment {
         loadclasses();
 
     }
+
     FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
 
     private void loadclasses() {
         final FirebaseUser user = firebaseAuth.getCurrentUser();
         String email = user.getEmail();
         String email_red = email.substring(0, email.length() - 10);
-        // name, website
+
         rootRef.collection("Users").document(email_red).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -64,10 +64,11 @@ public class HomeFragment extends Fragment {
                         public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                             for (DocumentChange doc: documentSnapshots.getDocumentChanges()){
                                 if (doc.getType()== DocumentChange.Type.ADDED){
-                                    String class_id = doc.getDocument().getId();
-                                    Classes classes = doc.getDocument().toObject(Classes.class).withID(class_id);
-                                    classesList.add(classes);
-                                    classesListAdapter.notifyDataSetChanged();
+                                    String subjectID = doc.getDocument().getId();
+                                    Subject subjects = doc.getDocument().toObject(Subject.class).withID(subjectID);
+                                    Log.e("error",subjects + " subjects");
+                                    subjectList.add(subjects);
+                                    subjectsListAdapter.notifyDataSetChanged();
                                 }
                             }
                         }
@@ -77,19 +78,19 @@ public class HomeFragment extends Fragment {
         });
     }
 
-
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
-        RecyclerView recyclerView = view.findViewById(R.id.main_list);
+        View view = inflater.inflate(R.layout.fragment_user_home, container, false);
+        RecyclerView recyclerView = view.findViewById(R.id.main_user_list);
 
-        classesList = new ArrayList<>();
-        classesListAdapter = new ClassesListAdapter(getContext(),classesList);
+        subjectList = new ArrayList<>();
+        subjectsListAdapter = new SubjectsListAdapter(getContext(),subjectList);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(classesListAdapter);
+        recyclerView.setAdapter(subjectsListAdapter);
         return view;
     }
 
@@ -114,4 +115,5 @@ public class HomeFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
 }

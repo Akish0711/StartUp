@@ -40,13 +40,13 @@ public class CreateAccount extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        username = (EditText)findViewById(R.id.username);
-        name = (EditText)findViewById(R.id.name);
-        createAccount = (Button)findViewById(R.id.createAccount);
-        progressBar = (ProgressBar)findViewById(R.id.progressBar3);
+        username = findViewById(R.id.username);
+        name = findViewById(R.id.name);
+        createAccount = findViewById(R.id.createAccount);
+        progressBar = findViewById(R.id.progressBar3);
 
         mAuth1 = FirebaseAuth.getInstance();
         FirebaseOptions firebaseOptions = new FirebaseOptions.Builder()
@@ -110,6 +110,7 @@ public class CreateAccount extends AppCompatActivity {
                                 data.put("Name", display_name);
                                 data.put("Username", user + "@gmail.com");
                                 data.put("Institute_Admin", Institute + "_No");
+                                data.put("Admin","No");
                                 rootRef.collection("Users").document(user).set(data);
                                 mAuth2.signOut();
                                 finish();

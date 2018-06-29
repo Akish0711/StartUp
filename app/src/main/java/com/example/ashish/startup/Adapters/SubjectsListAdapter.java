@@ -7,19 +7,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.example.ashish.startup.Activities.NewClass2;
-import com.example.ashish.startup.Models.Classes;
+
+import com.example.ashish.startup.Activities.UserNewClass;
+import com.example.ashish.startup.Models.Subject;
 import com.example.ashish.startup.R;
 
 import java.util.List;
 
-public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.ViewHolder> {
+public class SubjectsListAdapter extends RecyclerView.Adapter<SubjectsListAdapter.ViewHolder> {
 
-    public List<Classes> classesList;
+    public List<Subject> subjectList;
     public Context context;
 
-    public ClassesListAdapter(Context context,List<Classes> classesList){
-        this.classesList = classesList;
+    public SubjectsListAdapter(Context context , List<Subject> subjectList) {
+        this.subjectList = subjectList;
         this.context = context;
     }
 
@@ -30,15 +31,17 @@ public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
 
-        holder.nameText.setText(classesList.get(position).getName());
-        final String class_id = classesList.get(position).classID;
+        holder.nameText.setText(subjectList.get(position).getSubject_Name());
+        final String subject_id = subjectList.get(position).subjectID;
+
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context,NewClass2.class);
-                intent.putExtra("class_id", class_id);
+                Intent intent = new Intent(context,UserNewClass.class);
+                intent.putExtra("subject_id", subject_id);
+                intent.putExtra("subject_name",subjectList.get(position).getSubject_Name());
                 context.startActivity(intent);
             }
         });
@@ -46,7 +49,7 @@ public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.
 
     @Override
     public int getItemCount() {
-        return classesList.size();
+        return subjectList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -59,4 +62,5 @@ public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.
             nameText = mView.findViewById(R.id.name_text);
         }
     }
+
 }

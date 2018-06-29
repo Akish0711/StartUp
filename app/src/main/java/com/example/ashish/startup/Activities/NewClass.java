@@ -33,8 +33,8 @@ public class NewClass extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_class);
 
-        name_class = (EditText)findViewById(R.id.name_class);
-        new_class = (Button)findViewById(R.id.new_class);
+        name_class = findViewById(R.id.name_class);
+        new_class = findViewById(R.id.new_class);
         mAuth = FirebaseAuth.getInstance();
 
 

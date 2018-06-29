@@ -30,9 +30,9 @@ public class NewClass2 extends AppCompatActivity {
         if (getIntent().hasExtra("class_id")){
             final String class_id = getIntent().getStringExtra("class_id");
 
-            add_students = (Button)findViewById(R.id.add_students);
-            take_attendance = (Button)findViewById(R.id.take_attendance);
-            marks = (Button)findViewById(R.id.marks);
+            add_students = findViewById(R.id.add_students);
+            take_attendance = findViewById(R.id.take_attendance);
+            marks = findViewById(R.id.marks);
 
             Toolbar toolbar = findViewById(R.id.my_toolbar);
             setSupportActionBar(toolbar);

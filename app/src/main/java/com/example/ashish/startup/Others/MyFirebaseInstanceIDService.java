@@ -1,9 +1,5 @@
 package com.example.ashish.startup.Others;
 
-/**
- * Created by Ashish on 1/31/2018.
- */
-
 import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -14,6 +10,9 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
     private static final String TAG = "MyFirebaseIIDService";
 
+    public MyFirebaseInstanceIDService() {
+        super();
+    }
     /**
      * Called if InstanceID token is updated. This may occur if the security of
      * the previous token had been compromised. Note that this is called when the InstanceID token
@@ -22,6 +21,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     // [START refresh_token]
     @Override
     public void onTokenRefresh() {
+        super.onTokenRefresh();
         // Get updated InstanceID token.
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.d(TAG, "Refreshed token: " + refreshedToken);
@@ -30,6 +30,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
         sendRegistrationToServer(refreshedToken);
+
     }
     // [END refresh_token]
 
@@ -43,5 +44,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
      */
     private void sendRegistrationToServer(String token) {
         // TODO: Implement this method to send token to your app server.
+
+
     }
 }

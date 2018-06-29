@@ -3,9 +3,14 @@ package com.example.ashish.startup.Activities;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.ashish.startup.R;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class PrivacyPolicyActivity extends AppCompatActivity {
 
@@ -14,7 +19,7 @@ public class PrivacyPolicyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_privacy_policy);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
         if (getSupportActionBar()!=null){
@@ -22,6 +27,13 @@ public class PrivacyPolicyActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Privacy Policy");
         }
+              String token = FirebaseInstanceId.getInstance().getToken();
+
+                // Log and toast
+                String msg = getString(R.string.msg_token_fmt, token);
+                Log.d("refreshed token", msg);
+                Toast.makeText(PrivacyPolicyActivity.this, msg, Toast.LENGTH_SHORT).show();
+
     }
 
     @Override

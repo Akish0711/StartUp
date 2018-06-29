@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "939365503729-3mgprtmnp9bf6t9kf95rq26n4mdnonvm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ashish.startup",
+            "certificate_hash": "85834b7097be0db5e030dc45c13ace3ccd72dd81"
+          }
+        },
+        {
           "client_id": "939365503729-9fjno25e2vtltb40lm7krdhlndgj239i.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -56,9 +56,9 @@ public class StatusListAdapter extends RecyclerView.Adapter<StatusListAdapter.Vi
             super(itemView);
             mView = itemView;
 
-            percentage = (TextView)mView.findViewById(R.id.percentage);
-            user_name = (TextView)mView.findViewById(R.id.user_name);
-            display_name = (TextView)mView.findViewById(R.id.display_name);
+            percentage = mView.findViewById(R.id.percentage);
+            user_name = mView.findViewById(R.id.user_name);
+            display_name = mView.findViewById(R.id.display_name);
         }
     }
 }

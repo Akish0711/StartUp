@@ -74,16 +74,16 @@ public class TakeAttendance extends AppCompatActivity {
                 getSupportActionBar().setTitle("Take Attendance");
             }
 
-            view_attendance = (Button)findViewById(R.id.view_attendance);
-            update_attendance = (Button)findViewById(R.id.update_attendance);
-            mark_present = (Button)findViewById(R.id.mark_present);
-            progressBar = (ProgressBar)findViewById(R.id.progressBar);
+            view_attendance = findViewById(R.id.view_attendance);
+            update_attendance = findViewById(R.id.update_attendance);
+            mark_present = findViewById(R.id.mark_present);
+            progressBar = findViewById(R.id.progressBar);
             progressBar.setVisibility(View.VISIBLE);
             progressBar.setScaleY(2f);
             dialog = new ProgressDialog(this);
 
 
-            mMainList = (RecyclerView) findViewById(R.id.attendance_list);
+            mMainList = findViewById(R.id.attendance_list);
             mMainList.setHasFixedSize(true);
             mMainList.setLayoutManager(new LinearLayoutManager(this));
             mMainList.setAdapter(attendanceListAdapter);
@@ -141,8 +141,6 @@ public class TakeAttendance extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
-
-
 
             mark_present.setOnClickListener(new View.OnClickListener() {
                 @Override

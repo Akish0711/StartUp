@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.NewClass2">
+    tools:context=".Activities.UserNewClass">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -23,25 +23,7 @@
 
 
     <Button
-        android:id="@+id/add_students"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_weight="1"
-        android:text="@string/add_students"
-        app:layout_constraintBottom_toTopOf="@+id/take_attendance"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/appBarLayout"
-        app:layout_constraintVertical_bias="0.748" />
-
-    <Button
-        android:id="@+id/take_attendance"
+        android:id="@+id/view_attendance"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="304dp"
@@ -51,7 +33,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="6dp"
         android:layout_weight="1"
-        android:text="@string/take_attendance"
+        android:text="@string/view_attendance"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -59,7 +41,7 @@
         app:layout_constraintVertical_bias="0.922" />
 
     <Button
-        android:id="@+id/marks"
+        android:id="@+id/view_marks"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -69,11 +51,11 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_weight="1"
-        android:text="@string/marks"
+        android:text="@string/view_marks"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/take_attendance"
+        app:layout_constraintTop_toBottomOf="@+id/view_attendance"
         app:layout_constraintVertical_bias="0.07" />
 
 </android.support.constraint.ConstraintLayout>

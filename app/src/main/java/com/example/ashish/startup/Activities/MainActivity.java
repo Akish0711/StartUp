@@ -39,7 +39,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.github.clans.fab.FloatingActionMenu;
 
 public class MainActivity extends AppCompatActivity {
@@ -53,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     FloatingActionMenu floatingActionMenu;
     com.github.clans.fab.FloatingActionButton create, attendance;
+
     // urls to load navigation header background image
     private static final String urlNavHeaderBg = "https://firebasestorage.googleapis.com/v0/b/startup-ec618.appspot.com/o/Google-Abstract-HD-Wallpaper.jpg?alt=media&token=2fb6d92d-a1d8-47ae-accc-5be7a36eccc1";
 
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mHandler = new Handler();
 
@@ -99,26 +99,26 @@ public class MainActivity extends AppCompatActivity {
             public void onReceive(Context arg0, Intent intent) {
                 String action = intent.getAction();
                 if (action.equals("finish")) {
-//finishing the activity
+                //finishing the activity
                     finish();
                 }
             }
         };
         registerReceiver(broadcast_reciever, new IntentFilter("finish"));
 
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        floatingActionMenu = (FloatingActionMenu) findViewById(R.id.floatingActionMenu);
-        create = (com.github.clans.fab.FloatingActionButton)findViewById(R.id.floatingActionItem1);
-        attendance = (com.github.clans.fab.FloatingActionButton)findViewById(R.id.floatingActionItem3);
+        drawer = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+        floatingActionMenu = findViewById(R.id.floatingActionMenu);
+        create = findViewById(R.id.floatingActionItem1);
+        attendance = findViewById(R.id.floatingActionItem3);
         floatingActionMenu.setClosedOnTouchOutside(true);
 
         // Navigation view header
         navHeader = navigationView.getHeaderView(0);
-        txtName = (TextView) navHeader.findViewById(R.id.name);
-        txtWebsite = (TextView) navHeader.findViewById(R.id.website);
-        imgNavHeaderBg = (ImageView) navHeader.findViewById(R.id.img_header_bg);
-        imgProfile = (ImageView) navHeader.findViewById(R.id.img_profile);
+        txtName = navHeader.findViewById(R.id.name);
+        txtWebsite = navHeader.findViewById(R.id.website);
+        imgNavHeaderBg = navHeader.findViewById(R.id.img_header_bg);
+        imgProfile = navHeader.findViewById(R.id.img_profile);
 
         // load toolbar titles from string resources
         activityTitles = getResources().getStringArray(R.array.nav_item_activity_titles);

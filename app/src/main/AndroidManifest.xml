@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -33,7 +34,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -41,6 +41,13 @@
         <service android:name=".Others.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".Others.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
         <!-- [START fcm_default_icon] -->
@@ -64,6 +71,7 @@
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
         <!-- [END fcm_default_channel] -->
+
         <activity
             android:name=".Activities.Welcome"
             android:screenOrientation="portrait" />
@@ -80,6 +88,8 @@
             android:screenOrientation="portrait" />
         <activity android:name=".Authentication.ReAuthentication" />
         <activity android:name=".Activities.nonadmin" />
+        <activity android:name=".Activities.UserNewClass"/>
+        <activity android:name=".Activities.UserAttendance"></activity>
         <activity android:name=".Authentication.CreateAccount" />
         <activity
             android:name=".Activities.EditProfile"

@@ -72,9 +72,9 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
             usersListAdapter = new UsersListAdapter(this, usersList, this);
             mAuth = FirebaseAuth.getInstance();
 
-            mMainList = (RecyclerView) findViewById(R.id.student_list);
-            selected = (Button) findViewById(R.id.selected);
-            progressBar = (ProgressBar)findViewById(R.id.progressBar);
+            mMainList = findViewById(R.id.student_list);
+            selected = findViewById(R.id.selected);
+            progressBar = findViewById(R.id.progressBar);
             progressBar.setVisibility(View.VISIBLE);
             progressBar.setScaleY(2f);
 
@@ -152,7 +152,7 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
                                     if (task.isSuccessful()) {
                                         for (DocumentSnapshot document : task.getResult()) {
                                             Map<String, Object> data = new HashMap<>();
-                                            data.put("Subject Name", subject[0]);
+                                            data.put("Subject_Name", subject[0]);
                                             data.put("Total_Present",0);
                                             data.put("Total_Class",0);
                                             data.put("Percentage",0);

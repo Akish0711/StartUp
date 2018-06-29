@@ -1,7 +1,7 @@
 package com.example.ashish.startup.Models;
 
 public class Users {
-private String Name, Username;
+    private String Name, Username;
     private int id;
     private boolean isSelected;
 

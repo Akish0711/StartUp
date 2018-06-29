@@ -10,7 +10,7 @@
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        style="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/my_toolbar"
@@ -32,7 +32,7 @@
 
     <Button
         android:id="@+id/selected"
-        android:text="Add Selected Students"
+        android:text="@string/add_selected_students"
         android:textColor="#fff"
         android:background="@color/colorPrimary"
         android:layout_alignParentBottom="true"

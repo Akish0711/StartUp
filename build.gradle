@@ -21,9 +21,12 @@ allprojects {
     repositories {
         maven {
             url "https://maven.google.com" // Google's Maven repository
+
         }
         google()
         jcenter()
+        maven { url 'https://jitpack.io' // toast library
+        }
     }
 }
 

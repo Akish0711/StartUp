@@ -50,4 +50,15 @@
     <string name="action_mark_all_read">Mark All as Read</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="title_activity_nonadmin">nonadmin</string>
+    <string name="add_students">add students</string>
+    <string name="take_attendance">take attendance</string>
+    <string name="marks">MARKS</string>
+    <string name="update_attendance">update attendance</string>
+    <string name="detailed_analysis">detailed analysis</string>
+    <string name="submit_attendance">SUBMIT ATTENDANCE</string>
+    <string name="log_token">Log token</string>
+    <string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
+    <string name="view_attendance">Attendance</string>
+    <string name="view_marks">marks</string>
+    <string name="add_selected_students">Add Selected Students</string>
 </resources>
