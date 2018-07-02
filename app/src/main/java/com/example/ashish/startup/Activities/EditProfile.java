@@ -18,6 +18,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -42,6 +43,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.onurkaganaldemir.ktoastlib.KToast;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -75,10 +78,10 @@ public class EditProfile extends AppCompatActivity {
         editEmail = findViewById(R.id.editEmail);
         editPhone = findViewById(R.id.contact_number);
         editText = findViewById(R.id.editTextDisplayName);
-        changeImage = (ImageView)findViewById(R.id.changeImage);
+        changeImage = findViewById(R.id.changeImage);
         progressBar = findViewById(R.id.progressbar);
-        txtName = (TextView) findViewById(R.id.edit_name);
-        txtEmail = (TextView) findViewById(R.id.edit_email);
+        txtName = findViewById(R.id.edit_name);
+        txtEmail = findViewById(R.id.edit_email);
         mAuth = FirebaseAuth.getInstance();
 
         if (getSupportActionBar()!=null){
@@ -158,7 +161,7 @@ public class EditProfile extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
-                                    Toast.makeText(EditProfile.this, "Profile Updated", Toast.LENGTH_SHORT).show();
+                                    KToast.successToast(EditProfile.this, "Profile Updated", Gravity.BOTTOM,KToast.LENGTH_SHORT);
                                     finish();
                                     startActivity(new Intent(EditProfile.this,MainActivity.class));
                                 }
@@ -190,7 +193,7 @@ public class EditProfile extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()){
-                                Toast.makeText(EditProfile.this,"Profile Updated",Toast.LENGTH_SHORT).show();
+                                KToast.successToast(EditProfile.this,"Profile Updated",Gravity.BOTTOM,KToast.LENGTH_SHORT);
                                 finish();
                                 startActivity(new Intent(EditProfile.this,MainActivity.class));
                             }
@@ -253,10 +256,10 @@ public class EditProfile extends AppCompatActivity {
                         .into(changeImage);
                 uploadImageToFirebaseStorage();
             }else {
-                Toast.makeText(this, "You haven't picked Image",Toast.LENGTH_LONG).show();
+                KToast.warningToast(this, "You haven't picked Image",Gravity.BOTTOM,KToast.LENGTH_AUTO);
             }
         } catch (Exception e) {
-            Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
+            KToast.errorToast(this, "Something went wrong.Please try again.", Gravity.BOTTOM,KToast.LENGTH_LONG);
         }
     }
 
@@ -280,7 +283,7 @@ public class EditProfile extends AppCompatActivity {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(EditProfile.this,e.getMessage(),Toast.LENGTH_SHORT).show();
+                    KToast.errorToast(EditProfile.this,e.getMessage(),Gravity.BOTTOM,KToast.LENGTH_SHORT);
                 }
             });
         }

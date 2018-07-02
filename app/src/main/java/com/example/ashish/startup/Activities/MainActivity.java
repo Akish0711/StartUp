@@ -18,6 +18,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,6 +41,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.github.clans.fab.FloatingActionMenu;
+import com.onurkaganaldemir.ktoastlib.KToast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -376,7 +378,7 @@ public class MainActivity extends AppCompatActivity {
                             FirebaseAuth.getInstance().signOut();
                             finish();
                             startActivity(new Intent(MainActivity.this, Login.class));
-                            Toast.makeText(getApplicationContext(), "Logged Out", Toast.LENGTH_LONG).show();
+                            KToast.successToast(MainActivity.this, "Logged Out", Gravity.BOTTOM,KToast.LENGTH_LONG);
                         }
                     })
                     .setNegativeButton("Cancel", null)

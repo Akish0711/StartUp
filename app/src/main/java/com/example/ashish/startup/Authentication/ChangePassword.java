@@ -6,10 +6,10 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 
 import com.example.ashish.startup.R;
@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.onurkaganaldemir.ktoastlib.KToast;
 
 public class ChangePassword extends AppCompatActivity {
 
@@ -52,13 +53,13 @@ public class ChangePassword extends AppCompatActivity {
         String pass_new = new_pass.getText().toString();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(TextUtils.isEmpty(pass)){
-            Toast.makeText(getApplicationContext(),"Fill in the Fields",Toast.LENGTH_LONG).show();
+            KToast.errorToast(ChangePassword.this,"Fill in the Fields", Gravity.BOTTOM,KToast.LENGTH_AUTO);
         }
         else if (!pass.equals(pass_new)){
-            Toast.makeText(getApplicationContext(),"Password should match",Toast.LENGTH_LONG).show();
+            KToast.errorToast(ChangePassword.this,"Password should match",Gravity.BOTTOM,KToast.LENGTH_AUTO);
         }
         else if (pass.length()<6){
-            Toast.makeText(getApplicationContext(),"Password should have more than 5 characters",Toast.LENGTH_LONG).show();
+            KToast.errorToast(ChangePassword.this,"Password should have more than 5 characters",Gravity.BOTTOM,KToast.LENGTH_AUTO);
         }
         else if(user!=null)
         {
@@ -70,7 +71,7 @@ public class ChangePassword extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
                                 dialog.dismiss();
-                                Toast.makeText(getApplicationContext(),"Your Password has been Changed",Toast.LENGTH_LONG).show();
+                                KToast.successToast(ChangePassword.this,"Your Password has been Changed",Gravity.BOTTOM,KToast.LENGTH_AUTO);
                                 FirebaseAuth.getInstance().signOut();
                                 Intent intent = new Intent("finish");
                                 sendBroadcast(intent);
@@ -81,9 +82,8 @@ public class ChangePassword extends AppCompatActivity {
                             else
                             {
                                 dialog.dismiss();
-                                Toast.makeText(getApplicationContext(),"Password Could not be Changed. Logout and Try Again.",Toast.LENGTH_LONG).show();
+                                KToast.errorToast(ChangePassword.this,"Password Could not be Changed. Logout and Try Again.",Gravity.BOTTOM,KToast.LENGTH_LONG);
                             }
-
                         }
                     });
         }

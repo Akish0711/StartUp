@@ -1,7 +1,10 @@
 package com.example.ashish.startup.Authentication;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,18 +17,20 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.example.ashish.startup.R;
 import com.example.ashish.startup.Activities.MainActivity;
 import com.example.ashish.startup.Activities.nonadmin;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.onurkaganaldemir.ktoastlib.KToast;
 
 public class Login extends AppCompatActivity {
@@ -36,6 +41,7 @@ public class Login extends AppCompatActivity {
     ProgressBar mProgressBar;
     private FirebaseAuth mAuth;
     public static final String PREFS_NAME = "MyPrefsFile";
+    public String regToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +57,10 @@ public class Login extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
 
-        mEmailField = (EditText)findViewById(R.id.username);
-        mPasswordField = (EditText)findViewById(R.id.password);
-        mLoginBtn = (Button)findViewById(R.id.login);
-        mProgressBar = (ProgressBar)findViewById(R.id.progressBar2);
+        mEmailField = findViewById(R.id.username);
+        mPasswordField = findViewById(R.id.password);
+        mLoginBtn = findViewById(R.id.login);
+        mProgressBar =  findViewById(R.id.progressBar2);
         mProgressBar.setVisibility(View.GONE);
 
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
@@ -72,8 +78,6 @@ public class Login extends AppCompatActivity {
         super.onStart();
         if(mAuth.getCurrentUser()!=null){
             mProgressBar.setVisibility(View.VISIBLE);
-            String email = mAuth.getCurrentUser().getEmail();
-            String email_red = email.substring(0, email.length() - 10);
 
             SharedPreferences settings = getSharedPreferences(Login.PREFS_NAME, 0);
 
@@ -83,12 +87,12 @@ public class Login extends AppCompatActivity {
             if(hasLoggedIn == 1)
             {
                 //Go directly to main activity.
-                KToast.successToast(Login.this, "Loggen in as admin.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
+                KToast.successToast(Login.this, "Logged in as admin.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
                 finish();
                 startActivity(new Intent(Login.this, MainActivity.class));
             }
             else if (hasLoggedIn == 2){
-                KToast.successToast(Login.this, "Loggen in as user.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
+                KToast.successToast(Login.this, "Logged in as user.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
                 finish();
                 startActivity(new Intent(Login.this, nonadmin.class));
             }
@@ -114,12 +118,25 @@ public class Login extends AppCompatActivity {
         }
     }
 
+    public static boolean CheckInternet(Context context)
+    {
+        ConnectivityManager connec = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        android.net.NetworkInfo wifi = connec.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        android.net.NetworkInfo mobile = connec.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+
+        return wifi.isConnected() || mobile.isConnected();
+    }
+
     public void startSign(){
         final String email = mEmailField.getText().toString();
         String password = mPasswordField.getText().toString();
 
+        regToken = FirebaseInstanceId.getInstance().getToken();
+        Log.e("token in login","token" + regToken);
+
         if(TextUtils.isEmpty(email)|| TextUtils.isEmpty(password)){
-            Toast.makeText(Login.this,"Fields are Empty",Toast.LENGTH_LONG).show();
+            KToast.warningToast(Login.this, "Fields are Empty.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
+
         }else {
             mProgressBar.setVisibility(View.VISIBLE);
             mAuth.signInWithEmailAndPassword(email+"@gmail.com", password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -136,9 +153,11 @@ public class Login extends AppCompatActivity {
                                     // We need an Editor object to make preference changes.
                                     SharedPreferences settings = getSharedPreferences(Login.PREFS_NAME, 0); // 0 - for private mode
                                     SharedPreferences.Editor editor = settings.edit();
+                                    editor.putString("regId",regToken);
+                                    editor.commit();
 
                                     if (document.getString("Admin").equals("Yes")) {
-                                        Toast.makeText(Login.this, "Logged In! You are Admin", Toast.LENGTH_LONG).show();
+                                        KToast.successToast(Login.this, "Logged in as admin.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
 
                                         //Set "hasLoggedIn" to true
                                         editor.putInt("hasLoggedIn", 1);
@@ -149,7 +168,7 @@ public class Login extends AppCompatActivity {
                                         finish();
                                         startActivity(new Intent(Login.this, MainActivity.class));
                                     } else {
-                                        Toast.makeText(Login.this, "Logged In! You are User", Toast.LENGTH_LONG).show();
+                                        KToast.successToast(Login.this, "Logged in as user.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
 
                                         //Set "hasLoggedIn" to true
                                         editor.putInt("hasLoggedIn", 2);
@@ -162,17 +181,45 @@ public class Login extends AppCompatActivity {
                                     }
                                 }else {
                                     mProgressBar.setVisibility(View.GONE);
-                                    Toast.makeText(Login.this,"Sign In Problem",Toast.LENGTH_LONG).show();
+                                    notifyUser( "Sign in problem.");
+
                                 }
                             }
                         });
                     }else{
-                        mProgressBar.setVisibility(View.GONE);
-                        Toast.makeText(Login.this,"Invalid credential",Toast.LENGTH_LONG).show();
-                        Log.e("login error", "onComplete: Failed=" + task.getException().getMessage());
+                        onFailure(task.getException());
                     }
                 }
             });
         }
+    }
+
+    public void onFailure(@NonNull Exception e) {
+        if (e instanceof FirebaseAuthInvalidCredentialsException) {
+            notifyUser("Invalid password");
+        }
+        else if (!CheckInternet(Login.this)){
+            notifyUser("No internet connection.");
+        }
+        else if (e instanceof FirebaseAuthInvalidUserException) {
+
+            String errorCode = ((FirebaseAuthInvalidUserException) e).getErrorCode();
+
+            if (errorCode.equals("ERROR_USER_NOT_FOUND")) {
+                notifyUser("No matching account found");
+            } else if (errorCode.equals("ERROR_USER_DISABLED")) {
+                notifyUser("User account has been disabled");
+            } else {
+                notifyUser(e.getLocalizedMessage());
+            }
+        }
+        else{
+            notifyUser("Sign in error.Please close the app and try again.");
+        }
+    }
+
+    private void notifyUser(String error) {
+        mProgressBar.setVisibility(View.GONE);
+        KToast.errorToast(Login.this,error,Gravity.BOTTOM,KToast.LENGTH_AUTO);
     }
 }

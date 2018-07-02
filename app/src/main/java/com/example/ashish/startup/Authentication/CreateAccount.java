@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.onurkaganaldemir.ktoastlib.KToast;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -105,7 +107,8 @@ public class CreateAccount extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             progressBar.setVisibility(View.GONE);
                             if (task.isSuccessful()) {
-                                Toast.makeText(getApplicationContext(), "User Registered Successfully", Toast.LENGTH_SHORT).show();
+                                KToast.successToast(CreateAccount.this, "User Registered Successfully.", Gravity.BOTTOM, KToast.LENGTH_SHORT);
+
                                 Map<String, Object> data = new HashMap<>();
                                 data.put("Name", display_name);
                                 data.put("Username", user + "@gmail.com");
@@ -117,9 +120,9 @@ public class CreateAccount extends AppCompatActivity {
                                 startActivity(new Intent(CreateAccount.this, CreateAccount.class));
                             } else {
                                 if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                                    Toast.makeText(getApplicationContext(), "This User is already registered", Toast.LENGTH_SHORT).show();
+                                    KToast.errorToast(CreateAccount.this, "This User is already registered.", Gravity.BOTTOM, KToast.LENGTH_SHORT);
                                 } else {
-                                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    KToast.errorToast(CreateAccount.this, task.getException().getMessage(), Gravity.BOTTOM, KToast.LENGTH_SHORT);
                                 }
                             }
                         }

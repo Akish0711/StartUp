@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -19,6 +20,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.onurkaganaldemir.ktoastlib.KToast;
 
 public class ReAuthentication extends AppCompatActivity {
 
@@ -31,10 +33,10 @@ public class ReAuthentication extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_re_authentication);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        current_pass = (EditText) findViewById(R.id.current_pass);
+        current_pass = findViewById(R.id.current_pass);
 
         auth = FirebaseAuth.getInstance();
         dialog = new ProgressDialog(this);
@@ -52,7 +54,7 @@ public class ReAuthentication extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if (TextUtils.isEmpty(pass)) {
-            Toast.makeText(getApplicationContext(), "Fill in the Fields", Toast.LENGTH_LONG).show();
+            KToast.warningToast(ReAuthentication.this, "Fill in the Fields.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
         } else if (user != null) {
             String email = user.getEmail();
             AuthCredential credential = EmailAuthProvider
@@ -65,14 +67,14 @@ public class ReAuthentication extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
                                 dialog.dismiss();
-                                Toast.makeText(getApplicationContext(), "Authenticated", Toast.LENGTH_LONG).show();
+                                KToast.successToast(ReAuthentication.this, "Authenticated.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
                                 Intent i = new Intent(ReAuthentication.this, ChangePassword.class);
                                 startActivity(i);
                             }
                             else
                             {
                                 dialog.dismiss();
-                                Toast.makeText(getApplicationContext(),"Invalid Credentials",Toast.LENGTH_LONG).show();
+                                KToast.errorToast(ReAuthentication.this, "Invalid Credentials.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
                             }
                         }
                     });

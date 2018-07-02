@@ -161,6 +161,7 @@ public class TakeAttendance extends AppCompatActivity {
                         int index2 = 0;
                         for (index2 = 0; index2 < list2.size(); index2++) {
                             final Attendance model = (Attendance) list2.get(index2);
+                            Log.e("Retrieving users",model.getUsername() + " users");
                             mFirestore.collection("Users").whereEqualTo("Username", model.getUsername()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -191,7 +192,10 @@ public class TakeAttendance extends AppCompatActivity {
                                                          }
                                                          Map<String, Object> data = new HashMap<>();
                                                          data.put(model.getUsername(), true );
+                                                         Map<String,Object> userData = new HashMap<>();
+                                                         userData.put(time,true);
                                                          mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id).collection("Attendance").document(time).set(data, SetOptions.merge());
+                                          //               mFirestore.collection("Users").document(model.getUsername()).collection("Subjects").document(class_id).collection("Attendance").document(time).set(data, SetOptions.merge());
                                                      }
                                                  }
                                              });
@@ -231,6 +235,7 @@ public class TakeAttendance extends AppCompatActivity {
                                                     Map<String, Object> data = new HashMap<>();
                                                     data.put(model.getUsername(), false );
                                                     mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id).collection("Attendance").document(time).set(data, SetOptions.merge());
+                                            //        mFirestore.collection("Users").document(model.getUsername()).collection("Subjects").document(class_id).collection("Attendance").document(time).set(data, SetOptions.merge());
                                                 }
                                             }
                                         });
