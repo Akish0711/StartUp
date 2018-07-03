@@ -154,7 +154,7 @@ public class Login extends AppCompatActivity {
                                     SharedPreferences settings = getSharedPreferences(Login.PREFS_NAME, 0); // 0 - for private mode
                                     SharedPreferences.Editor editor = settings.edit();
                                     editor.putString("regId",regToken);
-                                    editor.commit();
+                                    editor.apply();
 
                                     if (document.getString("Admin").equals("Yes")) {
                                         KToast.successToast(Login.this, "Logged in as admin.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
@@ -163,7 +163,7 @@ public class Login extends AppCompatActivity {
                                         editor.putInt("hasLoggedIn", 1);
 
                                         // Commit the edits!
-                                        editor.commit();
+                                        editor.apply();
 
                                         finish();
                                         startActivity(new Intent(Login.this, MainActivity.class));
@@ -174,7 +174,7 @@ public class Login extends AppCompatActivity {
                                         editor.putInt("hasLoggedIn", 2);
 
                                         // Commit the edits!
-                                        editor.commit();
+                                        editor.apply();
 
                                         finish();
                                         startActivity(new Intent(Login.this, nonadmin.class));

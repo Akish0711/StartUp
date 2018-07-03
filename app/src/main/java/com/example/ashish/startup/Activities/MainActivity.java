@@ -357,7 +357,6 @@ public class MainActivity extends AppCompatActivity {
         if (navItemIndex == 0) {
             getMenuInflater().inflate(R.menu.main, menu);
         }
-
         return true;
     }
 

@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,14 +23,13 @@ import com.example.ashish.startup.Adapters.UsersListAdapter;
 import com.example.ashish.startup.Models.Users;
 import com.example.ashish.startup.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.onurkaganaldemir.ktoastlib.KToast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -110,15 +110,33 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
                                                         usersListAdapter.notifyDataSetChanged();
                                                     }
                                                 }
-                                            });
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                  notifyUser(e.getLocalizedMessage());
+                                                }
+                                            });;
+                                        }else{
+                                            notifyUser("No new user left to be added.");
                                         }
                                     }
+
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                   notifyUser(e.getLocalizedMessage());
                                 }
                             });
                         }
                     }
                 }
-            });
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    notifyUser(e.getLocalizedMessage());
+                }
+            });;
 
             String email_red = email.substring(0, email.length() - 10);
             mFirestore.collection("Users").document(email_red).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -165,25 +183,35 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
                                     }
 
                                 }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                   notifyUser(e.getLocalizedMessage());
+                                }
                             });
                         }
                         if (index == 1) {
-                            Toast.makeText(AddStudents.this, index + " Student Added", Toast.LENGTH_LONG).show();
+                            KToast.successToast(AddStudents.this, index + " Student Added",Gravity.BOTTOM ,KToast.LENGTH_AUTO);
                         }
                         if (index > 1) {
-                            Toast.makeText(AddStudents.this, index + " Students Added", Toast.LENGTH_LONG).show();
+                            KToast.successToast(AddStudents.this, index + " Students Added",Gravity.BOTTOM ,KToast.LENGTH_AUTO);
                         }
                         finish();
                         startActivity(new Intent(AddStudents.this, MainActivity.class));
 
 
                     } else {
-                        Toast.makeText(AddStudents.this, "Please select any Student", Toast.LENGTH_LONG).show();
+                        notifyUser("Please select any Student");
                     }
                 }
             });
 
         }
+    }
+
+    private void notifyUser(String exception) {
+        progressBar.setVisibility(View.GONE);
+        KToast.errorToast(AddStudents.this,exception,Gravity.CENTER,KToast.LENGTH_AUTO);
     }
 
     @Override
@@ -192,10 +220,8 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
 
         // Associate searchable configuration with the SearchView
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView = (SearchView) menu.findItem(R.id.action_search)
-                .getActionView();
-        searchView.setSearchableInfo(searchManager
-                .getSearchableInfo(getComponentName()));
+        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setMaxWidth(Integer.MAX_VALUE);
 
         // listening to search query text change

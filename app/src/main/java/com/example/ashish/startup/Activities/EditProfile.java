@@ -72,7 +72,7 @@ public class EditProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
         editEmail = findViewById(R.id.editEmail);
@@ -168,7 +168,7 @@ public class EditProfile extends AppCompatActivity {
                             }
                         });
                 FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-                String email=user.getEmail();
+                String email = user.getEmail();
                 String email_red = email.substring(0, email.length() - 10);
                 rootRef.collection("Users").document(email_red).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override

@@ -21,7 +21,7 @@ public class SplashScreen extends AppCompatActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash_screen);
 
-        splash = (TextView)findViewById(R.id.splash);
+        splash = findViewById(R.id.splash);
         Animation myanim = AnimationUtils.loadAnimation(this,R.anim.mytransition);
         splash.startAnimation(myanim);
         final Intent i = new Intent(this,Welcome.class);
