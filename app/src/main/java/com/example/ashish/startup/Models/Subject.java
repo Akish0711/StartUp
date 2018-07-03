@@ -1,7 +1,7 @@
 package com.example.ashish.startup.Models;
 
 public class Subject extends SubjectID{
-    private String Name,Subject_Name,Username;
+    private String Name,Subject_Name,Username, Teacher_Name;
     private int Percentage,Total_Class,Total_Present;
 
     public Subject() {
@@ -14,6 +14,15 @@ public class Subject extends SubjectID{
         Percentage = percentage;
         Total_Class = total_Class;
         Total_Present = total_Present;
+        Teacher_Name = Teacher_Name;
+    }
+
+    public String getTeacher_Name(){
+        return Teacher_Name;
+    }
+
+    public void setTeacher_Name(String teacher_name){
+        Teacher_Name = teacher_name;
     }
 
     public String getSubject_Name() {
