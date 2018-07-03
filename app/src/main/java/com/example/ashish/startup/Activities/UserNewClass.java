@@ -31,9 +31,10 @@ public class UserNewClass extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_new_class);
 
-        if(getIntent().hasExtra("subject_id")&& getIntent().hasExtra("subject_name")){
+        if(getIntent().hasExtra("subject_id")&& getIntent().hasExtra("subject_name") && getIntent().hasExtra("Teacher_Name")){
             final String subject_id = getIntent().getStringExtra("subject_id");
             final String subject_name = getIntent().getStringExtra("subject_name");
+            final String Teacher_Name = getIntent().getStringExtra("Teacher_Name");
 
             view_atttendance = findViewById(R.id.view_attendance);
             view_marks = findViewById(R.id.view_marks);
@@ -59,6 +60,7 @@ public class UserNewClass extends AppCompatActivity {
                     Intent intent = new Intent(UserNewClass.this,UserAttendance.class);
                     intent.putExtra("subject_id",subject_id);
                     intent.putExtra("subject_name",subject_name);
+                    intent.putExtra("Teacher_Name",Teacher_Name);
                     startActivity(intent);
                 }
             });

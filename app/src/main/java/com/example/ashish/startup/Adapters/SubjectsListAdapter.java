@@ -42,6 +42,7 @@ public class SubjectsListAdapter extends RecyclerView.Adapter<SubjectsListAdapte
                 Intent intent = new Intent(context,UserNewClass.class);
                 intent.putExtra("subject_id", subject_id);
                 intent.putExtra("subject_name",subjectList.get(position).getSubject_Name());
+                intent.putExtra("Teacher_Name", subjectList.get(position).getTeacher_Name());
                 context.startActivity(intent);
             }
         });

@@ -14,54 +14,51 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.roomorama.caldroid.CaldroidFragment;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import javax.xml.transform.dom.DOMLocator;
-
 public class UserAttendance extends AppCompatActivity {
 
+    private static final String TAG = "MYMYMYMY";
     private FirebaseFirestore rootRef;
     private FirebaseAuth mAuth;
-    String admin_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_attendance);
 
-        if (getIntent().hasExtra("subject_id") && getIntent().hasExtra("subject_name")) {
+        if (getIntent().hasExtra("subject_id") && getIntent().hasExtra("subject_name") && getIntent().hasExtra("Teacher_Name")) {
             final String subject_id = getIntent().getStringExtra("subject_id");
             String subject_name = getIntent().getStringExtra("subject_name");
-
-            mAuth = FirebaseAuth.getInstance();
-            rootRef = FirebaseFirestore.getInstance();
-
-            FirebaseUser user = mAuth.getCurrentUser();
-            String email = user.getEmail();
-            String email_red = email.substring(0, email.length() - 10);
-
+            String Teacher_Name = getIntent().getStringExtra("Teacher_Name");
 
             final ColorDrawable green = new ColorDrawable(Color.GREEN);
-            final ColorDrawable blue = new ColorDrawable(Color.BLUE);
+            final ColorDrawable red = new ColorDrawable(Color.RED);
+
             final DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
             final SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
 
-            final Date date = new Date();
-            String datte = "June 30, 2018 13:26:48";
+            mAuth = FirebaseAuth.getInstance();
+            rootRef = FirebaseFirestore.getInstance();
+            FirebaseUser user = mAuth.getCurrentUser();
+            final String email = user.getEmail();
 
-            rootRef.collection("Users").document("dikshant").collection("Subjects").document(subject_id).collection("Attendance").document(datte).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            rootRef.collection("Users").document(Teacher_Name).collection("Subjects").document(subject_id).collection("Attendance").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     final CaldroidFragment caldroidFragment = new CaldroidFragment();
+
                     Bundle args = new Bundle();
                     Calendar cal = Calendar.getInstance();
                     args.putInt(CaldroidFragment.MONTH, cal.get(Calendar.MONTH) + 1);
@@ -73,16 +70,41 @@ public class UserAttendance extends AppCompatActivity {
                     t.replace(R.id.calendar2, caldroidFragment);
                     t.commit();
 
-                    final ArrayList<String> list = new ArrayList<>();
+                    final ArrayList<String> list_present = new ArrayList<>();
+                    final ArrayList<String> list_absent = new ArrayList<>();
 
-                    if(task.isSuccessful()){
-                        DocumentSnapshot document = task.getResult();
-                        String status = document.getString("RahulG@gmail.com");
-                        Log.e("status",status + "");
+                    if (task.isSuccessful()){
+                        for(DocumentSnapshot document:task.getResult()){
+                            Object o = document.get(FieldPath.of(email));
+                            Boolean status = (Boolean) o;
+                            if (status){
+                                String database_date = document.getId().substring(0, document.getId().length() - 9);
+                                list_present.add(database_date);
+                            }
+                            else {
+                                String database_date = document.getId().substring(0, document.getId().length() - 9);
+                                list_absent.add(database_date);
+                            }
+                        }
+                        for (int x=0; x<list_present.size();x++) {
+                            try {
+                                Date database_date = format.parse(list_present.get(x));
+                                caldroidFragment.setBackgroundDrawableForDate(green, database_date);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        for (int y=0; y<list_absent.size();y++) {
+                            try {
+                                Date database_date = format.parse(list_absent.get(y));
+                                caldroidFragment.setBackgroundDrawableForDate(red, database_date);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 }
-
-                });
+            });
         }
     }
 }

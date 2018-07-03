@@ -138,7 +138,7 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
                 }
             });;
 
-            String email_red = email.substring(0, email.length() - 10);
+            final String email_red = email.substring(0, email.length() - 10);
             mFirestore.collection("Users").document(email_red).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -172,6 +172,7 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
                                     if (task.isSuccessful()) {
                                         for (DocumentSnapshot document : task.getResult()) {
                                             Map<String, Object> data = new HashMap<>();
+                                            data.put("Teacher_Name", email_red);
                                             data.put("Subject_Name", subject[0]);
                                             data.put("Total_Present",0);
                                             data.put("Total_Class",0);

@@ -11,7 +11,7 @@ public class Users {
 public Users(){
 
 }
-    public static final Comparator<Users>BY_NAME_ALPHABETICAL = new Comparator<Users>() {
+    public static final Comparator<Users> BY_NAME_ALPHABETICAL = new Comparator<Users>() {
     @Override
     public int compare(Users users, Users t1) {
         return users.Username.compareTo(t1.Username);
