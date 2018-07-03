@@ -70,7 +70,6 @@ public class UpdateAttendance extends AppCompatActivity {
                     args.putBoolean(CaldroidFragment.ENABLE_CLICK_ON_DISABLED_DATES, true);
                     caldroidFragment.setArguments(args);
 
-
                     android.support.v4.app.FragmentTransaction t = getSupportFragmentManager().beginTransaction();
                     t.replace(R.id.calendar1, caldroidFragment);
                     t.commit();
@@ -101,8 +100,6 @@ public class UpdateAttendance extends AppCompatActivity {
                                         i++;
                                     }
                                 }
-                                Toast.makeText(getApplicationContext(), formatter.format(date),
-                                        Toast.LENGTH_SHORT).show();
                                 classes_taken.setText("Total Lectures: "+i);
                                 selected_date.setText(formatter.format(date));
                             }
@@ -110,15 +107,11 @@ public class UpdateAttendance extends AppCompatActivity {
                             @Override
                             public void onChangeMonth(int month, int year) {
                                 String text = "month: " + month + " year: " + year;
-                                Toast.makeText(getApplicationContext(), text,
-                                        Toast.LENGTH_SHORT).show();
+
                             }
 
                             @Override
                             public void onLongClickDate(Date date, View view) {
-                                Toast.makeText(getApplicationContext(),
-                                        "Long click " + formatter.format(date),
-                                        Toast.LENGTH_SHORT).show();
                                 AlertDialog.Builder builder = new AlertDialog.Builder(UpdateAttendance.this  );
                                 builder.setMessage("Look at this dialog!")
                                         .setCancelable(false)
@@ -133,9 +126,7 @@ public class UpdateAttendance extends AppCompatActivity {
 
                             @Override
                             public void onCaldroidViewCreated() {
-                                Toast.makeText(getApplicationContext(),
-                                        "Caldroid view is created",
-                                        Toast.LENGTH_SHORT).show();
+
                             }
                         };
 

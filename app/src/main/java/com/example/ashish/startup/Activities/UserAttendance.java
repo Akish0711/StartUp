@@ -6,7 +6,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.example.ashish.startup.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -17,21 +20,29 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.onurkaganaldemir.ktoastlib.KToast;
 import com.roomorama.caldroid.CaldroidFragment;
+import com.roomorama.caldroid.CaldroidListener;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class UserAttendance extends AppCompatActivity {
 
     private static final String TAG = "MYMYMYMY";
     private FirebaseFirestore rootRef;
     private FirebaseAuth mAuth;
+    private TextView classes_taken_2 , classes_attended;
+    Collection<String> present = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +54,9 @@ public class UserAttendance extends AppCompatActivity {
             String subject_name = getIntent().getStringExtra("subject_name");
             String Teacher_Name = getIntent().getStringExtra("Teacher_Name");
 
+            classes_taken_2 = findViewById(R.id.classes_taken_2);
+            classes_attended = findViewById(R.id.classes_attended);
+
             final ColorDrawable green = new ColorDrawable(Color.GREEN);
             final ColorDrawable red = new ColorDrawable(Color.RED);
 
@@ -53,6 +67,7 @@ public class UserAttendance extends AppCompatActivity {
             rootRef = FirebaseFirestore.getInstance();
             FirebaseUser user = mAuth.getCurrentUser();
             final String email = user.getEmail();
+
 
             rootRef.collection("Users").document(Teacher_Name).collection("Subjects").document(subject_id).collection("Attendance").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
@@ -72,39 +87,70 @@ public class UserAttendance extends AppCompatActivity {
 
                     final ArrayList<String> list_present = new ArrayList<>();
                     final ArrayList<String> list_absent = new ArrayList<>();
+                    final ArrayList<String> list = new ArrayList<>();
 
                     if (task.isSuccessful()){
-                        for(DocumentSnapshot document:task.getResult()){
+                        for(DocumentSnapshot document:task.getResult()) {
+                            String database__all_date = document.getId().substring(0, document.getId().length() - 9);
+                            list.add(database__all_date);
+
                             Object o = document.get(FieldPath.of(email));
-                            Boolean status = (Boolean) o;
-                            if (status){
-                                String database_date = document.getId().substring(0, document.getId().length() - 9);
-                                list_present.add(database_date);
-                            }
-                            else {
-                                String database_date = document.getId().substring(0, document.getId().length() - 9);
-                                list_absent.add(database_date);
-                            }
-                        }
-                        for (int x=0; x<list_present.size();x++) {
+                            final Boolean status = (Boolean) o;
                             try {
-                                Date database_date = format.parse(list_present.get(x));
-                                caldroidFragment.setBackgroundDrawableForDate(green, database_date);
-                            } catch (ParseException e) {
+                                if (status) {
+                                    String database_date = document.getId().substring(0, document.getId().length() - 9);
+                                    list_present.add(database_date);
+                                } else {
+                                    String database_date = document.getId().substring(0, document.getId().length() - 9);
+                                    list_absent.add(database_date);
+                                }
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                        }
-                        for (int y=0; y<list_absent.size();y++) {
-                            try {
-                                Date database_date = format.parse(list_absent.get(y));
-                                caldroidFragment.setBackgroundDrawableForDate(red, database_date);
-                            } catch (ParseException e) {
-                                e.printStackTrace();
+
+                            for (int x = 0; x < list_present.size(); x++) {
+                                try {
+                                    Date database_date = format.parse(list_present.get(x));
+                                    caldroidFragment.setBackgroundDrawableForDate(green, database_date);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+
+                            final CaldroidListener listener = new CaldroidListener() {
+                                @Override
+                                public void onSelectDate(Date date, View view) {
+                                    int i = 0,p=0;
+                                    for (int x = 0; x < list.size(); x++) {
+                                        if (list.get(x).equals(formatter.format(date))) {
+                                            i++;
+                                        }
+                                    }
+                                    for(int k=0;k < list_present.size();k++){
+                                        if(list_present.get(k).equals(formatter.format(date)))
+                                            p++;
+                                    }
+                                    classes_taken_2.setText("Total Lectures: " + i);
+                                    classes_attended.setText("Present: " + p);
+                                }
+                            };
+
+                            caldroidFragment.setCaldroidListener(listener);
+
+                            for (int y = 0; y < list_absent.size(); y++) {
+                                try {
+                                    Date database_date = format.parse(list_absent.get(y));
+                                    caldroidFragment.setBackgroundDrawableForDate(red, database_date);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     }
                 }
             });
         }
+
     }
 }
