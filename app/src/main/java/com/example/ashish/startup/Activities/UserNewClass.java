@@ -65,25 +65,17 @@ public class UserNewClass extends AppCompatActivity {
                 }
             });
 
-            mFirestore.collection("Users").document(email_red).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            view_marks.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        document.getReference().collection("Subjects").document(subject_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if(task.isSuccessful()){
-                                    DocumentSnapshot document = task.getResult();
-                                    percentage = document.getLong("Percentage");
-                                    KToast.normalToast(UserNewClass.this, "Attendance is " + percentage + " %", Gravity.BOTTOM, KToast.LENGTH_LONG);
-                                }
-                            }
-                        });
-                    }
+                public void onClick(View view) {
+                    Intent intent = new Intent(UserNewClass.this,UserMarks.class);
+                    intent.putExtra("subject_id",subject_id);
+                    intent.putExtra("subject_name",subject_name);
+                    intent.putExtra("Teacher_Name",Teacher_Name);
+                    startActivity(intent);
                 }
             });
-        }
+            }
     }
 
     @Override

@@ -117,7 +117,7 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
                                                 }
                                             });;
                                         }else{
-                                            notifyUser("No new user left to be added.");
+                                            notifyUser("All the registered users have already been added.");
                                         }
                                     }
 

@@ -26,7 +26,7 @@ public class SubjectsListAdapter extends RecyclerView.Adapter<SubjectsListAdapte
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_user_subjects,parent,false);
         return new ViewHolder(view);
     }
 
@@ -34,6 +34,7 @@ public class SubjectsListAdapter extends RecyclerView.Adapter<SubjectsListAdapte
     public void onBindViewHolder(ViewHolder holder, final int position) {
 
         holder.nameText.setText(subjectList.get(position).getSubject_Name());
+        holder.percentage.setText(subjectList.get(position).getPercentage()+ " %");
         final String subject_id = subjectList.get(position).subjectID;
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -57,10 +58,12 @@ public class SubjectsListAdapter extends RecyclerView.Adapter<SubjectsListAdapte
 
         View mView;
         public TextView nameText;
+        public TextView percentage;
         public ViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
             nameText = mView.findViewById(R.id.name_text);
+            percentage = mView.findViewById(R.id.percentage);
         }
     }
 
