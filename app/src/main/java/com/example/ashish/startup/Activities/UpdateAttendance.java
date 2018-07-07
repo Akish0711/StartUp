@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.ashish.startup.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -32,7 +31,6 @@ import java.util.Locale;
 
 public class UpdateAttendance extends AppCompatActivity {
 
-    private static final String TAG = "MYMYMYMY";
     private FirebaseFirestore rootRef;
     private FirebaseAuth mAuth;
     private TextView selected_date, classes_taken;
@@ -72,7 +70,7 @@ public class UpdateAttendance extends AppCompatActivity {
 
                     android.support.v4.app.FragmentTransaction t = getSupportFragmentManager().beginTransaction();
                     t.replace(R.id.calendar1, caldroidFragment);
-                    t.commit();
+                    t.commitAllowingStateLoss();
 
                     final ArrayList<String> list = new ArrayList<>();
 

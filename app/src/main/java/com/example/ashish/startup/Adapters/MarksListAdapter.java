@@ -14,42 +14,43 @@ import java.util.List;
 
 public class MarksListAdapter extends RecyclerView.Adapter<MarksListAdapter.ViewHolder> {
 
-    public List<Marks> marksList;
+    public List<Marks> testList;
     public Context context;
+
     public MarksListAdapter(Context context, List<Marks> marksList){
-        this.marksList = marksList;
+        this.testList = marksList;
         this.context = context;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_marks,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_tests,parent,false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.user_name.setText(marksList.get(position).getUsername());
-        holder.display_name.setText(marksList.get(position).getName());
+        holder.test_name.setText(testList.get(position).getMarksID());
+        holder.max_marks.setText(testList.get(position).getMax_marks());
     }
 
     @Override
     public int getItemCount() {
-        return marksList.size();
+        return testList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         View mView;
-        public TextView user_name;
-        public TextView display_name;
+        public TextView test_name;
+        public TextView max_marks;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
 
-            user_name = (TextView)mView.findViewById(R.id.user_name);
-            display_name = (TextView)mView.findViewById(R.id.display_name);
+            test_name = mView.findViewById(R.id.tName);
+            max_marks = mView.findViewById(R.id.mMarksValue);
         }
     }
 }

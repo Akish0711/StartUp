@@ -7,10 +7,10 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.NFC" />
 
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="false" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.nfc" android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -91,15 +91,19 @@
             android:screenOrientation="portrait" />
         <activity android:name=".Authentication.ReAuthentication" />
         <activity android:name=".Activities.nonadmin" />
-        <activity android:name=".Activities.UserNewClass"/>
-        <activity android:name=".Activities.UserAttendance"></activity>
+        <activity android:name=".Activities.UserNewClass"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Activities.UserAttendance"
+            android:screenOrientation="portrait"></activity>
         <activity android:name=".Activities.UserMarks"></activity>
+        <activity android:name=".Activities.CreateNewTest"></activity>
         <activity android:name=".Authentication.CreateAccount" />
         <activity
             android:name=".Activities.EditProfile"
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity android:name=".Activities.NewClass" />
-        <activity android:name=".Activities.NewClass2" />
+        <activity android:name=".Activities.NewClass2"
+            android:screenOrientation="portrait"/>
         <activity android:name=".Activities.AddStudents">
             <meta-data
                 android:name="android.app.searchable"
@@ -112,7 +116,8 @@
         <activity android:name=".Activities.TakeAttendance" />
         <activity android:name=".Activities.ViewAttendance" />
         <activity android:name=".Activities.UpdateAttendance" />
-        <activity android:name=".Activities.UploadMarks"></activity>
+        <activity android:name=".Activities.UploadMarks"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

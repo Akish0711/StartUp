@@ -61,4 +61,5 @@
     <string name="view_attendance">Attendance</string>
     <string name="view_marks">marks</string>
     <string name="add_selected_students">Add Selected Students</string>
+    <string name="about_us">About Us</string>
 </resources>

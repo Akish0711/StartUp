@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +18,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.onurkaganaldemir.ktoastlib.KToast;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,7 +68,7 @@ public class NewClass extends AppCompatActivity {
                     if (task.isSuccessful()){
                         DocumentSnapshot document = task.getResult();
                         document.getReference().collection("Subjects").document().set(subject);
-                        Toast.makeText(NewClass.this,"New Class Created",Toast.LENGTH_LONG).show();
+                        KToast.successToast(NewClass.this,"New Class Created", Gravity.BOTTOM,KToast.LENGTH_SHORT);
                         finish();
                         startActivity(new Intent(NewClass.this,MainActivity.class));
                     }

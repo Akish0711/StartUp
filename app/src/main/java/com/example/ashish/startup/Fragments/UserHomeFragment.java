@@ -39,12 +39,12 @@ public class UserHomeFragment extends android.support.v4.app.Fragment {
     public UserHomeFragment() {
 
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         firebaseAuth = FirebaseAuth.getInstance();
         loadClasses();
-
     }
 
     FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
@@ -66,7 +66,6 @@ public class UserHomeFragment extends android.support.v4.app.Fragment {
                                 if (doc.getType()== DocumentChange.Type.ADDED){
                                     String subjectID = doc.getDocument().getId();
                                     Subject subjects = doc.getDocument().toObject(Subject.class).withID(subjectID);
-                                    Log.e("percentage",""+ subjects.getPercentage());
                                     subjectList.add(subjects);
                                     subjectsListAdapter.notifyDataSetChanged();
                                 }

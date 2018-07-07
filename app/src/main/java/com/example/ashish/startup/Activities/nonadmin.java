@@ -35,6 +35,7 @@ import com.example.ashish.startup.Fragments.SettingsFragment;
 import com.example.ashish.startup.Fragments.UserHomeFragment;
 import com.example.ashish.startup.Others.CircleTransform;
 import com.example.ashish.startup.R;
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -52,6 +53,8 @@ public class nonadmin extends AppCompatActivity {
     private ImageView imgNavHeaderBg, imgProfile;
     private TextView txtName, txtWebsite;
     private Toolbar toolbar;
+    FloatingActionMenu floatingActionMenu;
+
 
     // urls to load navigation header background image
     private static final String urlNavHeaderBg = "https://firebasestorage.googleapis.com/v0/b/startup-ec618.appspot.com/o/Google-Abstract-HD-Wallpaper.jpg?alt=media&token=2fb6d92d-a1d8-47ae-accc-5be7a36eccc1";
@@ -115,6 +118,8 @@ public class nonadmin extends AppCompatActivity {
         txtWebsite = navHeader.findViewById(R.id.website);
         imgNavHeaderBg = navHeader.findViewById(R.id.img_header_bg);
         imgProfile = navHeader.findViewById(R.id.img_profile);
+        floatingActionMenu = findViewById(R.id.floatingActionMenu);
+        floatingActionMenu.setVisibility(View.INVISIBLE);
 
         // load toolbar titles from string resources
         activityTitles = getResources().getStringArray(R.array.nav_item_activity_titles);
@@ -131,7 +136,6 @@ public class nonadmin extends AppCompatActivity {
             loadHomeFragment();
         }
     }
-
 
     /***
      * Load navigation menu header information

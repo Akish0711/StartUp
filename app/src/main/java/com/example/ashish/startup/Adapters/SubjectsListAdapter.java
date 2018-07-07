@@ -59,9 +59,11 @@ public class SubjectsListAdapter extends RecyclerView.Adapter<SubjectsListAdapte
         View mView;
         public TextView nameText;
         public TextView percentage;
+
         public ViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
+
             nameText = mView.findViewById(R.id.name_text);
             percentage = mView.findViewById(R.id.percentage);
         }

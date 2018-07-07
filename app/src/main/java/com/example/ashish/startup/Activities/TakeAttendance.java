@@ -111,7 +111,6 @@ public class TakeAttendance extends AppCompatActivity {
                                                         Attendance attendance = doc.toObject(Attendance.class);
                                                         attendanceList.add(attendance);
                                                         Collections.sort(attendanceList, Attendance.BY_NAME_ALPHABETICAL);
-
                                                         attendanceListAdapter.notifyDataSetChanged();
                                                     }
                                                 }

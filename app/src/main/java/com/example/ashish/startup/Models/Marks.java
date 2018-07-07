@@ -1,12 +1,24 @@
 package com.example.ashish.startup.Models;
 
-public class Marks {
+public class Marks extends MarksID {
 
-    private String Name, Username;
+    private String testName, Username, Max_marks;
     private int id;
     private boolean isSelected;
     public Marks(){
 
+    }
+
+    public String getMarksID(){
+        return marksID;
+    }
+
+    public String getMax_marks() {
+        return Max_marks;
+    }
+
+    public void setMax_marks(String max_marks) {
+        Max_marks = max_marks;
     }
 
     public boolean isSelected() {
@@ -25,18 +37,12 @@ public class Marks {
         this.id = id;
     }
 
-    public Marks(String name, String username) {
-        Name = name;
+    public Marks (String username) {
+
         Username = username;
     }
 
-    public String getName() {
-        return Name;
-    }
 
-    public void setName(String name) {
-        Name = name;
-    }
 
     public String getUsername() {
         return Username;
