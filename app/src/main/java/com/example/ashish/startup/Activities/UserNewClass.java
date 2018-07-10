@@ -21,9 +21,7 @@ import com.onurkaganaldemir.ktoastlib.KToast;
 public class UserNewClass extends AppCompatActivity {
 
     private Button view_marks,view_atttendance;
-    private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
-    private Long percentage ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +46,7 @@ public class UserNewClass extends AppCompatActivity {
                 getSupportActionBar().setTitle(subject_name);
             }
 
-            mFirestore = FirebaseFirestore.getInstance();
+            FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
             mAuth = FirebaseAuth.getInstance();
 
             String email = mAuth.getCurrentUser().getEmail();

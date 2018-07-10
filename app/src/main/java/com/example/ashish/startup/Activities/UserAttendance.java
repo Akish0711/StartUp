@@ -68,7 +68,6 @@ public class UserAttendance extends AppCompatActivity {
             FirebaseUser user = mAuth.getCurrentUser();
             final String email = user.getEmail();
 
-
             rootRef.collection("Users").document(Teacher_Name).collection("Subjects").document(subject_id).collection("Attendance").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {

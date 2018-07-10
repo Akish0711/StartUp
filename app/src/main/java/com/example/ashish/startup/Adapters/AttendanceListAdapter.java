@@ -16,8 +16,9 @@ import java.util.List;
 
 public class AttendanceListAdapter extends RecyclerView.Adapter<AttendanceListAdapter.ViewHolder> {
 
-    public List<Attendance>attendanceList;
+    public List<Attendance> attendanceList;
     public Context context;
+
     public AttendanceListAdapter(Context context, List<Attendance> attendanceList){
         this.attendanceList = attendanceList;
         this.context = context;

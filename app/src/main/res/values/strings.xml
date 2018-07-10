@@ -62,4 +62,6 @@
     <string name="view_marks">marks</string>
     <string name="add_selected_students">Add Selected Students</string>
     <string name="about_us">About Us</string>
+    <string name="submit_marks">SUBMIT MARKS</string>
+    <string name="update_marks">UPDATE MARKS</string>
 </resources>

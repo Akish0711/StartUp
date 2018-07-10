@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-        registerReceiver(broadcast_reciever, new IntentFilter("finish"));
+//        registerReceiver(broadcast_reciever, new IntentFilter("finish"));
 
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);

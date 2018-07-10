@@ -97,6 +97,7 @@
             android:screenOrientation="portrait"></activity>
         <activity android:name=".Activities.UserMarks"></activity>
         <activity android:name=".Activities.CreateNewTest"></activity>
+        <activity android:name=".Activities.GetMarks" />
         <activity android:name=".Authentication.CreateAccount" />
         <activity
             android:name=".Activities.EditProfile"

@@ -116,7 +116,8 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
                                                   notifyUser(e.getLocalizedMessage());
                                                 }
                                             });;
-                                        }else{
+                                        }
+                                        else{
                                             notifyUser("All the registered users have already been added.");
                                         }
                                     }
@@ -153,7 +154,6 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
                                 }
                             }
                         });
-
                     }
                 }
             });

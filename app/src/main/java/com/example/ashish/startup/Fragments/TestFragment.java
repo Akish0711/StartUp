@@ -1,6 +1,7 @@
 package com.example.ashish.startup.Fragments;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -32,11 +33,11 @@ import java.util.List;
 
 public class TestFragment extends android.support.v4.app.Fragment {
 
-    private UserHomeFragment.OnFragmentInteractionListener mListener;
+    private OnFragmentInteractionListener mListener;
     private FirebaseAuth firebaseAuth;
     private List<Marks> marksList;
     private MarksListAdapter marksListAdapter;
-    private String c;
+    private String c,institute;
 
     public TestFragment(){
 
@@ -47,6 +48,7 @@ public class TestFragment extends android.support.v4.app.Fragment {
         super.onCreate(savedInstanceState);
         firebaseAuth = FirebaseAuth.getInstance();
         c = getArguments().getString("class_id");
+        institute = getArguments().getString("institute");
         loadTests();
     }
 
@@ -98,7 +100,7 @@ public class TestFragment extends android.support.v4.app.Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.test_list);
 
         marksList = new ArrayList<>();
-        marksListAdapter = new MarksListAdapter(getContext(),marksList);
+        marksListAdapter = new MarksListAdapter(getContext(),marksList,institute,c);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(marksListAdapter);
@@ -116,5 +118,8 @@ public class TestFragment extends android.support.v4.app.Fragment {
         mListener = null;
     }
 
-
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
+    }
 }

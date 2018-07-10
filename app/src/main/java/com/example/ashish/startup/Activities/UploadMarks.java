@@ -45,6 +45,7 @@ public class UploadMarks extends AppCompatActivity {
     FloatingActionMenu floatingActionMenu;
     com.github.clans.fab.FloatingActionButton createTest;
     private String class_id;
+    String Institute;
 
     public static int navItemIndex = 0;
 
@@ -65,7 +66,7 @@ public class UploadMarks extends AppCompatActivity {
 
         if (getIntent().hasExtra("class_id")&& getIntent().hasExtra("institute")) {
             class_id = getIntent().getStringExtra("class_id");
-            final String Institute = getIntent().getStringExtra("institute");
+            Institute = getIntent().getStringExtra("institute");
 
             Toolbar toolbar = findViewById(R.id.my_toolbar);
             setSupportActionBar(toolbar);
@@ -106,6 +107,7 @@ public class UploadMarks extends AppCompatActivity {
                 TestFragment test = new TestFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString("class_id", class_id);
+                bundle.putString("institute",Institute);
                 test.setArguments(bundle);
 
                 Fragment fragment = test;
