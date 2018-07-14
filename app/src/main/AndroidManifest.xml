@@ -93,11 +93,13 @@
         <activity android:name=".Activities.nonadmin" />
         <activity android:name=".Activities.UserNewClass"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.UserAttendance"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".Activities.UserMarks"></activity>
-        <activity android:name=".Activities.CreateNewTest"></activity>
+        <activity
+            android:name=".Activities.UserAttendance"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Activities.UserMarks" />
+        <activity android:name=".Activities.CreateNewTest" />
         <activity android:name=".Activities.GetMarks" />
+        <activity android:name=".Activities.Announcement"/>
         <activity android:name=".Authentication.CreateAccount" />
         <activity
             android:name=".Activities.EditProfile"
@@ -117,8 +119,9 @@
         <activity android:name=".Activities.TakeAttendance" />
         <activity android:name=".Activities.ViewAttendance" />
         <activity android:name=".Activities.UpdateAttendance" />
-        <activity android:name=".Activities.UploadMarks"
-            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".Activities.UploadMarks"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

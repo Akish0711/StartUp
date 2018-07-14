@@ -18,7 +18,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class NewClass2 extends AppCompatActivity {
 
-    private Button add_students, take_attendance, marks;
+    private Button add_students, take_attendance, marks, announcement;
     private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
 
@@ -33,6 +33,7 @@ public class NewClass2 extends AppCompatActivity {
             add_students = findViewById(R.id.add_students);
             take_attendance = findViewById(R.id.take_attendance);
             marks = findViewById(R.id.marks);
+            announcement = findViewById(R.id.announcement);
 
             Toolbar toolbar = findViewById(R.id.my_toolbar);
             setSupportActionBar(toolbar);
@@ -83,6 +84,16 @@ public class NewClass2 extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(NewClass2.this,UploadMarks.class);
+                    intent.putExtra("class_id", class_id);
+                    intent.putExtra("institute",Institute[0]);
+                    startActivity(intent);
+                }
+            });
+
+            announcement.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(NewClass2.this,Announcement.class);
                     intent.putExtra("class_id", class_id);
                     intent.putExtra("institute",Institute[0]);
                     startActivity(intent);

@@ -23,8 +23,6 @@ public class AboutUsActivity extends AppCompatActivity {
 //            getSupportActionBar().setTitle("About Us");
 //        }
         getSupportActionBar().hide();
-
-
     }
 
     @Override
