@@ -3,9 +3,17 @@ package com.example.ashish.startup.Models;
 public class Message {
 
     private String Message;
-    public Message(){
 
+    public String getImage() {
+        return Image;
     }
+
+    public void setImage(String image) {
+        Image = image;
+    }
+
+    private String Image;
+
 
     public String getMessage() {
         return Message;
@@ -14,7 +22,12 @@ public class Message {
     public void setMessage(String message) {
         Message = message;
     }
-    public Message(String message) {
+
+    public Message(){
+    }
+
+    public Message(String message, String image) {
         Message = message;
+        Image = image;
     }
 }

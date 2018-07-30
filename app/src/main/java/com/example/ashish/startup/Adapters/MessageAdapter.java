@@ -49,7 +49,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             super(itemView);
             mView = itemView;
 
-            message = mView.findViewById(R.id.messgae_text_layout);
+            message = mView.findViewById(R.id.textView_message_text);
 
 
         }
