@@ -172,7 +172,8 @@ public class MainActivity extends AppCompatActivity {
                     txtWebsite.setText(document.getString("Email"));
                     // Loading profile image
                     if (user.getPhotoUrl()!=null) {
-                        Glide.with(getApplicationContext()).load(user.getPhotoUrl().toString())
+                        Glide.with(getApplicationContext())
+                                .load(user.getPhotoUrl().toString())
                                 .crossFade()
                                 .thumbnail(0.5f)
                                 .bitmapTransform(new CircleTransform(MainActivity.this))

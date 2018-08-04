@@ -1,14 +1,21 @@
 package com.example.ashish.startup.Activities;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -17,13 +24,21 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.ashish.startup.Adapters.MessageAdapter;
 import com.example.ashish.startup.Models.Message;
+import com.example.ashish.startup.Others.CircleTransform;
 import com.example.ashish.startup.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -33,8 +48,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.onurkaganaldemir.ktoastlib.KToast;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -63,6 +87,9 @@ public class Announcement extends AppCompatActivity {
     private String mPrevKey = "";
     private String class_id;
     private String email_red;
+    private Uri uriProfileImage;
+    private String profileImageUrl;
+    private static final int REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,6 +192,7 @@ public class Announcement extends AppCompatActivity {
 
                         Map messageMap = new HashMap();
                         messageMap.put("Message", message);
+                        messageMap.put("Type", 1);
 
                         Map messageUserMap = new HashMap();
                         messageUserMap.put(user_ref+"/"+push_id,messageMap);
@@ -195,8 +223,7 @@ public class Announcement extends AppCompatActivity {
             mFabSendImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    showImageChooser();
-                }
+                    verifyPermissions();                }
             });
         }
     }
@@ -206,12 +233,143 @@ public class Announcement extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == CHOOSE_IMAGE && resultCode == Activity.RESULT_OK && data!=null && data.getData()!=null){
-            // upload image to firebase and retrive
+            uriProfileImage = data.getData();
+            InputStream imageStream = null;
+            try {
+                imageStream = getContentResolver().openInputStream(uriProfileImage);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+            selectedImage = getResizedBitmap(selectedImage, 1500);// 400 is for example, replace with desired size
+            uriProfileImage = getImageUri(getApplicationContext(), selectedImage);
+
+            final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("message/"+System.currentTimeMillis()+"jpg");
+
+            profileImageRef.putFile(uriProfileImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    profileImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Uri downloadUrl = uri;
+                            profileImageUrl = downloadUrl.toString();
+                            String user_ref = "Announcement/"+email_red+"/"+class_id;
+
+                            DatabaseReference user_message_push = mRootRef.child("Announcement")
+                                    .child(email_red).child(class_id).push();
+
+                            String push_id = user_message_push.getKey();
+                            Map messageMap = new HashMap();
+                            messageMap.put("Message", profileImageUrl);
+                            messageMap.put("Type", 2);
+
+                            Map messageUserMap = new HashMap();
+                            messageUserMap.put(user_ref+"/"+push_id,messageMap);
+
+                            mRootRef.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                                    if (databaseError!=null){
+
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            KToast.errorToast(Announcement.this,e.getMessage(), Gravity.BOTTOM,KToast.LENGTH_SHORT);
+                        }
+                    });
 
         }else if (requestCode == PICK_IMAGE_CAMERA && resultCode == Activity.RESULT_OK ) {
-            // upload image to firebase and retrive
+            int targetW = 590;
+            int targetH = 590;
 
+            // Get the dimensions of the bitmap
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+            bmOptions.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+            int photoW = bmOptions.outWidth;
+            int photoH = bmOptions.outHeight;
+
+            // Determine how much to scale down the image
+            int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+
+            // Decode the image file into a Bitmap sized to fill the View
+            bmOptions.inJustDecodeBounds = false;
+            bmOptions.inSampleSize = scaleFactor;
+            bmOptions.inPurgeable = true;
+
+            Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+            uriProfileImage = getImageUri(getApplicationContext(), bitmap);
+
+            final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("message/"+System.currentTimeMillis()+"jpg");
+
+            profileImageRef.putFile(uriProfileImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    profileImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Uri downloadUrl = uri;
+                            profileImageUrl = downloadUrl.toString();
+                            String user_ref = "Announcement/"+email_red+"/"+class_id;
+
+                            DatabaseReference user_message_push = mRootRef.child("Announcement")
+                                    .child(email_red).child(class_id).push();
+
+                            String push_id = user_message_push.getKey();
+                            Map messageMap = new HashMap();
+                            messageMap.put("Message", profileImageUrl);
+                            messageMap.put("Type", 2);
+
+                            Map messageUserMap = new HashMap();
+                            messageUserMap.put(user_ref+"/"+push_id,messageMap);
+
+                            mRootRef.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                                    if (databaseError!=null){
+
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            KToast.errorToast(Announcement.this,e.getMessage(), Gravity.BOTTOM,KToast.LENGTH_SHORT);
+                        }
+                    });
         }
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        float bitmapRatio = (float)width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+        return Bitmap.createScaledBitmap(image, width, height, true);
     }
 
     private void showImageChooser() {
@@ -374,5 +532,27 @@ public class Announcement extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void verifyPermissions(){
+        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA};
+
+        if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                permissions[0]) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                permissions[1]) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                permissions[2]) == PackageManager.PERMISSION_GRANTED){
+            showImageChooser();
+        }else{
+            ActivityCompat.requestPermissions(Announcement.this, permissions, REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        verifyPermissions();
     }
 }
