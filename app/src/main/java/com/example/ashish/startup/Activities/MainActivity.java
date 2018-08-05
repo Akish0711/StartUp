@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView txtName, txtWebsite;
     private Toolbar toolbar;
     FloatingActionMenu floatingActionMenu;
-    com.github.clans.fab.FloatingActionButton create, attendance;
+    com.github.clans.fab.FloatingActionButton new_user, new_class;
 
     // urls to load navigation header background image
     private static final String urlNavHeaderBg = "https://firebasestorage.googleapis.com/v0/b/startup-ec618.appspot.com/o/Webp.net-compress-image%20(2).jpg?alt=media&token=582fb88d-ff5c-4609-b544-224a718bb67d";
@@ -110,8 +110,8 @@ public class MainActivity extends AppCompatActivity {
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         floatingActionMenu = findViewById(R.id.floatingActionMenu);
-        create = findViewById(R.id.floatingActionItem1);
-        attendance = findViewById(R.id.floatingActionItem3);
+        new_user = findViewById(R.id.floatingActionItem1);
+        new_class = findViewById(R.id.floatingActionItem2);
         floatingActionMenu.setClosedOnTouchOutside(true);
 
         // Navigation view header
@@ -124,14 +124,14 @@ public class MainActivity extends AppCompatActivity {
         // load toolbar titles from string resources
         activityTitles = getResources().getStringArray(R.array.nav_item_activity_titles);
 
-        create.setOnClickListener(new View.OnClickListener() {
+        new_user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this,CreateAccount.class));
             }
         });
 
-        attendance.setOnClickListener(new View.OnClickListener() {
+        new_class.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this,NewClass.class));

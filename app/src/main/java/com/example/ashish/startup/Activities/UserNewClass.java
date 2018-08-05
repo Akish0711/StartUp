@@ -20,7 +20,7 @@ import com.onurkaganaldemir.ktoastlib.KToast;
 
 public class UserNewClass extends AppCompatActivity {
 
-    private Button view_marks,view_atttendance;
+    private Button view_marks, view_atttendance, announcement;
     private FirebaseAuth mAuth;
 
     @Override
@@ -36,6 +36,7 @@ public class UserNewClass extends AppCompatActivity {
 
             view_atttendance = findViewById(R.id.view_attendance);
             view_marks = findViewById(R.id.view_marks);
+            announcement = findViewById(R.id.announcement_student);
 
             Toolbar toolbar = findViewById(R.id.my_toolbar);
             setSupportActionBar(toolbar);
@@ -69,6 +70,16 @@ public class UserNewClass extends AppCompatActivity {
                     Intent intent = new Intent(UserNewClass.this,UserMarks.class);
                     intent.putExtra("subject_id",subject_id);
                     intent.putExtra("subject_name",subject_name);
+                    intent.putExtra("Teacher_Name",Teacher_Name);
+                    startActivity(intent);
+                }
+            });
+
+            announcement.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(UserNewClass.this,AnnouncementStudents.class);
+                    intent.putExtra("subject_id",subject_id);
                     intent.putExtra("Teacher_Name",Teacher_Name);
                     startActivity(intent);
                 }
