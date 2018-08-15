@@ -35,7 +35,7 @@
         </provider>
 
         <activity
-            android:name=".Activities.SplashScreen"
+            android:name=".Activities.Welcome"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -79,9 +79,6 @@
             android:resource="@array/preloaded_fonts" />
         <!-- [END fcm_default_channel] -->
 
-        <activity
-            android:name=".Activities.Welcome"
-            android:screenOrientation="portrait" />
         <activity
             android:name=".Authentication.Login"
             android:screenOrientation="portrait" />
@@ -128,7 +125,8 @@
         <activity
             android:name=".Activities.UploadMarks"
             android:screenOrientation="portrait" />
-        <activity android:name=".Activities.AnnouncementStudents"></activity>
+        <activity android:name=".Activities.AnnouncementStudents" />
+        <activity android:name=".Activities.FullScreenImage"></activity>
     </application>
 
 </manifest>

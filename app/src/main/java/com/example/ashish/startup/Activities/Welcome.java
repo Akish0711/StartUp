@@ -38,16 +38,16 @@ public class Welcome extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         // Checking for first time launch - before calling setContentView()
         prefManager = new PrefManager(this);
         if (!prefManager.isFirstTimeLaunch()) {
             launchHomeScreen();
             finish();
         }
+
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         // Making notification bar transparent
         if (Build.VERSION.SDK_INT >= 21) {
@@ -192,9 +192,7 @@ public class Welcome extends AppCompatActivity {
                 mSkipBtn.setVisibility(View.INVISIBLE);
                 mfinishBtn.setEnabled(true);
                 mfinishBtn.setVisibility(View.INVISIBLE);
-
-            }
-
+                }
         }
 
         @Override

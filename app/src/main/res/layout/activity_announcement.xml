@@ -57,6 +57,7 @@
         app:layout_constraintVertical_bias="1.0">
 
         <android.support.design.widget.FloatingActionButton
+            app:backgroundTint="@color/colorPrimary"
             android:id="@+id/fab_send_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

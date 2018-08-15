@@ -39,11 +39,4 @@
         <item name="colorControlNormal">#c0c8d6</item>
         <item name="colorControlActivated">@color/colorPrimary</item>
     </style>
-
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
-
 </resources>

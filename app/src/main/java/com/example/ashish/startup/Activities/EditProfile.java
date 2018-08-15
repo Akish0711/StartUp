@@ -55,15 +55,13 @@ public class EditProfile extends AppCompatActivity {
     private static final int PICK_IMAGE_CAMERA =188 ;
     private static final int REQUEST_CODE = 1;
     private TextView txtName, txtEmail;
-
     private ImageView changeImage;
     private EditText editText, editEmail, editPhone;
-
     private Uri uriProfileImage;
     private ProgressBar progressBar;
-
-    private String profileImageUrl;
-
+    private FirebaseFirestore rootRef;
+    private String profileImageUrl, email_red;
+    private FirebaseUser user;
     private FirebaseAuth mAuth;
 
     @Override
@@ -89,6 +87,11 @@ public class EditProfile extends AppCompatActivity {
             getSupportActionBar().setTitle("Edit Profile");
         }
 
+        rootRef = FirebaseFirestore.getInstance();
+        user = mAuth.getCurrentUser();
+        String email = user.getEmail();
+        email_red = email.substring(0, email.length() - 10);
+
         changeImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -107,13 +110,8 @@ public class EditProfile extends AppCompatActivity {
     }
 
     private void loadUserInformation() {
-        final FirebaseUser user = mAuth.getCurrentUser();
 
-        FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-
-            String email = user.getEmail();
-            String email_red = email.substring(0, email.length() - 10);
-            rootRef.collection("Users").document(email_red).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        rootRef.collection("Users").document(email_red).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if (task.isSuccessful()){
@@ -142,7 +140,7 @@ public class EditProfile extends AppCompatActivity {
     }
 
     private void saveUserInformation() {
-        final FirebaseUser user = mAuth.getCurrentUser();
+        user = mAuth.getCurrentUser();
         String displayName = editText.getText().toString();
         final String contact = editPhone.getText().toString();
         final String real_email = editEmail.getText().toString();
@@ -166,9 +164,6 @@ public class EditProfile extends AppCompatActivity {
                                 }
                             }
                         });
-                FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-                String email = user.getEmail();
-                String email_red = email.substring(0, email.length() - 10);
                 rootRef.collection("Users").document(email_red).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -198,9 +193,6 @@ public class EditProfile extends AppCompatActivity {
                             }
                         }
                     });
-            FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-            String email=user.getEmail();
-            String email_red = email.substring(0, email.length() - 10);
             rootRef.collection("Users").document(email_red).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -287,7 +279,7 @@ public class EditProfile extends AppCompatActivity {
     }
 
     private void uploadImageToFirebaseStorage() {
-        final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("profilepics/"+System.currentTimeMillis()+"jpg");
+        final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("profilepics/"+email_red+"/"+System.currentTimeMillis()+"jpg");
         if (uriProfileImage!=null){
             progressBar.setVisibility(View.VISIBLE);
             profileImageRef.putFile(uriProfileImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {

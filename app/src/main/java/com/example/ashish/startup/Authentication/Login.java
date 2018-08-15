@@ -96,25 +96,6 @@ public class Login extends AppCompatActivity {
                 finish();
                 startActivity(new Intent(Login.this, nonadmin.class));
             }
-
-//            rootRef.collection("Users").document(email_red).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                @Override
-//                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                    if (task.isSuccessful()) {
-//                        DocumentSnapshot document = task.getResult();
-//                        if (document.getString("Admin").equals("Yes")) {
-//                            mProgressBar.setVisibility(View.INVISIBLE);
-//                            Toast.makeText(Login.this, "Logged in as an Admin", Toast.LENGTH_LONG).show();
-//                            finish();
-//                            startActivity(new Intent(Login.this, MainActivity.class));
-//                        } else {
-//                            Toast.makeText(Login.this, "Logged in as User", Toast.LENGTH_LONG).show();
-//                            finish();
-//                            startActivity(new Intent(Login.this, nonadmin.class));
-//                        }
-//                    }
-//                }
-//            });
         }
     }
 

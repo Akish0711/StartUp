@@ -114,7 +114,7 @@ public class Announcement extends AppCompatActivity {
             mChatSendBtn = findViewById(R.id.chat_send_btn);
             mChatMessageView = findViewById(R.id.chat_message_view);
             mFabSendImage = findViewById(R.id.fab_send_image);
-            mAdapter = new MessageAdapter(messageList);
+            mAdapter = new MessageAdapter(getApplicationContext(),messageList);
             mMessagesList = findViewById(R.id.messages_list);
             mRefreshLayout = findViewById(R.id.message_swipe_layout);
             mLinearLayout = new LinearLayoutManager(this);
@@ -223,7 +223,8 @@ public class Announcement extends AppCompatActivity {
             mFabSendImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    verifyPermissions();                }
+                    verifyPermissions();
+                }
             });
         }
     }
@@ -244,7 +245,7 @@ public class Announcement extends AppCompatActivity {
             selectedImage = getResizedBitmap(selectedImage, 1500);// 400 is for example, replace with desired size
             uriProfileImage = getImageUri(getApplicationContext(), selectedImage);
 
-            final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("message/"+System.currentTimeMillis()+"jpg");
+            final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("message/"+email_red+"/"+System.currentTimeMillis()+"jpg");
 
             profileImageRef.putFile(uriProfileImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -479,7 +480,7 @@ public class Announcement extends AppCompatActivity {
     private void loadmessage(String class_id, String email_red) {
         DatabaseReference messageRef = mRootRef.child("Announcement").child(email_red).child(class_id);
         messageRef.keepSynced(true);
-        Query messageQuery = messageRef.limitToLast(mCurrentPage * TOTAL_ITEMS_TO_LOAD);
+        Query messageQuery = messageRef.limitToLast(10);
 
         messageQuery.addChildEventListener(new ChildEventListener() {
             @Override

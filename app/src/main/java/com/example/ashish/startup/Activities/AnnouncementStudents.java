@@ -65,7 +65,7 @@ public class AnnouncementStudents extends AppCompatActivity {
                 getSupportActionBar().setTitle("Announcements");
             }
 
-            mAdapter = new MessageAdapter(messageList);
+            mAdapter = new MessageAdapter(getApplicationContext(),messageList);
             mMessagesList = findViewById(R.id.messages_list);
             mRefreshLayout = findViewById(R.id.message_swipe_layout);
             mLinearLayout = new LinearLayoutManager(this);
