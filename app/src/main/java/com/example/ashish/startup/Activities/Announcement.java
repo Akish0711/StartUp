@@ -1,16 +1,20 @@
 package com.example.ashish.startup.Activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -49,6 +53,8 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.onurkaganaldemir.ktoastlib.KToast;
@@ -78,7 +84,8 @@ public class Announcement extends AppCompatActivity {
     private SwipeRefreshLayout mRefreshLayout;
     private static final int CHOOSE_IMAGE = 101 ;
     private static final int PICK_IMAGE_CAMERA =188 ;
-    private FloatingActionButton mFabSendImage;
+    private static final int PICK_ATTACHMENT = 102;
+    private FloatingActionButton mFabSendAttachment;
     private DatabaseReference mRootRef;
     private static final int TOTAL_ITEMS_TO_LOAD = 10;
     private int mCurrentPage = 1;
@@ -90,6 +97,7 @@ public class Announcement extends AppCompatActivity {
     private Uri uriProfileImage;
     private String profileImageUrl;
     private static final int REQUEST_CODE = 1;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +121,7 @@ public class Announcement extends AppCompatActivity {
 
             mChatSendBtn = findViewById(R.id.chat_send_btn);
             mChatMessageView = findViewById(R.id.chat_message_view);
-            mFabSendImage = findViewById(R.id.fab_send_image);
+            mFabSendAttachment = findViewById(R.id.fab_send_attachment);
             mAdapter = new MessageAdapter(getApplicationContext(),messageList);
             mMessagesList = findViewById(R.id.messages_list);
             mRefreshLayout = findViewById(R.id.message_swipe_layout);
@@ -220,7 +228,7 @@ public class Announcement extends AppCompatActivity {
                 }
             });
 
-            mFabSendImage.setOnClickListener(new View.OnClickListener() {
+            mFabSendAttachment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     verifyPermissions();
@@ -232,6 +240,11 @@ public class Announcement extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setProgress(0);
+        progressDialog.setTitle("Uploading File...");
 
         if(requestCode == CHOOSE_IMAGE && resultCode == Activity.RESULT_OK && data!=null && data.getData()!=null){
             uriProfileImage = data.getData();
@@ -276,6 +289,7 @@ public class Announcement extends AppCompatActivity {
                                     }
                                 }
                             });
+                            progressDialog.dismiss();
                         }
                     });
                 }
@@ -285,7 +299,14 @@ public class Announcement extends AppCompatActivity {
                         public void onFailure(@NonNull Exception e) {
                             KToast.errorToast(Announcement.this,e.getMessage(), Gravity.BOTTOM,KToast.LENGTH_SHORT);
                         }
-                    });
+                    }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    progressDialog.show();
+                    int currentProgress = (int) (100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                    progressDialog.setProgress(currentProgress);
+                }
+            });
 
         }else if (requestCode == PICK_IMAGE_CAMERA && resultCode == Activity.RESULT_OK ) {
             int targetW = 590;
@@ -340,6 +361,7 @@ public class Announcement extends AppCompatActivity {
                                     }
                                 }
                             });
+                            progressDialog.dismiss();
                         }
                     });
                 }
@@ -349,7 +371,88 @@ public class Announcement extends AppCompatActivity {
                         public void onFailure(@NonNull Exception e) {
                             KToast.errorToast(Announcement.this,e.getMessage(), Gravity.BOTTOM,KToast.LENGTH_SHORT);
                         }
+                    }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    progressDialog.show();
+                    int currentProgress = (int) (100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                    progressDialog.setProgress(currentProgress);
+                }
+            });
+        }else if (requestCode == PICK_ATTACHMENT && resultCode == RESULT_OK && data != null && data.getData() != null){
+            Uri uri_pdf = data.getData();
+            String uriString = uri_pdf.toString();
+            File myFile = new File(uriString);
+            String displayName = null;
+
+            if (uriString.startsWith("content://")) {
+                Cursor cursor = null;
+                try {
+                    cursor = getApplicationContext().getContentResolver().query(uri_pdf, null, null, null, null);
+                    if (cursor != null && cursor.moveToFirst()) {
+                        displayName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                    }
+                } finally {
+                    cursor.close();
+                }
+            } else if (uriString.startsWith("file://")) {
+                displayName = myFile.getName();
+            }
+
+            StorageMetadata metadata = new StorageMetadata.Builder()
+                    .setCustomMetadata("myPDFfile", displayName)
+                    .build();
+            final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("message/"+email_red+"/"+System.currentTimeMillis()+displayName);
+
+            final String finalDisplayName = displayName;
+            profileImageRef.putFile(uri_pdf,metadata).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    profileImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Uri downloadUrl = uri;
+                            profileImageUrl = downloadUrl.toString();
+                            String user_ref = "Announcement/"+email_red+"/"+class_id;
+
+                            DatabaseReference user_message_push = mRootRef.child("Announcement")
+                                    .child(email_red).child(class_id).push();
+
+                            String push_id = user_message_push.getKey();
+                            Map messageMap = new HashMap();
+                            messageMap.put("Message", profileImageUrl);
+                            messageMap.put("Name", finalDisplayName);
+                            messageMap.put("Type", 3);
+
+                            Map messageUserMap = new HashMap();
+                            messageUserMap.put(user_ref+"/"+push_id,messageMap);
+
+                            mRootRef.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                                    if (databaseError!=null){
+
+                                    }
+                                }
+                            });
+                        }
                     });
+                    progressDialog.dismiss();
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    KToast.errorToast(Announcement.this,e.getMessage(), Gravity.BOTTOM,KToast.LENGTH_SHORT);
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    progressDialog.show();
+                    int currentProgress = (int) (100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                    progressDialog.setProgress(currentProgress);
+                }
+            });
         }
     }
 
@@ -374,7 +477,7 @@ public class Announcement extends AppCompatActivity {
     }
 
     private void showImageChooser() {
-        final CharSequence[] options = {"Camera", "Choose From Gallery", "Cancel"};
+        final CharSequence[] options = {"Camera", "Choose From Gallery", "Documents", "Cancel"};
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
         builder.setTitle("Select Photo From:");
         builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -404,6 +507,10 @@ public class Announcement extends AppCompatActivity {
                             startActivityForResult(takePictureIntent, PICK_IMAGE_CAMERA);
                         }
                     }
+                }else if (options[item].equals("Documents")){
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("application/pdf");
+                    startActivityForResult(intent, PICK_ATTACHMENT);
                 }else if (options[item].equals("Cancel")) {
                     dialog.dismiss();
                 }

@@ -1,8 +1,10 @@
 package com.example.ashish.startup.Adapters;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.media.Image;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +40,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             case 2:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_image_message, parent, false);
                 return new ViewHolder2(view);
+            case 3:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_pdf_message, parent, false);
+                return new ViewHolder3(view);
         }
         return null;
     }
@@ -75,6 +80,24 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     }
                 });
                 break;
+            case 3:
+                ViewHolder3 viewHolder3 = (ViewHolder3)holder;
+                viewHolder3.file_name.setText(messageList.get(position).getName());
+                viewHolder3.file_name.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Uri webpage = Uri.parse(messageList.get(position).getMessage());
+                        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+                        Intent newIntent = Intent.createChooser(intent, "Open File");
+                        try {
+                            newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(newIntent);
+                        } catch (ActivityNotFoundException e) {
+                            // Instruct the user to install a PDF reader here, or something
+                        }
+                    }
+                });
         }
     }
 
@@ -84,7 +107,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public class ViewHolder1 extends RecyclerView.ViewHolder {
-
         View mView;
         public TextView Text;
 
@@ -103,6 +125,17 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             super(itemView);
             mView = itemView;
             Image = mView.findViewById(R.id.imageView_message_image);
+        }
+    }
+
+    public class ViewHolder3 extends RecyclerView.ViewHolder {
+        public TextView file_name;
+        View mView;
+
+        public ViewHolder3(View itemView){
+            super(itemView);
+            mView = itemView;
+            file_name = mView.findViewById(R.id.pdf_file_name);
         }
     }
 }
