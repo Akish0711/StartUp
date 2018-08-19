@@ -3,14 +3,15 @@ package com.example.ashish.startup.Activities;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,6 +49,7 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
     private Button selected;
     private ProgressBar progressBar;
     private boolean ascending = true;
+    public int flag = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +107,14 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
                                                         progressBar.setVisibility(View.GONE);
                                                         DocumentSnapshot doc = task.getResult();
                                                         Users users = doc.toObject(Users.class);
+
                                                         usersList.add(users);
+//                                                        if(usersList.size() < 0){
+//                                                          notifyUser("All the registered users have already been added.");
+//                                                            Log.e("inside","user list is 0");
+//                                                            flag = 1;
+//                                                        }
+
                                                         Collections.sort(usersList, Users.BY_NAME_ALPHABETICAL);
                                                         usersListAdapter.notifyDataSetChanged();
                                                     }
@@ -118,7 +127,11 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
                                             });;
                                         }
                                         else{
-                                            notifyUser("All the registered users have already been added.");
+                                            if(flag == 0){
+                                                flag =1;
+                                                Log.e("we're","here");
+                                                notifyUser("All the registered users have already been added.");
+                                            }
                                         }
                                     }
 
@@ -138,6 +151,8 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
                     notifyUser(e.getLocalizedMessage());
                 }
             });;
+
+
 
             final String email_red = email.substring(0, email.length() - 10);
             mFirestore.collection("Users").document(email_red).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -187,7 +202,7 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                   notifyUser(e.getLocalizedMessage());
+                                  // notifyUser(e.getLocalizedMessage());
                                 }
                             });
                         }
@@ -199,10 +214,8 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
                         }
                         finish();
                         startActivity(new Intent(AddStudents.this, MainActivity.class));
-
-
                     } else {
-                        notifyUser("Please select any Student");
+                        notifyUser("Please select a Student");
                     }
                 }
             });
@@ -212,7 +225,7 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
 
     private void notifyUser(String exception) {
         progressBar.setVisibility(View.GONE);
-        KToast.errorToast(AddStudents.this,exception,Gravity.CENTER,KToast.LENGTH_AUTO);
+        KToast.errorToast(AddStudents.this,exception,Gravity.CENTER,KToast.LENGTH_SHORT);
     }
 
     @Override

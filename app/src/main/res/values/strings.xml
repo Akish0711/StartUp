@@ -56,4 +56,7 @@
     <string name="about_us">About Us</string>
     <string name="submit_marks">SUBMIT MARKS</string>
     <string name="update_marks">UPDATE MARKS</string>
+    <string name="announcement">announcement</string>
+    <string name="no_records">No records as of now.</string>
+    <string name="contact">Contact</string>
 </resources>

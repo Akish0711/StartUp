@@ -16,9 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
-import com.example.ashish.startup.Adapters.AttendanceListAdapter;
 import com.example.ashish.startup.Adapters.MarksInputListAdapter;
-import com.example.ashish.startup.Models.Attendance;
 import com.example.ashish.startup.Models.Marks;
 import com.example.ashish.startup.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,7 +27,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
 import com.onurkaganaldemir.ktoastlib.KToast;
 
 import java.util.ArrayList;

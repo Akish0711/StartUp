@@ -37,35 +37,56 @@ public class MarksListAdapter extends RecyclerView.Adapter<MarksListAdapter.View
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_tests,parent,false);
-        return new ViewHolder(view);
+        View view;
+        if(viewType == 1) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_class, parent, false);
+            return new ViewHolder(view);
+        }
+        else {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_tests, parent, false);
+            return new ViewHolder(view);
+        }
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.test_name.setText(testList.get(position).getMarksID());
-        holder.max_marks.setText(testList.get(position).getMax_marks());
 
-        final String marks_id = testList.get(position).marksID;
+        int viewType = getItemViewType(position);
+        if(viewType == 2) {
+            holder.test_name.setText(testList.get(position).getMarksID());
+            holder.max_marks.setText(testList.get(position).getMax_marks());
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context,GetMarks.class);
-                intent.putExtra("marksID", marks_id);
-                intent.putExtra("institute",institute);
-                intent.putExtra("class_id",c);
-                context.startActivity(intent);
-            }
-        });
+            final String marks_id = testList.get(position).marksID;
+
+            holder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context,GetMarks.class);
+                    intent.putExtra("marksID", marks_id);
+                    intent.putExtra("institute",institute);
+                    intent.putExtra("class_id",c);
+                    context.startActivity(intent);
+                }
+            });
+        }
     }
 
     @Override
     public int getItemCount() {
-        return testList.size();
+        if (testList.size() == 0) {
+            return 1;
+        } else return testList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    @Override
+    public int getItemViewType(int position) {
+        if (getItemCount() == 1 && testList.size() == 0) {
+            return 1;
+        }
+        return 2;
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder{
 
         View mView;
         public TextView test_name;

@@ -1,18 +1,19 @@
 package com.example.ashish.startup.Activities;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -27,26 +28,27 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.ashish.startup.Authentication.CreateAccount;
 import com.example.ashish.startup.Authentication.Login;
-import com.example.ashish.startup.R;
 import com.example.ashish.startup.Fragments.HomeFragment;
 import com.example.ashish.startup.Fragments.SettingsFragment;
 import com.example.ashish.startup.Others.CircleTransform;
+import com.example.ashish.startup.R;
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.github.clans.fab.FloatingActionMenu;
 import com.onurkaganaldemir.ktoastlib.KToast;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int REQUEST_CODE = 1;
     private FirebaseAuth firebaseAuth;
     private NavigationView navigationView;
     private DrawerLayout drawer;
@@ -115,9 +117,10 @@ public class MainActivity extends AppCompatActivity {
         new_user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this,CreateAccount.class));
+                verifyPermissions();
             }
         });
+
 
         new_class.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,6 +141,18 @@ public class MainActivity extends AppCompatActivity {
             loadHomeFragment();
         }
     }
+
+    private void verifyPermissions() {
+        String[] permissions = {Manifest.permission.SEND_SMS};
+        if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                permissions[0]) == PackageManager.PERMISSION_GRANTED){
+            startActivity(new Intent(MainActivity.this, CreateAccount.class));
+        }else{
+            ActivityCompat.requestPermissions(MainActivity.this, permissions, REQUEST_CODE);
+        }
+
+    }
+
 
     /***
      * Load navigation menu header information
@@ -374,5 +389,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        verifyPermissions();
     }
 }

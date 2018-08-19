@@ -26,32 +26,52 @@ public class SubjectsListAdapter extends RecyclerView.Adapter<SubjectsListAdapte
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_user_subjects,parent,false);
-        return new ViewHolder(view);
+        View view;
+        if(viewType == 1) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_class, parent, false);
+            return new ViewHolder(view);
+        }
+        else {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_user_subjects, parent, false);
+            return new ViewHolder(view);
+        }
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
+        int viewType = getItemViewType(position);
+        if(viewType == 2) {
+            holder.nameText.setText(subjectList.get(position).getSubject_Name());
+            holder.percentage.setText(subjectList.get(position).getPercentage() + " %");
+            final String subject_id = subjectList.get(position).subjectID;
 
-        holder.nameText.setText(subjectList.get(position).getSubject_Name());
-        holder.percentage.setText(subjectList.get(position).getPercentage()+ " %");
-        final String subject_id = subjectList.get(position).subjectID;
-
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context,UserNewClass.class);
-                intent.putExtra("subject_id", subject_id);
-                intent.putExtra("subject_name",subjectList.get(position).getSubject_Name());
-                intent.putExtra("Teacher_Name", subjectList.get(position).getTeacher_Name());
-                context.startActivity(intent);
-            }
-        });
+            holder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, UserNewClass.class);
+                    intent.putExtra("subject_id", subject_id);
+                    intent.putExtra("subject_name", subjectList.get(position).getSubject_Name());
+                    intent.putExtra("Teacher_Name", subjectList.get(position).getTeacher_Name());
+                    context.startActivity(intent);
+                }
+            });
+        }
     }
 
     @Override
     public int getItemCount() {
+        if(subjectList.size() == 0){
+            return 1;
+        }
         return subjectList.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (getItemCount() == 1 && subjectList.size() == 0) {
+            return 1;
+        }
+        return 2;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

@@ -3,7 +3,6 @@ package com.example.ashish.startup.Authentication;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,11 +17,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
-import com.example.ashish.startup.R;
 import com.example.ashish.startup.Activities.MainActivity;
 import com.example.ashish.startup.Activities.nonadmin;
+import com.example.ashish.startup.R;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -160,10 +158,10 @@ public class Login extends AppCompatActivity {
                                         finish();
                                         startActivity(new Intent(Login.this, nonadmin.class));
                                     }
+
                                 }else {
                                     mProgressBar.setVisibility(View.GONE);
                                     notifyUser( "Sign in problem.");
-
                                 }
                             }
                         });
@@ -186,9 +184,10 @@ public class Login extends AppCompatActivity {
 
             String errorCode = ((FirebaseAuthInvalidUserException) e).getErrorCode();
 
-            if (errorCode.equals("ERROR_USER_NOT_FOUND")) {
+         //   if (errorCode.equals("ERROR_USER_NOT_FOUND")) {
+            if ("ERROR_USER_NOT_FOUND".equals(errorCode)) {
                 notifyUser("No matching account found");
-            } else if (errorCode.equals("ERROR_USER_DISABLED")) {
+            } else if ("ERROR_USER_DISABLED".equals(errorCode)) {
                 notifyUser("User account has been disabled");
             } else {
                 notifyUser(e.getLocalizedMessage());

@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
@@ -35,9 +34,9 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.View
             super(itemView);
             mView = itemView;
 
-            user_name = (TextView)mView.findViewById(R.id.user_name);
-            display_name = (TextView)mView.findViewById(R.id.display_name);
-            checkBox = (CheckBox)mView.findViewById(R.id.checkbox);
+            user_name = mView.findViewById(R.id.user_name);
+            display_name = mView.findViewById(R.id.display_name);
+            checkBox = mView.findViewById(R.id.checkbox);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

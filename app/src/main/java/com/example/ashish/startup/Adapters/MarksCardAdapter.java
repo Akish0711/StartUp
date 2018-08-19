@@ -37,40 +37,60 @@ public class MarksCardAdapter extends RecyclerView.Adapter<MarksCardAdapter.View
 
     @Override
     public MarksCardAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_tests,parent,false);
-        return new ViewHolder(view);
+        View view;
+        if(viewType == 1){
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_class,parent,false);
+            return new ViewHolder(view);}
+        else{
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_tests, parent, false);
+            return new ViewHolder(view);
+
+        }
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.test_name.setText(testList.get(position).getMarksID());
-        holder.max_marks.setText(testList.get(position).getMax_marks());
 
-        rootRef = FirebaseFirestore.getInstance();
+        int viewType = getItemViewType(position);
+        if(viewType == 2){
+            holder.test_name.setText(testList.get(position).getMarksID());
+            holder.max_marks.setText(testList.get(position).getMax_marks());
 
-        rootRef.collection("Users").document(tId).collection("Subjects").document(subId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    final DocumentSnapshot documentSnapshot = task.getResult();
-                    documentSnapshot.getReference().collection("Marks").document(testList.get(position).getMarksID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if(task.isSuccessful()){
-                                DocumentSnapshot doc = task.getResult();
-                                String s = doc.getString(email);
-                                holder.marks_obtained.setText(s);
+            rootRef = FirebaseFirestore.getInstance();
+
+            rootRef.collection("Users").document(tId).collection("Subjects").document(subId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(task.isSuccessful()){
+                        final DocumentSnapshot documentSnapshot = task.getResult();
+                        documentSnapshot.getReference().collection("Marks").document(testList.get(position).getMarksID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if(task.isSuccessful()){
+                                    DocumentSnapshot doc = task.getResult();
+                                    String s = doc.getString(email);
+                                    holder.marks_obtained.setText(s);
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
     public int getItemCount() {
-        return testList.size();
+        if(testList.size() == 0){return 1;}
+           return testList.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (getItemCount() == 1 && testList.size() == 0) {
+            return 1;
+        }
+        return 2;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

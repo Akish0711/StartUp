@@ -21,28 +21,48 @@ public class StatusListAdapter extends RecyclerView.Adapter<StatusListAdapter.Vi
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_status,parent,false);
-        return new ViewHolder(view);
+        View view;
+        if(viewType == 1){
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_class,parent,false);
+            return new ViewHolder(view);}
+        else {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_status, parent, false);
+            return new ViewHolder(view);
+        }
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        if (statusList.get(position).getPercentage()>=75){
-            holder.percentage.setTextColor(Color.rgb(50,205,50));
-            holder.percentage.setText(String.valueOf(statusList.get(position).getPercentage())+"%");
-        }else {
-            holder.percentage.setTextColor(Color.RED);
-            holder.percentage.setText(String.valueOf(statusList.get(position).getPercentage())+"%");
+
+        int viewType = getItemViewType(position);
+        if(viewType == 2) {
+            if (statusList.get(position).getPercentage() >= 75) {
+                holder.percentage.setTextColor(Color.rgb(50, 205, 50));
+                holder.percentage.setText(String.valueOf(statusList.get(position).getPercentage()) + "%");
+            } else {
+                holder.percentage.setTextColor(Color.RED);
+                holder.percentage.setText(String.valueOf(statusList.get(position).getPercentage()) + "%");
+            }
+
+            holder.user_name.setText(statusList.get(position).getUsername());
+            holder.display_name.setText(statusList.get(position).getName());
         }
-
-        holder.user_name.setText(statusList.get(position).getUsername());
-        holder.display_name.setText(statusList.get(position).getName());
-
     }
 
     @Override
     public int getItemCount() {
+        if(statusList.size() == 0){
+            return 1;
+        }
         return statusList.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (getItemCount() == 1 && statusList.size() == 0) {
+            return 1;
+        }
+        return 2;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

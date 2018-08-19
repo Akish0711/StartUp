@@ -28,32 +28,42 @@ public class MarksInputListAdapter extends RecyclerView.Adapter<MarksInputListAd
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_get_input_marks,parent,false);
-        return new ViewHolder(view);
+        View view;
+        if(viewType == 1){
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_class,parent,false);
+            return new ViewHolder(view);
+        }
+        else {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_get_input_marks,parent,false);
+            return new ViewHolder(view);}
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        holder.user_name.setText(marksInputList.get(position).getUsername());
-        holder.display_name.setText(marksInputList.get(position).getName());
-        holder.marks.setText(marksInputList.get(position).getInputMarks());
 
-        holder.marks.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        int viewType = getItemViewType(position);
+        if(viewType == 2){
+            holder.user_name.setText(marksInputList.get(position).getUsername());
+            holder.display_name.setText(marksInputList.get(position).getName());
+            holder.marks.setText(marksInputList.get(position).getInputMarks());
 
-            }
+            holder.marks.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
 
-            }
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-            @Override
-            public void afterTextChanged(Editable editable) {
-                marksInputList.get(position).inputMarks = editable.toString();
-            }
-        });
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    marksInputList.get(position).inputMarks = editable.toString();
+                }
+            });
+        }
     }
 
     public List<Marks> retrieveData(){
@@ -61,7 +71,19 @@ public class MarksInputListAdapter extends RecyclerView.Adapter<MarksInputListAd
     }
 
     @Override
+    public int getItemViewType(int position) {
+        if (getItemCount() == 1 && marksInputList.size() == 0) {
+            return 1;
+        }
+        return 2;
+    }
+
+    @Override
     public int getItemCount() {
+
+        if(marksInputList.size() == 0){
+            return 1;
+        }
         return marksInputList.size();
     }
 

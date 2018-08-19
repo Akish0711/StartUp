@@ -25,28 +25,46 @@ public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item,parent,false);
-        return new ViewHolder(view);
+        View view;
+        if(viewType == 1){
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_class, parent, false);
+            return new ViewHolder(view);
+        }
+        else{
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item,parent,false);
+            return new ViewHolder(view);
+        }
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
-        holder.nameText.setText(classesList.get(position).getName());
-        final String class_id = classesList.get(position).classID;
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context,NewClass2.class);
-                intent.putExtra("class_id", class_id);
-                context.startActivity(intent);
-            }
-        });
+        int viewType = getItemViewType(position);
+        if(viewType == 2){
+            holder.nameText.setText(classesList.get(position).getName());
+            final String class_id = classesList.get(position).classID;
+            holder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context,NewClass2.class);
+                    intent.putExtra("class_id", class_id);
+                    context.startActivity(intent);
+                }
+            });
+        }
     }
 
     @Override
     public int getItemCount() {
-        return classesList.size();
+        if(classesList.size() == 0){return 1;}
+            return classesList.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (getItemCount() == 1 && classesList.size() == 0) {
+            return 1;
+        }
+        return 2;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

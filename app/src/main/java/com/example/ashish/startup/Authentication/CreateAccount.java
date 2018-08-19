@@ -1,17 +1,18 @@
 package com.example.ashish.startup.Authentication;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.example.ashish.startup.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,20 +24,28 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.onurkaganaldemir.ktoastlib.KToast;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+
+//import org.apache.http.HttpResponse;
 
 public class CreateAccount extends AppCompatActivity {
 
-    EditText username, name;
+    EditText username, name,phoneNumber;
     Button createAccount;
     ProgressBar progressBar;
 
+    private static final String DATA = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    private String genPswd;
+    private Random random;
+
     private FirebaseAuth mAuth1;
     private FirebaseAuth mAuth2;
+
+    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +56,7 @@ public class CreateAccount extends AppCompatActivity {
 
         username = findViewById(R.id.username);
         name = findViewById(R.id.name);
+        phoneNumber = findViewById(R.id.phoneNumber);
         createAccount = findViewById(R.id.createAccount);
         progressBar = findViewById(R.id.progressBar3);
 
@@ -74,6 +84,15 @@ public class CreateAccount extends AppCompatActivity {
                 registerUser();
             }
         });
+        random = new Random();
+    }
+
+    public String genRandomPswd(){
+      StringBuilder sb = new StringBuilder(8);
+      for(int i = 0; i < 8; i++){
+          sb.append(DATA.charAt(random.nextInt(DATA.length())));
+      }
+      return sb.toString();
     }
 
     public void registerUser() {
@@ -81,6 +100,7 @@ public class CreateAccount extends AppCompatActivity {
 
         final String user = username.getText().toString();
         final String display_name = name.getText().toString();
+        final String phoneNo = phoneNumber.getText().toString();
         if (user.isEmpty()) {
             username.setError("Username is required");
             username.requestFocus();
@@ -90,6 +110,11 @@ public class CreateAccount extends AppCompatActivity {
         if (display_name.isEmpty()) {
             name.setError("Name is required");
             name.requestFocus();
+            return;
+        }
+        if(phoneNo.isEmpty()){
+            phoneNumber.setError("Phone Number is required");
+            phoneNumber.requestFocus();
             return;
         }
 
@@ -102,7 +127,10 @@ public class CreateAccount extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     final String Institute = document.getString("Institute");
                     progressBar.setVisibility(View.VISIBLE);
-                    mAuth2.createUserWithEmailAndPassword(user + "@gmail.com", "123456").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+
+                    genPswd = genRandomPswd();
+
+                    mAuth2.createUserWithEmailAndPassword(user + "@gmail.com", genPswd).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             progressBar.setVisibility(View.GONE);
@@ -114,7 +142,38 @@ public class CreateAccount extends AppCompatActivity {
                                 data.put("Username", user + "@gmail.com");
                                 data.put("Institute_Admin", Institute + "_No");
                                 data.put("Admin","No");
+                                data.put("Phone",phoneNo);
                                 rootRef.collection("Users").document(user).set(data);
+                                Log.e("Password : ",genPswd + "");
+
+//                                Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("sms:" + phoneNo));
+//                                intent.putExtra("sms_body","Login Details \n\nUsername : "+user+"\nPassword : " + genPswd);
+//                                startActivity(intent);
+
+//                               try {
+//                                   response = Unirest.post("https://control.msg91.com/api/postsms.php")
+//                                           .header("content-type", "application/xml")
+//                                           .body("<MESSAGE> <AUTHKEY>232129AdMpIvsHwvv15b759ec4</AUTHKEY>" +
+//                                                   " <SENDER>VISION</SENDER> " +
+//                                                   "<ROUTE>4</ROUTE> " +
+//                                                   "<CAMPAIGN>XML API</CAMPAIGN> " +
+//                                                   "<COUNTRY>91</COUNTRY> " +
+//                                                   "<SMS TEXT=\"Welcome On-Board\nHere are your login details.\nUsername : " +user + "\" \nPassword : " + genPswd+ "> " +
+//                                                   "<ADDRESS TO=\"91"+phoneNo+"\">" +
+//                                                   "</ADDRESS>" +
+//                                                   "</SMS>" +
+//                                                   "</MESSAGE>")
+//                                           .asString();
+//                                   Log.e("response status",response.getStatusText());
+//                               }
+//                               catch (Exception e){
+//                                   Log.e("Exception in sms",e.getLocalizedMessage());
+//                                   Log.e("response status",response.getStatusText());
+//                               }
+
+                                    SmsManager smsManager = SmsManager.getDefault();
+                                    smsManager.sendTextMessage(phoneNo, null, "Welcome OnBoard !!\n\nHere are your Login Details \n\nUsername : " + user + "\nPassword : " + genPswd, null, null);
+
                                 mAuth2.signOut();
                                 finish();
                                 startActivity(new Intent(CreateAccount.this, CreateAccount.class));

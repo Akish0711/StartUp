@@ -1,15 +1,18 @@
 package com.example.ashish.startup.Activities;
 
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.ashish.startup.Adapters.AttendanceListAdapter;
 import com.example.ashish.startup.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -33,17 +36,19 @@ public class UpdateAttendance extends AppCompatActivity {
 
     private FirebaseFirestore rootRef;
     private FirebaseAuth mAuth;
-    private TextView selected_date, classes_taken;
+    private TextView  classes_taken;
+    AttendanceListAdapter attendanceListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_attendance);
 
+        final LayoutInflater layoutInflater = LayoutInflater.from(this);
+
         if (getIntent().hasExtra("class_id")) {
             final String class_id = getIntent().getStringExtra("class_id");
 
-            selected_date = findViewById(R.id.selected_date);
             classes_taken = findViewById(R.id.classes_taken);
 
             mAuth = FirebaseAuth.getInstance();
@@ -99,7 +104,7 @@ public class UpdateAttendance extends AppCompatActivity {
                                     }
                                 }
                                 classes_taken.setText("Total Lectures: "+i);
-                                selected_date.setText(formatter.format(date));
+                             //   selected_date.setText("Long Press to update.");
                             }
 
                             @Override
@@ -110,7 +115,8 @@ public class UpdateAttendance extends AppCompatActivity {
 
                             @Override
                             public void onLongClickDate(Date date, View view) {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(UpdateAttendance.this  );
+                                final AlertDialog.Builder builder = new AlertDialog.Builder(UpdateAttendance.this  );
+                                builder.setTitle(formatter.format(date));
                                 builder.setMessage("Look at this dialog!")
                                         .setCancelable(false)
                                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -118,8 +124,22 @@ public class UpdateAttendance extends AppCompatActivity {
                                                 //do things
                                             }
                                         });
+                                final View attnView = layoutInflater.inflate(R.layout.add_students,null);
+
+                                EditText editCountry =(EditText)attnView.findViewById(R.id.editCountry);
+                                EditText editYear =(EditText)attnView.findViewById(R.id.editYear);
+
+                                editCountry.setText("India");
+                                editYear.setText("2018");
+
+                                builder.setView(attnView);
+                                builder.setNegativeButton("Cancel",null);
+
+                               // builder.setIcon(R.drawable.record);
                                 AlertDialog alert = builder.create();
                                 alert.show();
+
+
                             }
 
                             @Override

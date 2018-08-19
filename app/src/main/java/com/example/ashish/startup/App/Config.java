@@ -2,6 +2,8 @@ package com.example.ashish.startup.App;
 
 public class Config {
 
+    public static final String STORAGE_PATH_UPLOADS = "uploads/";
+    public static final String DATABASE_PATH_UPLOADS = "uploads";
     // global topic to receive app wide push notifications
     public static final String TOPIC_GLOBAL = "global";
 
