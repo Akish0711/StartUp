@@ -138,8 +138,6 @@ public class UpdateAttendance extends AppCompatActivity {
                                // builder.setIcon(R.drawable.record);
                                 AlertDialog alert = builder.create();
                                 alert.show();
-
-
                             }
 
                             @Override
@@ -147,7 +145,6 @@ public class UpdateAttendance extends AppCompatActivity {
 
                             }
                         };
-
                         caldroidFragment.setCaldroidListener(listener);
                     }
                 }
