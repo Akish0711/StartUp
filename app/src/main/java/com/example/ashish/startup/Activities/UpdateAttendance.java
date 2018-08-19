@@ -126,8 +126,8 @@ public class UpdateAttendance extends AppCompatActivity {
                                         });
                                 final View attnView = layoutInflater.inflate(R.layout.add_students,null);
 
-                                EditText editCountry =(EditText)attnView.findViewById(R.id.editCountry);
-                                EditText editYear =(EditText)attnView.findViewById(R.id.editYear);
+                                EditText editCountry =attnView.findViewById(R.id.editCountry);
+                                EditText editYear =attnView.findViewById(R.id.editYear);
 
                                 editCountry.setText("India");
                                 editYear.setText("2018");
