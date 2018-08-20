@@ -11,9 +11,7 @@
     <color name="bg_screen4">#c873f4</color>
 
     <!-- dots inactive colors -->
-    <color name="inactive_dots">#40000000</color>
     <color name="trans">#00000000</color>
-    <color name="light">#10000000</color>
     <color name="black">#000</color>
 
     <!-- dots active colors -->

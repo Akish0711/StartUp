@@ -9,7 +9,6 @@
     android:layout_marginEnd="8dp"
     android:layout_marginStart="8dp">
     <RelativeLayout
-        android:id="@+id/message_root"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
@@ -35,7 +34,7 @@
             android:layout_marginEnd="8dp"
             android:textSize="12sp"
             android:textColor="#fff"
-            tools:text="3/15/2018 3:00 PM"
+            tools:text="3:00 PM"
             android:layout_marginRight="8dp"
             android:layout_alignRight="@id/textView_message_text" />
     </RelativeLayout>

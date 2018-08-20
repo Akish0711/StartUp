@@ -8,12 +8,11 @@
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="147dp"
-        android:layout_height="156dp"
+        android:layout_width="204dp"
+        android:layout_height="204dp"
         android:layout_centerInParent="true"
-        app:srcCompat="@drawable/record"
         android:contentDescription="@string/no_records"
-        />
+        app:srcCompat="@drawable/record" />
 
     <TextView
         android:layout_width="match_parent"

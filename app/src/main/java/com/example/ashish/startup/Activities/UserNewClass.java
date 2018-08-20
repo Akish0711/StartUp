@@ -132,8 +132,6 @@ public class UserNewClass extends AppCompatActivity {
             return true;
         }
         if (id == R.id.action_contact) {
-
-
             new FancyGifDialog.Builder(this)
                     .setTitle("Contact " + capitalize(Teacher_Name))
                     .setMessage(phone + "\n\n" + email)

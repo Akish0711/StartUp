@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -22,6 +23,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -84,11 +86,10 @@ public class nonadmin extends AppCompatActivity {
         mHandler = new Handler();
 
         firebaseAuth = FirebaseAuth.getInstance();
-        if (Build.VERSION.SDK_INT >= 21) {
-
-            // Set the status bar to dark-semi-transparentish
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        Window window = getWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(Color.TRANSPARENT);
         }
 
         if(firebaseAuth.getCurrentUser()== null){
@@ -106,7 +107,7 @@ public class nonadmin extends AppCompatActivity {
                 }
             }
         };
-     //   registerReceiver(broadcast_reciever, new IntentFilter("finish"));
+        registerReceiver(broadcast_reciever, new IntentFilter("finish"));
 
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);

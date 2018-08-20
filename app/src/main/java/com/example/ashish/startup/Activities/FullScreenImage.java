@@ -50,7 +50,7 @@ public class FullScreenImage extends AppCompatActivity {
 
         myImage = findViewById(R.id.myImage);
         Glide.with(this).load(url)
-                .error(R.drawable.ic_image_send_24dp)
+                .error(R.drawable.image_send)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(myImage);
     }
