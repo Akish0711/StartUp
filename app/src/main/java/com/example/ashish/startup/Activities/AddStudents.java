@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -17,7 +18,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ashish.startup.Adapters.UsersListAdapter;
@@ -48,8 +51,10 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
     private SearchView searchView;
     private Button selected;
     private ProgressBar progressBar;
+    private TextView n_record_text;
+    private ImageView n_record_image;
     private boolean ascending = true;
-    public int flag = 0;
+    final boolean[] alreadyExecuted = {false};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +86,9 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
             progressBar.setVisibility(View.VISIBLE);
             progressBar.setScaleY(2f);
 
+            n_record_image = findViewById(R.id.no_record_image);
+            n_record_text = findViewById(R.id.no_record_text);
+
             mMainList.setHasFixedSize(true);
             mMainList.setLayoutManager(new LinearLayoutManager(this));
             mMainList.setItemAnimator(new DefaultItemAnimator());
@@ -107,16 +115,11 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
                                                         progressBar.setVisibility(View.GONE);
                                                         DocumentSnapshot doc = task.getResult();
                                                         Users users = doc.toObject(Users.class);
-
                                                         usersList.add(users);
-//                                                        if(usersList.size() < 0){
-//                                                          notifyUser("All the registered users have already been added.");
-//                                                            Log.e("inside","user list is 0");
-//                                                            flag = 1;
-//                                                        }
-
                                                         Collections.sort(usersList, Users.BY_NAME_ALPHABETICAL);
                                                         usersListAdapter.notifyDataSetChanged();
+
+                                                        Log.e("Position : ","inside if");
                                                     }
                                                 }
                                             }).addOnFailureListener(new OnFailureListener() {
@@ -127,11 +130,24 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
                                             });;
                                         }
                                         else{
-                                            if(flag == 0){
-                                                flag =1;
-                                                Log.e("we're","here");
-                                                notifyUser("All the registered users have already been added.");
-                                            }
+                                            final Handler[] handler = {new Handler()};
+                                            handler[0].postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    //Do something after 100ms
+                                                    if(usersList.size() == 0){
+                                                        if(!alreadyExecuted[0]) {
+                                                            alreadyExecuted[0] = true;
+                                                            progressBar.setVisibility(View.GONE);
+                                                            n_record_image.setVisibility(View.VISIBLE);
+                                                            n_record_text.setVisibility(View.VISIBLE);
+
+                                            //                notifyUser("All the registered users have already been added.");
+                                                        }
+                                                    }
+                                                }
+                                            }, 1000);
+                                            Log.e("Position : ","inside else");
                                         }
                                     }
 

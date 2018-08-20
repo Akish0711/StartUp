@@ -48,4 +48,6 @@
     <string name="announcement">announcement</string>
     <string name="no_records">No records as of now.</string>
     <string name="contact">Contact</string>
+    <string name="no_students">All the students have already been added.</string>
+    <string name="no_records_as_of_now">No records as of now</string>
 </resources>

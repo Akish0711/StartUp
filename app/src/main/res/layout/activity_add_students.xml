@@ -27,8 +27,8 @@
         android:layout_height="455dp"
         android:layout_above="@+id/selected"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="64dp" />
-
+        android:layout_marginTop="64dp"
+        />
 
     <Button
         android:id="@+id/selected"
@@ -49,6 +49,29 @@
         android:layout_marginTop="49dp"
         android:indeterminateOnly="true"
         android:layout_alignParentLeft="true" />
+
+    <ImageView
+        android:id="@+id/no_record_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/student"
+        android:contentDescription="No records"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="invisible"
+        />
+
+    <TextView
+        android:id="@+id/no_record_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="159dp"
+        android:text="@string/no_students"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:visibility="invisible" />
 
 
 </RelativeLayout>
