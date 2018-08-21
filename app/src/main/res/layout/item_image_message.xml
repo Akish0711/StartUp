@@ -9,7 +9,6 @@
     android:layout_marginEnd="8dp"
     android:layout_marginStart="8dp">
     <RelativeLayout
-        android:id="@+id/message_root"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
@@ -23,7 +22,7 @@
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             android:paddingTop="8dp"
-            tools:src="@drawable/ic_image_send_24dp" />
+            tools:src="@drawable/image_send" />
         <TextView
             android:id="@+id/textView_message_time"
             android:layout_width="wrap_content"
@@ -32,7 +31,7 @@
             android:layout_alignEnd="@id/imageView_message_image"
             android:layout_marginEnd="8dp"
             android:textSize="12sp"
-            tools:text="3/15/2018 3:00 PM"
+            tools:text="3:00 PM"
             android:layout_alignRight="@id/imageView_message_image"
             android:layout_marginRight="8dp"
             android:textColor="#fff"/>

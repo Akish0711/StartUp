@@ -1,9 +1,6 @@
 <resources>
     <string name="app_name">Vision</string>
-    <string name="title_activity_welcome">Home Screen</string>
-    <string name="next">NEXT</string>
     <string name="skip">SKIP</string>
-    <string name="start">GOT IT</string>
 
     <string name="slide_1_title">Hello Food!</string>
     <string name="slide_1_desc">The easiest way to order food from your favourite restaurant!</string>
@@ -17,12 +14,8 @@
     <string name="slide_4_title">World Travel</string>
     <string name="slide_4_desc">Book tickets of any transportation and travel the world!</string>
 
-    <string name="play_again_desc">To see the welcome slider again, goto Settings -> apps -> welcome slider -> clear data</string>
-    <string name="play_again">Play Again</string>
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="openDrawer">open_drawer</string>
     <string name="closeDrawer">close_drawer</string>
 
@@ -37,18 +30,14 @@
         <item>Settings</item>
     </string-array>
 
-    <string name="activity_title_about_us">About Us</string>
-    <string name="activity_title_privacy_policy">Privacy Policy</string>
     <string name="action_logout">Logout</string>
     <string name="privacy_policy">Privacy Policy</string>
-    <string name="title_activity_nonadmin">nonadmin</string>
     <string name="add_students">add students</string>
     <string name="take_attendance">take attendance</string>
     <string name="marks">MARKS</string>
     <string name="update_attendance">update attendance</string>
     <string name="detailed_analysis">detailed analysis</string>
     <string name="submit_attendance">SUBMIT ATTENDANCE</string>
-    <string name="log_token">Log token</string>
     <string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
     <string name="view_attendance">Attendance</string>
     <string name="view_marks">marks</string>

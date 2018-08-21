@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/loginback">
+    android:background="@color/colorPrimary">
 
   <android.support.design.widget.TextInputLayout
         android:id="@+id/textInputLayout3"
@@ -131,7 +131,6 @@
         app:layout_constraintVertical_bias="0.409" />
 
     <Button
-        android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"

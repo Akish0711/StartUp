@@ -1,9 +1,6 @@
 package com.example.ashish.startup.Models;
 
 public class Message {
-
-    private String Message;
-
     public String getName() {
         return Name;
     }
@@ -13,6 +10,17 @@ public class Message {
     }
 
     private String Name;
+    private String Message;
+
+    public String getTime() {
+        return Time;
+    }
+
+    public void setTime(String time) {
+        Time = time;
+    }
+
+    private String Time;
     private int Type;
 
     public String getMessage() {
@@ -34,9 +42,10 @@ public class Message {
     public Message(){
     }
 
-    public Message(String message, int type, String name) {
+    public Message(String message, int type, String name,String time) {
         Message = message;
         Type = type;
         Name = name;
+        Time = time;
     }
 }

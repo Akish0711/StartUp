@@ -12,7 +12,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
@@ -24,6 +23,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -33,9 +33,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.ashish.startup.Adapters.MessageAdapter;
 import com.example.ashish.startup.Models.Message;
+import com.example.ashish.startup.Others.CircleTransform;
 import com.example.ashish.startup.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -55,15 +59,21 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.onurkaganaldemir.ktoastlib.KToast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class Announcement extends AppCompatActivity {
@@ -123,7 +133,6 @@ public class Announcement extends AppCompatActivity {
             mMessagesList.setHasFixedSize(true);
             mMessagesList.setLayoutManager(mLinearLayout);
             mMessagesList.setAdapter(mAdapter);
-
             String email = mAuth.getCurrentUser().getEmail();
             email_red = email.substring(0, email.length() - 10);
 
@@ -184,6 +193,8 @@ public class Announcement extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     String message = mChatMessageView.getText().toString();
+                    DateFormat df1=new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
+                    final String time=df1.format(Calendar.getInstance().getTime());
                     if (!TextUtils.isEmpty(message)){
 
                         String user_ref = "Announcement/"+email_red+"/"+class_id;
@@ -195,6 +206,7 @@ public class Announcement extends AppCompatActivity {
 
                         Map messageMap = new HashMap();
                         messageMap.put("Message", message);
+                        messageMap.put("Time",time);
                         messageMap.put("Type", 1);
 
                         Map messageUserMap = new HashMap();
@@ -253,6 +265,9 @@ public class Announcement extends AppCompatActivity {
             selectedImage = getResizedBitmap(selectedImage, 1500);// 400 is for example, replace with desired size
             uriProfileImage = getImageUri(getApplicationContext(), selectedImage);
 
+            DateFormat df1=new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
+            final String time=df1.format(Calendar.getInstance().getTime());
+
             final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("message/"+email_red+"/"+System.currentTimeMillis()+"jpg");
 
             profileImageRef.putFile(uriProfileImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -272,6 +287,7 @@ public class Announcement extends AppCompatActivity {
                             Map messageMap = new HashMap();
                             messageMap.put("Message", profileImageUrl);
                             messageMap.put("Type", 2);
+                            messageMap.put("Time",time);
 
                             Map messageUserMap = new HashMap();
                             messageUserMap.put(user_ref+"/"+push_id,messageMap);
@@ -325,7 +341,10 @@ public class Announcement extends AppCompatActivity {
             Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
             uriProfileImage = getImageUri(getApplicationContext(), bitmap);
 
-            final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("message/"+System.currentTimeMillis()+"jpg");
+            DateFormat df1=new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
+            final String time=df1.format(Calendar.getInstance().getTime());
+
+            final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("message/"+email_red+"/"+System.currentTimeMillis()+"jpg");
 
             profileImageRef.putFile(uriProfileImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -344,6 +363,7 @@ public class Announcement extends AppCompatActivity {
                             Map messageMap = new HashMap();
                             messageMap.put("Message", profileImageUrl);
                             messageMap.put("Type", 2);
+                            messageMap.put("Time",time);
 
                             Map messageUserMap = new HashMap();
                             messageUserMap.put(user_ref+"/"+push_id,messageMap);
@@ -397,6 +417,10 @@ public class Announcement extends AppCompatActivity {
             StorageMetadata metadata = new StorageMetadata.Builder()
                     .setCustomMetadata("myPDFfile", displayName)
                     .build();
+
+            DateFormat df1=new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
+            final String time=df1.format(Calendar.getInstance().getTime());
+
             final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("message/"+email_red+"/"+System.currentTimeMillis()+displayName);
 
             final String finalDisplayName = displayName;
@@ -418,6 +442,7 @@ public class Announcement extends AppCompatActivity {
                             messageMap.put("Message", profileImageUrl);
                             messageMap.put("Name", finalDisplayName);
                             messageMap.put("Type", 3);
+                            messageMap.put("Time",time);
 
                             Map messageUserMap = new HashMap();
                             messageUserMap.put(user_ref+"/"+push_id,messageMap);
@@ -430,9 +455,10 @@ public class Announcement extends AppCompatActivity {
                                     }
                                 }
                             });
+                            progressDialog.dismiss();
+
                         }
                     });
-                    progressDialog.dismiss();
 
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -450,8 +476,6 @@ public class Announcement extends AppCompatActivity {
             });
         }
     }
-
-
 
     public Uri getImageUri(Context inContext, Bitmap inImage) {
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
@@ -606,7 +630,7 @@ public class Announcement extends AppCompatActivity {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                // on child changed
+
             }
 
             @Override

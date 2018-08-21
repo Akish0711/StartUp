@@ -3,7 +3,6 @@ package com.example.ashish.startup.Adapters;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,7 +17,6 @@ import com.example.ashish.startup.Activities.FullScreenImage;
 import com.example.ashish.startup.Models.Message;
 import com.example.ashish.startup.R;
 
-import java.io.File;
 import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -58,17 +56,19 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             case 1:
                 ViewHolder1 viewHolder1 = (ViewHolder1)holder;
                 viewHolder1.Text.setText(messageList.get(position).getMessage());
+                viewHolder1.Time.setText(messageList.get(position).getTime());
                 break;
 
             case 2:
                 ViewHolder2 viewHolder2 = (ViewHolder2)holder;
                 Glide.with(viewHolder2.Image.getContext())
                         .load(messageList.get(position).getMessage())
-                        .placeholder(R.drawable.ic_image_send_24dp)
+                        .placeholder(R.drawable.image_send)
                         .crossFade()
                         .centerCrop()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(viewHolder2.Image);
+                viewHolder2.Time.setText(messageList.get(position).getTime());
 
                 viewHolder2.Image.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -83,6 +83,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             case 3:
                 ViewHolder3 viewHolder3 = (ViewHolder3)holder;
                 viewHolder3.file_name.setText(messageList.get(position).getName());
+                viewHolder3.Time.setText(messageList.get(position).getTime());
                 viewHolder3.file_name.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -108,34 +109,38 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public class ViewHolder1 extends RecyclerView.ViewHolder {
         View mView;
-        public TextView Text;
+        public TextView Text, Time;
 
         public ViewHolder1(View itemView) {
             super(itemView);
             mView = itemView;
             Text = mView.findViewById(R.id.textView_message_text);
+            Time = mView.findViewById(R.id.textView_message_time);
         }
     }
 
     public class ViewHolder2 extends RecyclerView.ViewHolder {
         public ImageView Image;
+        public TextView Time;
         View mView;
 
         public ViewHolder2(View itemView){
             super(itemView);
             mView = itemView;
             Image = mView.findViewById(R.id.imageView_message_image);
+            Time = mView.findViewById(R.id.textView_message_time);
         }
     }
 
     public class ViewHolder3 extends RecyclerView.ViewHolder {
-        public TextView file_name;
+        public TextView file_name, Time;
         View mView;
 
         public ViewHolder3(View itemView){
             super(itemView);
             mView = itemView;
             file_name = mView.findViewById(R.id.pdf_file_name);
+            Time = mView.findViewById(R.id.textView_message_time);
         }
     }
 }
