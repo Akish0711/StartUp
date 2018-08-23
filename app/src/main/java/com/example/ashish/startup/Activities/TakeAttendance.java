@@ -145,6 +145,7 @@ public class TakeAttendance extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     dialog.setMessage("Submitting Attendance");
+                    dialog.setCancelable(false);
                     dialog.show();
                     String email = mAuth.getCurrentUser().getEmail();
                     final String email_red = email.substring(0, email.length() - 10);

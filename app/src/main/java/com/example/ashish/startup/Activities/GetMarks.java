@@ -64,7 +64,7 @@ public class GetMarks extends AppCompatActivity {
             marksID = getIntent().getStringExtra("marksID");
             class_id = getIntent().getStringExtra("class_id");
 
-            Toolbar toolbar = findViewById(R.id.my_toolbar1);
+            Toolbar toolbar = findViewById(R.id.my_toolbar);
             setSupportActionBar(toolbar);
 
             if (getSupportActionBar() != null) {

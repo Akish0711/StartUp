@@ -31,11 +31,11 @@ public class ChangePassword extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        change_pass = (EditText)findViewById(R.id.change_pass);
-        new_pass = (EditText)findViewById(R.id.new_pass);
+        change_pass = findViewById(R.id.change_pass);
+        new_pass = findViewById(R.id.new_pass);
 
         auth = FirebaseAuth.getInstance();
         dialog = new ProgressDialog(this);

@@ -252,6 +252,7 @@ public class Announcement extends AppCompatActivity {
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setProgress(0);
         progressDialog.setTitle("Uploading File...");
+        progressDialog.setCancelable(false);
 
         if(requestCode == CHOOSE_IMAGE && resultCode == Activity.RESULT_OK && data!=null && data.getData()!=null){
             uriProfileImage = data.getData();

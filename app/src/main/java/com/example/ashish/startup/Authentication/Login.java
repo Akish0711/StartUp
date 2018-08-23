@@ -47,7 +47,6 @@ public class Login extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         if (Build.VERSION.SDK_INT >= 21) {
-
             // Set the status bar to dark-semi-transparentish
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
