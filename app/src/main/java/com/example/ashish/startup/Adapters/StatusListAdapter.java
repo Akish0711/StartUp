@@ -15,6 +15,7 @@ import java.util.List;
 public class StatusListAdapter extends RecyclerView.Adapter<StatusListAdapter.ViewHolder>{
 
     public List<Status>statusList;
+
     public StatusListAdapter(List<Status> statusList){
         this.statusList = statusList;
     }

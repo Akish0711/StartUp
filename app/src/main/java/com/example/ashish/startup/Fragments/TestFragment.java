@@ -46,6 +46,8 @@ public class TestFragment extends android.support.v4.app.Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("","in class test fragment");
+
         firebaseAuth = FirebaseAuth.getInstance();
         c = getArguments().getString("class_id");
         institute = getArguments().getString("institute");

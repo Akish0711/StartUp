@@ -127,6 +127,7 @@
         <activity android:name=".Activities.TakeAttendance" />
         <activity android:name=".Activities.ViewAttendance" />
         <activity android:name=".Activities.UpdateAttendance" />
+        <activity android:name=".Activities.ViewMarks"/>
         <activity
             android:name=".Activities.UploadMarks"
             android:screenOrientation="portrait" />

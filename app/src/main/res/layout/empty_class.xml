@@ -22,4 +22,5 @@
         android:gravity="center_horizontal"
         android:text="@string/no_records_as_of_now"
         android:textSize="20sp" />
+
 </RelativeLayout>

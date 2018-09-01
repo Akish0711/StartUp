@@ -12,6 +12,18 @@ public class Marks extends MarksID {
 
     }
 
+    @Override
+    public String toString() {
+        return "Marks{" +
+                "Name='" + Name + '\'' +
+                ", Username='" + Username + '\'' +
+                ", Max_marks='" + Max_marks + '\'' +
+                ", inputMarks='" + inputMarks + '\'' +
+                ", id=" + id +
+                ", isSelected=" + isSelected +
+                '}';
+    }
+
     public static final Comparator<Marks> BY_NAME_ALPHABETICAL = new Comparator<Marks>() {
         @Override
         public int compare(Marks marks, Marks t1) {

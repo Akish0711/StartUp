@@ -41,7 +41,7 @@ public class ViewAttendance extends AppCompatActivity {
 
         if (getIntent().hasExtra("class_id") && getIntent().hasExtra("institute")) {
             final String class_id = getIntent().getStringExtra("class_id");
-            String Institute = getIntent().getStringExtra("institute");
+            final String Institute = getIntent().getStringExtra("institute");
 
             Toolbar toolbar = findViewById(R.id.my_toolbar);
             setSupportActionBar(toolbar);

@@ -1,6 +1,7 @@
 package com.example.ashish.startup.Activities;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -123,6 +124,17 @@ public class GetMarks extends AppCompatActivity {
                             });
                         }
                     }
+                }
+            });
+
+            viewDetailedMarks.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(GetMarks.this,ViewMarks.class);
+                    intent.putExtra("marksID",marksID);
+                    intent.putExtra("class_id",class_id);
+                    intent.putExtra("email_red",email_red);
+                    startActivity(intent);
                 }
             });
         }
