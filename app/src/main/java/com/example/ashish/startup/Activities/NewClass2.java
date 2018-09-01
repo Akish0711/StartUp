@@ -117,5 +117,4 @@ public class NewClass2 extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
 }

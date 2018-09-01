@@ -1,5 +1,4 @@
 <resources>
-
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
@@ -7,17 +6,6 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorPrimaryDark</item>
         <item name="windowNoTitle">true</item>
-
-    </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="android:textColorPrimary">@color/active_dots</item>
-        <item name="android:colorBackground">@color/colorPrimary</item>
-        <item name="colorAccent">#ffffff</item>
-    </style>
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
-        <item name="colorAccent">@color/colorPrimary</item>
     </style>
 
     <style name="Login" parent="TextAppearance.AppCompat">
@@ -30,13 +18,25 @@
         <item name="colorControlActivated">#ffffff</item>
     </style>
 
-    <style name="Default" parent="TextAppearance.AppCompat">
-        <!-- Hint color and label color in FALSE state -->
-        <item name="android:textColorHint">#c0c8d6</item>
-        <item name="android:textSize">15sp</item>
-        <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
-        <item name="colorAccent">@color/colorPrimaryDark</item>
-        <item name="colorControlNormal">#c0c8d6</item>
-        <item name="colorControlActivated">@color/colorPrimary</item>
+    <!-- The theme applied to the application or activity -->
+    <style name="MyTheme" parent="@android:style/Theme.Holo.Light">
+        <item name="android:actionBarStyle">@style/MyTheme.ActionBarStyle</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <!-- ActionBar styles -->
+    <style name="MyTheme.ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:displayOptions" />
+        <item name="android:titleTextStyle">@style/MyTheme.ActionBar.Text</item>
+    </style>
+
+    <!-- ActionBar styles icons color-->
+    <style name="MyTheme.ActionBar.Text" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorAccent</item>
     </style>
 </resources>
