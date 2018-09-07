@@ -23,12 +23,12 @@ allprojects {
         }
         google()
         jcenter()
-//        flatDir{
-//            dirs 'libs'
-//        }
+
         maven { url 'https://jitpack.io' // toast library
               }
-      //  maven {   url "https://highsoft.bintray.com/Highcharts" }
+        maven {
+            url "https://highsoft.bintray.com/Highcharts"
+        }
     }
 }
 

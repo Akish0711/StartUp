@@ -21,8 +21,6 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
-
-
     }
     buildTypes {
         release {
@@ -71,16 +69,14 @@ dependencies {
 
     //others
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-  //  implementation (name: 'highcharts-release-v6.1.1', ext:'aar')
     implementation 'com.google.code.gson:gson:2.8.0'
     testImplementation 'junit:junit:4.12'
     implementation 'com.github.Shashank02051997:FancyGifDialog-Android:1.1'
-    implementation 'com.jjoe64:graphview:4.2.2'
-    //implementation 'com.highsoft.highcharts:highcharts:6.1.1'
-   // implementation 'com.github.lecho:hellocharts-library:1.5.8@aar'
-    implementation 'com.github.blackfizz:eazegraph:1.2.5l@aar'  // graph
     implementation 'com.nineoldandroids:library:2.4.0'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3' // MPAndroid Chart Library
+    implementation 'com.highsoft.highcharts:highcharts:6.1.1'
+
+    implementation 'com.android.support:palette-v7:27.1.1' // collapsing tolbar
 
 }
 apply plugin: 'com.google.gms.google-services'

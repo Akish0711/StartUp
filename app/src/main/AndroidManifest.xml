@@ -108,6 +108,7 @@
         <activity android:name=".Activities.GetMarks" />
         <activity android:name=".Activities.Announcement" />
         <activity android:name=".Authentication.CreateAccount" />
+        <activity android:name=".Util.AnimateToolbar"/>
         <activity
             android:name=".Activities.EditProfile"
             android:configChanges="orientation|keyboardHidden|screenSize" />

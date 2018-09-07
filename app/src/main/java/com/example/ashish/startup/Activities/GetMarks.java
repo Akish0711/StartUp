@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import com.example.ashish.startup.Adapters.MarksInputListAdapter;
 import com.example.ashish.startup.Models.Marks;
 import com.example.ashish.startup.R;
+import com.example.ashish.startup.Util.AnimateToolbar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -137,49 +138,51 @@ public class GetMarks extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
+
+            updateMarks.setOnClickListener(v -> {
+                Intent intent = new Intent(GetMarks.this, AnimateToolbar.class);
+                startActivity(intent);
+            });
         }
 
-        submitMarks.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                data = new HashMap<>();
-                for (i =0;i<marksInputList.size();i++) {
-                    final String a ;
-                    a = marksInputList.get(i).inputMarks;
-                    data.put(marksInputList.get(i).getUsername(), a);
-                }
-                dialog.setMessage("Submitting Marks");
-                dialog.show();
-
-                mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id).collection("Marks").document(marksID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful()){
-                            DocumentSnapshot document = task.getResult();
-                            document.getReference().update(data);
-                        }
-                        else{
-                            Log.e("error", task.getException().getLocalizedMessage() + "" );
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("er", e.getLocalizedMessage() +" " );
-                    }
-                });
-
-                Runnable progressRunnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        dialog.cancel();
-                        KToast.successToast(GetMarks.this,"Marks added successfully !", Gravity.BOTTOM,KToast.LENGTH_AUTO);
-                    }
-                };
-                Handler pdCanceller = new Handler();
-                pdCanceller.postDelayed(progressRunnable, 3000);
-
+        submitMarks.setOnClickListener(view -> {
+            data = new HashMap<>();
+            for (i =0;i<marksInputList.size();i++) {
+                final String a ;
+                a = marksInputList.get(i).inputMarks;
+                data.put(marksInputList.get(i).getUsername(), a);
             }
+            dialog.setMessage("Submitting Marks");
+            dialog.show();
+
+            mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id).collection("Marks").document(marksID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(task.isSuccessful()){
+                        DocumentSnapshot document = task.getResult();
+                        document.getReference().update(data);
+                    }
+                    else{
+                        Log.e("error", task.getException().getLocalizedMessage() + "" );
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.e("er", e.getLocalizedMessage() +" " );
+                }
+            });
+
+            Runnable progressRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    dialog.cancel();
+                    KToast.successToast(GetMarks.this,"Marks added successfully !", Gravity.BOTTOM,KToast.LENGTH_AUTO);
+                }
+            };
+            Handler pdCanceller = new Handler();
+            pdCanceller.postDelayed(progressRunnable, 3000);
+
         });
     }
 
