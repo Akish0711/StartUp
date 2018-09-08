@@ -66,22 +66,17 @@ public class NewClass extends AppCompatActivity {
             return;
         }else {
             FirebaseUser user = mAuth.getCurrentUser();
-
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
             String email=user.getEmail();
             String email_red = email.substring(0, email.length() - 10);
             final Map<String, Object> subject = new HashMap<>();
             subject.put("Name", className);
-            rootRef.collection("Users").document(email_red).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            rootRef.collection("Users").document(email_red).collection("Subjects").document().set(subject).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()){
-                        DocumentSnapshot document = task.getResult();
-                        document.getReference().collection("Subjects").document().set(subject);
-                        KToast.successToast(NewClass.this,"New Class Created", Gravity.BOTTOM,KToast.LENGTH_SHORT);
-                        finish();
-                        startActivity(new Intent(NewClass.this,MainActivity.class));
-                    }
+                public void onComplete(@NonNull Task<Void> task) {
+                    KToast.successToast(NewClass.this,"New Class Created", Gravity.BOTTOM,KToast.LENGTH_SHORT);
+                    finish();
+                    startActivity(new Intent(NewClass.this,MainActivity.class));
                 }
             });
         }

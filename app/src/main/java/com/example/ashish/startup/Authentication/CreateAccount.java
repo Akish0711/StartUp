@@ -30,8 +30,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-//import org.apache.http.HttpResponse;
-
 public class CreateAccount extends AppCompatActivity {
 
     EditText username, name,phoneNumber;
@@ -139,7 +137,7 @@ public class CreateAccount extends AppCompatActivity {
 
                                 Map<String, Object> data = new HashMap<>();
                                 data.put("Name", display_name);
-                                data.put("Username", user + "@gmail.com");
+                                data.put("Username", user);
                                 data.put("Institute_Admin", Institute + "_No");
                                 data.put("Admin","No");
                                 data.put("Phone",phoneNo);

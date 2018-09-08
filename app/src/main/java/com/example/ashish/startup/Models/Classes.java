@@ -10,13 +10,11 @@ public class Classes extends ClassID{
     public String getName() {
         return Name;
     }
-
     public void setName(String name) {
         Name = name;
     }
 
     public Classes(String name) {
-
         Name = name;
     }
 }

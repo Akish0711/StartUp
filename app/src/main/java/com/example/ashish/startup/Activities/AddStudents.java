@@ -43,13 +43,10 @@ import java.util.Map;
 
 public class AddStudents extends AppCompatActivity implements UsersListAdapter.UsersAdapterListener {
 
-    private RecyclerView mMainList;
     private FirebaseFirestore mFirestore;
     private UsersListAdapter usersListAdapter;
     private List<Users> usersList;
-    private FirebaseAuth mAuth;
     private SearchView searchView;
-    private Button selected;
     private ProgressBar progressBar;
     private TextView n_record_text;
     private ImageView n_record_image;
@@ -78,10 +75,10 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
 
             usersList = new ArrayList<>();
             usersListAdapter = new UsersListAdapter(this, usersList, this);
-            mAuth = FirebaseAuth.getInstance();
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
-            mMainList = findViewById(R.id.student_list);
-            selected = findViewById(R.id.selected);
+            RecyclerView mMainList = findViewById(R.id.student_list);
+            Button selected = findViewById(R.id.selected);
             progressBar = findViewById(R.id.progressBar);
             progressBar.setVisibility(View.VISIBLE);
             progressBar.setScaleY(2f);
@@ -118,16 +115,14 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
                                                         usersList.add(users);
                                                         Collections.sort(usersList, Users.BY_NAME_ALPHABETICAL);
                                                         usersListAdapter.notifyDataSetChanged();
-
-                                                        Log.e("Position : ","inside if");
                                                     }
                                                 }
                                             }).addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
-                                                  notifyUser(e.getLocalizedMessage());
+                                                    notifyUser(e.getLocalizedMessage());
                                                 }
-                                            });;
+                                            });
                                         }
                                         else{
                                             final Handler[] handler = {new Handler()};
@@ -142,7 +137,7 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
                                                             n_record_image.setVisibility(View.VISIBLE);
                                                             n_record_text.setVisibility(View.VISIBLE);
 
-                                            //                notifyUser("All the registered users have already been added.");
+                                                            //                notifyUser("All the registered users have already been added.");
                                                         }
                                                     }
                                                 }
@@ -155,7 +150,7 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                   notifyUser(e.getLocalizedMessage());
+                                    notifyUser(e.getLocalizedMessage());
                                 }
                             });
                         }
@@ -166,25 +161,15 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
                 public void onFailure(@NonNull Exception e) {
                     notifyUser(e.getLocalizedMessage());
                 }
-            });;
-
-
+            });
 
             final String email_red = email.substring(0, email.length() - 10);
-            mFirestore.collection("Users").document(email_red).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
-                        document.getReference().collection("Subjects").document(class_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    DocumentSnapshot document = task.getResult();
-                                    subject[0] = document.getString("Name");
-                                }
-                            }
-                        });
+                        subject[0] = document.getString("Name");
                     }
                 }
             });
@@ -218,9 +203,14 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                  // notifyUser(e.getLocalizedMessage());
+                                    // notifyUser(e.getLocalizedMessage());
                                 }
                             });
+
+                            Map<String, Object> student = new HashMap<>();
+                            student.put("Name", model.getName());
+                            student.put("Username", model.getUsername());
+                            mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id).collection("Students").document().set(student);
                         }
                         if (index == 1) {
                             KToast.successToast(AddStudents.this, index + " Student Added",Gravity.BOTTOM ,KToast.LENGTH_AUTO);

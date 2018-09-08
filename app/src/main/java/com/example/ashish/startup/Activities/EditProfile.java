@@ -3,7 +3,6 @@ package com.example.ashish.startup.Activities;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -29,10 +28,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.ashish.startup.R;
 import com.example.ashish.startup.Others.CircleTransform;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -40,7 +35,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.onurkaganaldemir.ktoastlib.KToast;
 
 import java.io.File;
@@ -92,37 +86,24 @@ public class EditProfile extends AppCompatActivity {
         String email = user.getEmail();
         email_red = email.substring(0, email.length() - 10);
 
-        changeImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                verifyPermissions();
-            }
-        });
+        changeImage.setOnClickListener(view -> verifyPermissions());
 
         loadUserInformation();
 
-        findViewById(R.id.buttonSave).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveUserInformation();
-            }
-        });
+        findViewById(R.id.buttonSave).setOnClickListener(view -> saveUserInformation());
     }
 
     private void loadUserInformation() {
 
-        rootRef.collection("Users").document(email_red).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()){
-                        DocumentSnapshot document = task.getResult();
-                            txtName.setText(user.getDisplayName());
-                            txtEmail.setText(document.getString("Email"));
-                            editPhone.setText(document.getString("Phone"));
-                            editEmail.setText(document.getString("Email"));
-                    }
-                }
-            });
+        rootRef.collection("Users").document(email_red).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                DocumentSnapshot document = task.getResult();
+                    txtName.setText(user.getDisplayName());
+                    txtEmail.setText(document.getString("Email"));
+                    editPhone.setText(document.getString("Phone"));
+                    editEmail.setText(document.getString("Email"));
+            }
+        });
 
         if (user!=null) {
             if (user.getPhotoUrl() != null) {
@@ -154,24 +135,18 @@ public class EditProfile extends AppCompatActivity {
                         .setDisplayName(displayName)
                         .build();
                 user.updateProfile(profile)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    KToast.successToast(EditProfile.this, "Profile Updated", Gravity.BOTTOM,KToast.LENGTH_SHORT);
-                                    finish();
-                                    startActivity(new Intent(EditProfile.this,MainActivity.class));
-                                }
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                KToast.successToast(EditProfile.this, "Profile Updated", Gravity.BOTTOM,KToast.LENGTH_SHORT);
+                                finish();
+                                startActivity(new Intent(EditProfile.this,MainActivity.class));
                             }
                         });
-                rootRef.collection("Users").document(email_red).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()){
-                            DocumentSnapshot document = task.getResult();
-                                document.getReference().update("Phone",contact);
-                                document.getReference().update("Email",real_email);
-                        }
+                rootRef.collection("Users").document(email_red).get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        DocumentSnapshot document = task.getResult();
+                            document.getReference().update("Phone",contact);
+                            document.getReference().update("Email",real_email);
                     }
                 });
             }
@@ -183,24 +158,18 @@ public class EditProfile extends AppCompatActivity {
                     .setPhotoUri(Uri.parse(profileImageUrl))
                     .build();
             user.updateProfile(profile)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()){
-                                KToast.successToast(EditProfile.this,"Profile Updated",Gravity.BOTTOM,KToast.LENGTH_SHORT);
-                                finish();
-                                startActivity(new Intent(EditProfile.this,MainActivity.class));
-                            }
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()){
+                            KToast.successToast(EditProfile.this,"Profile Updated",Gravity.BOTTOM,KToast.LENGTH_SHORT);
+                            finish();
+                            startActivity(new Intent(EditProfile.this,MainActivity.class));
                         }
                     });
-            rootRef.collection("Users").document(email_red).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()){
-                        DocumentSnapshot document = task.getResult();
-                            document.getReference().update("Phone",contact);
-                            document.getReference().update("Email",real_email);
-                    }
+            rootRef.collection("Users").document(email_red).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()){
+                    DocumentSnapshot document = task.getResult();
+                        document.getReference().update("Phone",contact);
+                        document.getReference().update("Email",real_email);
                 }
             });
         }
@@ -282,25 +251,16 @@ public class EditProfile extends AppCompatActivity {
         final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("profilepics/"+email_red+"/"+System.currentTimeMillis()+"jpg");
         if (uriProfileImage!=null){
             progressBar.setVisibility(View.VISIBLE);
-            profileImageRef.putFile(uriProfileImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    progressBar.setVisibility(View.GONE);
-                    profileImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            Uri downloadUrl = uri;
-                            profileImageUrl = downloadUrl.toString();
-                        }
-                    });
-                }
+            profileImageRef.putFile(uriProfileImage).addOnSuccessListener(taskSnapshot -> {
+                progressBar.setVisibility(View.GONE);
+                profileImageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    Uri downloadUrl = uri;
+                    profileImageUrl = downloadUrl.toString();
+                });
             })
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    progressBar.setVisibility(View.GONE);
-                    KToast.errorToast(EditProfile.this,e.getMessage(),Gravity.BOTTOM,KToast.LENGTH_SHORT);
-                }
+            .addOnFailureListener(e -> {
+                progressBar.setVisibility(View.GONE);
+                KToast.errorToast(EditProfile.this,e.getMessage(),Gravity.BOTTOM,KToast.LENGTH_SHORT);
             });
         }
     }
@@ -309,36 +269,33 @@ public class EditProfile extends AppCompatActivity {
         final CharSequence[] options = {"Camera", "Choose From Gallery", "Cancel"};
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
         builder.setTitle("Select Photo From:");
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-                if (options[item].equals("Choose From Gallery")) {
-                    dialog.dismiss();
-                    Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(gallery, CHOOSE_IMAGE);
-                }else if (options[item].equals("Camera")){
-                    dialog.dismiss();
-                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    // Ensure that there's a camera activity to handle the intent
-                    if (takePictureIntent.resolveActivity(getPackageManager())!= null) {
-                        File photoFile = null;
-                        try {
-                            photoFile = createImageFile();
-                        } catch (IOException ex) {
-                            // Error occurred while creating the File
-                        }
-                        // Continue only if the File was successfully created
-                        if (photoFile != null) {
-                            Uri photoURI = FileProvider.getUriForFile(EditProfile.this,
-                                    "com.example.ashish.startup.fileprovider",
-                                    photoFile);
-                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                            startActivityForResult(takePictureIntent, PICK_IMAGE_CAMERA);
-                        }
+        builder.setItems(options, (dialog, item) -> {
+            if (options[item].equals("Choose From Gallery")) {
+                dialog.dismiss();
+                Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(gallery, CHOOSE_IMAGE);
+            }else if (options[item].equals("Camera")){
+                dialog.dismiss();
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                // Ensure that there's a camera activity to handle the intent
+                if (takePictureIntent.resolveActivity(getPackageManager())!= null) {
+                    File photoFile = null;
+                    try {
+                        photoFile = createImageFile();
+                    } catch (IOException ex) {
+                        // Error occurred while creating the File
                     }
-                }else if (options[item].equals("Cancel")) {
-                    dialog.dismiss();
+                    // Continue only if the File was successfully created
+                    if (photoFile != null) {
+                        Uri photoURI = FileProvider.getUriForFile(EditProfile.this,
+                                "com.example.ashish.startup.fileprovider",
+                                photoFile);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                        startActivityForResult(takePictureIntent, PICK_IMAGE_CAMERA);
+                    }
                 }
+            }else if (options[item].equals("Cancel")) {
+                dialog.dismiss();
             }
         });
         builder.show();

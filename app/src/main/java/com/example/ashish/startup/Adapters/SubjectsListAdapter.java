@@ -45,15 +45,12 @@ public class SubjectsListAdapter extends RecyclerView.Adapter<SubjectsListAdapte
             holder.percentage.setText(subjectList.get(position).getPercentage() + " %");
             final String subject_id = subjectList.get(position).subjectID;
 
-            holder.mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(context, UserNewClass.class);
-                    intent.putExtra("subject_id", subject_id);
-                    intent.putExtra("subject_name", subjectList.get(position).getSubject_Name());
-                    intent.putExtra("Teacher_Name", subjectList.get(position).getTeacher_Name());
-                    context.startActivity(intent);
-                }
+            holder.mView.setOnClickListener(view -> {
+                Intent intent = new Intent(context, UserNewClass.class);
+                intent.putExtra("subject_id", subject_id);
+                intent.putExtra("subject_name", subjectList.get(position).getSubject_Name());
+                intent.putExtra("Teacher_Name", subjectList.get(position).getTeacher_Name());
+                context.startActivity(intent);
             });
         }
     }

@@ -20,7 +20,6 @@
         android:paddingBottom="0dp"
         app:cardElevation="3dp"
         app:cardUseCompatPadding="true"
-        android:layoutAnimation="@anim/layout_animation_fall_down"
         card_view:cardBackgroundColor="@color/colorPrimary"
         card_view:cardCornerRadius="2dp">
 

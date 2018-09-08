@@ -1,19 +1,15 @@
 package com.example.ashish.startup.Activities;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.ashish.startup.Adapters.AttendanceListAdapter;
@@ -22,8 +18,11 @@ import com.example.ashish.startup.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
@@ -37,6 +36,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 public class TakeAttendance extends AppCompatActivity {
 
     private RecyclerView mMainList;
@@ -44,24 +45,20 @@ public class TakeAttendance extends AppCompatActivity {
     private AttendanceListAdapter attendanceListAdapter;
     private List<Attendance> attendanceList;
     private Button mark_present,view_attendance, update_attendance;
-    private ProgressBar progressBar;
     private FirebaseAuth mAuth;
-    ProgressDialog dialog;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_take_attendance);
         mAuth = FirebaseAuth.getInstance();
-
         attendanceList = new ArrayList<>();
         attendanceListAdapter = new AttendanceListAdapter(this,attendanceList);
 
-        if (getIntent().hasExtra("class_id")&& getIntent().hasExtra("institute")) {
+        if (getIntent().hasExtra("class_id")&& getIntent().hasExtra("institute")&& getIntent().hasExtra("username")) {
             final String class_id = getIntent().getStringExtra("class_id");
             final String Institute = getIntent().getStringExtra("institute");
+            final String email_red = getIntent().getStringExtra("username");
 
             Toolbar toolbar = findViewById(R.id.my_toolbar);
             setSupportActionBar(toolbar);
@@ -75,11 +72,6 @@ public class TakeAttendance extends AppCompatActivity {
             view_attendance = findViewById(R.id.view_attendance);
             update_attendance = findViewById(R.id.update_attendance);
             mark_present = findViewById(R.id.mark_present);
-            progressBar = findViewById(R.id.progressBar);
-            progressBar.setVisibility(View.VISIBLE);
-            progressBar.setScaleY(2f);
-            dialog = new ProgressDialog(this);
-
 
             mMainList = findViewById(R.id.attendance_list);
             mMainList.setHasFixedSize(true);
@@ -88,34 +80,21 @@ public class TakeAttendance extends AppCompatActivity {
 
             mFirestore = FirebaseFirestore.getInstance();
 
-            mFirestore.collection("Users").whereEqualTo("Institute_Admin", Institute+"_No").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id).collection("Students").addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        for (DocumentSnapshot document : task.getResult()) {
-                            document.getReference().collection("Subjects").document(class_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull final Task<DocumentSnapshot> task) {
-                                    if (task.isSuccessful()){
-                                        DocumentSnapshot document = task.getResult();
-                                        if (document != null && document.exists()) {
-                                            document.getReference().getParent().getParent().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                    if (task.isSuccessful()){
-                                                        progressBar.setVisibility(View.GONE);
-                                                        DocumentSnapshot doc = task.getResult();
-                                                        Attendance attendance = doc.toObject(Attendance.class);
-                                                        attendanceList.add(attendance);
-                                                        Collections.sort(attendanceList, Attendance.BY_NAME_ALPHABETICAL);
-                                                        attendanceListAdapter.notifyDataSetChanged();
-                                                    }
-                                                }
-                                            });
-                                        }
-                                    }
-                                }
-                            });
+                public void onEvent(@Nullable QuerySnapshot documentSnapshots, @Nullable FirebaseFirestoreException e) {
+                    for (DocumentChange doc: documentSnapshots.getDocumentChanges()){
+                        switch (doc.getType()) {
+                            case ADDED:
+                                Attendance attendance = doc.getDocument().toObject(Attendance.class);
+                                attendanceList.add(attendance);
+                                Collections.sort(attendanceList, Attendance.BY_NAME_ALPHABETICAL);
+                                attendanceListAdapter.notifyDataSetChanged();
+                                break;
+                            case MODIFIED:
+                                break;
+                            case REMOVED:
+                                break;
                         }
                     }
                 }
@@ -144,9 +123,6 @@ public class TakeAttendance extends AppCompatActivity {
             mark_present.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    dialog.setMessage("Submitting Attendance");
-                    dialog.setCancelable(false);
-                    dialog.show();
                     String email = mAuth.getCurrentUser().getEmail();
                     final String email_red = email.substring(0, email.length() - 10);
                     final int[] counter_total = new int[1];
@@ -155,102 +131,60 @@ public class TakeAttendance extends AppCompatActivity {
                     final String time=df1.format(Calendar.getInstance().getTime());
                     List list = attendanceListAdapter.getSelectedItem();
                     List list2 = attendanceListAdapter.getUnselectedItem();
-                        int index2 = 0;
-                        for (index2 = 0; index2 < list2.size(); index2++) {
-                            final Attendance model = (Attendance) list2.get(index2);
-                            Log.e("Retrieving users",model.getUsername() + " users");
-                            mFirestore.collection("Users").whereEqualTo("Username", model.getUsername()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        for (final DocumentSnapshot document : task.getResult()) {
-                                             document.getReference().collection("Subjects").document(class_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                 @Override
-                                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                     if (task.isSuccessful()) {
-                                                         DocumentSnapshot document = task.getResult();
-                                                         counter_total[0] = document.getLong("Total_Class").intValue();
-                                                         counter_present[0] = document.getLong("Total_Present").intValue();
-                                                         if (counter_total[0] == 0) {
-                                                             Map<String, Object> data = new HashMap<>();
-                                                             data.put("Total_Present", 1);
-                                                             data.put("Total_Class",1);
-                                                             data.put("Percentage",100);
-                                                             document.getReference().update(data);
-                                                         } else {
-                                                             counter_total[0]++;
-                                                             counter_present[0]++;
-                                                             int percentage = (counter_present[0]*100/counter_total[0]);
-                                                             Map<String, Object> data = new HashMap<>();
-                                                             data.put("Total_Present", counter_present[0]);
-                                                             data.put("Total_Class", counter_total[0]);
-                                                             data.put("Percentage",percentage);
-                                                             document.getReference().update(data);
-                                                         }
-                                                         Map<String, Object> data = new HashMap<>();
-                                                         data.put(model.getUsername(), true );
-                                                         Map<String,Object> userData = new HashMap<>();
-                                                         userData.put(time,true);
-                                                         mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id).collection("Attendance").document(time).set(data, SetOptions.merge());
-                                          //               mFirestore.collection("Users").document(model.getUsername()).collection("Subjects").document(class_id).collection("Attendance").document(time).set(data, SetOptions.merge());
-                                                     }
-                                                 }
-                                             });
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    int index = 0;
-                    for (index = 0; index < list.size(); index++) {
-                        final Attendance model = (Attendance) list.get(index);
-                        mFirestore.collection("Users").whereEqualTo("Username", model.getUsername()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    int index2;
+                    for (index2 = 0; index2 < list2.size(); index2++) {
+                        final Attendance model = (Attendance) list2.get(index2);
+                        mFirestore.collection("Users").document(model.getUsername()).collection("Subjects").document(class_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 if (task.isSuccessful()) {
-                                    for (final DocumentSnapshot document : task.getResult()) {
-                                        document.getReference().collection("Subjects").document(class_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                if (task.isSuccessful()) {
-                                                    DocumentSnapshot document = task.getResult();
-                                                    counter_total[0] = document.getLong("Total_Class").intValue();
-                                                    counter_present[0] = document.getLong("Total_Present").intValue();
-                                                    if (counter_total[0] == 0) {
-                                                        Map<String, Object> data = new HashMap<>();
-                                                        data.put("Total_Class",1);
-                                                        data.put("Percentage",0);
-                                                        document.getReference().update(data);
-                                                    } else {
-                                                        counter_total[0]++;
-                                                        int percentage = (counter_present[0]*100/counter_total[0]);
-                                                        Map<String, Object> data = new HashMap<>();
-                                                        data.put("Total_Class",counter_total[0]);
-                                                        data.put("Percentage",percentage);
-                                                        document.getReference().update(data);
-                                                    }
-                                                    Map<String, Object> data = new HashMap<>();
-                                                    data.put(model.getUsername(), false );
-                                                    mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id).collection("Attendance").document(time).set(data, SetOptions.merge());
-                                            //        mFirestore.collection("Users").document(model.getUsername()).collection("Subjects").document(class_id).collection("Attendance").document(time).set(data, SetOptions.merge());
-                                                }
-                                            }
-                                        });
-                                    }
+                                    DocumentSnapshot document = task.getResult();
+                                    counter_total[0] = document.getLong("Total_Class").intValue();
+                                    counter_present[0] = document.getLong("Total_Present").intValue();
+                                    counter_total[0]++;
+                                    counter_present[0]++;
+                                    int percentage = (counter_present[0]*100/counter_total[0]);
+
+                                    Map<String, Object> data = new HashMap<>();
+                                    data.put("Total_Present",counter_present[0]);
+                                    data.put("Total_Class",counter_total[0]);
+                                    data.put("Percentage",percentage);
+                                    document.getReference().update(data);
+
+                                    Map<String, Object> data2 = new HashMap<>();
+                                    data2.put(model.getUsername(), true );
+                                    Map<String,Object> userData = new HashMap<>();
+                                    userData.put(time,true);
+                                    mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id).collection("Attendance").document(time).set(data2, SetOptions.merge());
                                 }
                             }
                         });
                     }
-                    Runnable progressRunnable = new Runnable() {
+                    int index;
+                    for (index = 0; index < list.size(); index++) {
+                        final Attendance model = (Attendance) list.get(index);
+                        mFirestore.collection("Users").document(model.getUsername()).collection("Subjects").document(class_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+                                    counter_total[0] = document.getLong("Total_Class").intValue();
+                                    counter_present[0] = document.getLong("Total_Present").intValue();
+                                    counter_total[0]++;
+                                    int percentage = (counter_present[0]*100/counter_total[0]);
 
-                        @Override
-                        public void run() {
-                            dialog.cancel();
-                        }
-                    };
+                                    Map<String, Object> data = new HashMap<>();
+                                    data.put("Total_Class",counter_total[0]);
+                                    data.put("Percentage",percentage);
+                                    document.getReference().update(data);
 
-                    Handler pdCanceller = new Handler();
-                    pdCanceller.postDelayed(progressRunnable, 3000);
+                                    Map<String, Object> data2 = new HashMap<>();
+                                    data2.put(model.getUsername(), false );
+                                    mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id).collection("Attendance").document(time).set(data2, SetOptions.merge());
+                                }
+                            }
+                        });
+                    }
                     if (index == 0) {
                         Toast.makeText(TakeAttendance.this, "Everyone marked present", Toast.LENGTH_LONG).show();
                     }
@@ -276,7 +210,6 @@ public class TakeAttendance extends AppCompatActivity {
             onBackPressed();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }

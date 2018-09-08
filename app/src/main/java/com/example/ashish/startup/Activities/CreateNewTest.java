@@ -1,12 +1,9 @@
 package com.example.ashish.startup.Activities;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,8 +12,6 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.example.ashish.startup.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -59,12 +54,7 @@ public class CreateNewTest extends AppCompatActivity {
                 getSupportActionBar().setTitle("Create New Test");
             }
 
-            createTest.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    CreateTest();
-                }
-            });
+            createTest.setOnClickListener(view -> CreateTest());
         }
     }
 
@@ -94,15 +84,12 @@ public class CreateNewTest extends AppCompatActivity {
         final Map<String ,String> data = new HashMap<>();
         data.put("Max_marks",mMarks);
 
-        rootRef.collection("Users").document(email_red).collection("Subjects").document(subject_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    DocumentSnapshot document = task.getResult();
-                    document.getReference().collection("Marks").document(tName).set(data);
-                    progressBar.setVisibility(View.GONE);
-                    KToast.successToast(CreateNewTest.this,"New Test Created Succesfully.",Gravity.BOTTOM,KToast.LENGTH_SHORT);
-                }
+        rootRef.collection("Users").document(email_red).collection("Subjects").document(subject_id).get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                DocumentSnapshot document = task.getResult();
+                document.getReference().collection("Marks").document(tName).set(data);
+                progressBar.setVisibility(View.GONE);
+                KToast.successToast(CreateNewTest.this,"New Test Created Successfully.",Gravity.BOTTOM,KToast.LENGTH_SHORT);
             }
         });
     }

@@ -14,14 +14,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ashish.startup.Activities.FullScreenImage;
 import com.example.ashish.startup.Activities.MainActivity;
 import com.example.ashish.startup.Activities.NewClass2;
-import com.example.ashish.startup.Activities.TakeAttendance;
-import com.example.ashish.startup.Authentication.Login;
 import com.example.ashish.startup.Models.Classes;
 import com.example.ashish.startup.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,12 +28,16 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.onurkaganaldemir.ktoastlib.KToast;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.ViewHolder> {
 
@@ -43,6 +45,7 @@ public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.
     private FirebaseFirestore mFirestore;
     public Context context;
     private FirebaseAuth firebaseAuth;
+    private DatabaseReference mRootRef;
 
     public ClassesListAdapter(Context context,List<Classes> classesList){
         this.classesList = classesList;
@@ -63,95 +66,124 @@ public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         int viewType = getItemViewType(position);
         if(viewType == 2){
 
             holder.nameText.setText(classesList.get(position).getName());
             final String class_id = classesList.get(position).classID;
-            holder.mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(context,NewClass2.class);
-                    intent.putExtra("class_id", class_id);
-                    context.startActivity(intent);
-                }
+            holder.mView.setOnClickListener(view -> {
+                Intent intent = new Intent(context,NewClass2.class);
+                intent.putExtra("class_id", class_id);
+                context.startActivity(intent);
             });
 
-            holder.option_view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //creating a popup menu
-                    PopupMenu popup = new PopupMenu(context, holder.option_view);
-                    //inflating menu from xml resource
-                    popup.inflate(R.menu.classes_menu);
-                    //adding click listener
-                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            switch (item.getItemId()) {
-                                case R.id.rename_option:
-                                    break;
-                                case R.id.delete_option:
-                                    mFirestore = FirebaseFirestore.getInstance();
-                                    firebaseAuth = FirebaseAuth.getInstance();
-                                    final FirebaseUser user = firebaseAuth.getCurrentUser();
-                                    String email = user.getEmail();
-                                    final String email_red = email.substring(0, email.length() - 10);
-                                    final String[] Institute = new String[1];
-                                    mFirestore.collection("Users").document(email_red).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                DocumentSnapshot document = task.getResult();
-                                                Institute[0] = document.getString("Institute");
-                                            }
-                                        }
-                                    });
-                                    new AlertDialog.Builder(context)
-                                            .setTitle("Delete this Class?")
-                                            .setMessage("Warning : You cannot undo this.")
-                                            .setCancelable(false)
-                                            .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-                                                            Intent intent= new Intent(context,MainActivity.class);
-                                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                            context.startActivity(intent);
-                                                            KToast.successToast((Activity) context, "Class Deleted", Gravity.BOTTOM,KToast.LENGTH_LONG);
+            holder.option_view.setOnClickListener(view -> {
+                mFirestore = FirebaseFirestore.getInstance();
+                mRootRef = FirebaseDatabase.getInstance().getReference();
+                firebaseAuth = FirebaseAuth.getInstance();
+                final FirebaseUser user = firebaseAuth.getCurrentUser();
+                final String email = user.getEmail();
+                final String email_red = email.substring(0, email.length() - 10);
+                final String[] Institute = new String[1];
+                //creating a popup menu
+                PopupMenu popup = new PopupMenu(context, holder.option_view);
+                //inflating menu from xml resource
+                popup.inflate(R.menu.classes_menu);
+                //adding click listener
+                popup.setOnMenuItemClickListener(item -> {
+                    switch (item.getItemId()) {
+                        case R.id.edit_option:
+                            mFirestore.collection("Users").document(email_red).get().addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+                                    Institute[0] = document.getString("Institute");
+                                }
+                            });
+                            final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
+                            builder.setTitle("Edit Class");
+                            final LayoutInflater layoutInflater = LayoutInflater.from(context);
+                            final View attnView = layoutInflater.inflate(R.layout.activity_rename,null);
+                            final EditText rename_text =attnView.findViewById(R.id.rename);
+                            rename_text.setText(classesList.get(position).getName());
+                            builder.setMessage("Changes made here will be reflected on Student side")
+                                    .setCancelable(false)
+                                    .setPositiveButton("SAVE", (dialog, id) -> {
+                                        String displayName = rename_text.getText().toString();
 
-                                                        }
-                                                    })
-                                                            .addOnFailureListener(new OnFailureListener() {
-                                                                @Override
-                                                                public void onFailure(@NonNull Exception e) {
-                                                                    Toast.makeText(context, "Error in deleting classes", Toast.LENGTH_LONG).show();
-                                                                }
-                                                            });
-                                                    mFirestore.collection("Users").whereEqualTo("Institute_Admin", Institute[0] +"_No").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                            if (task.isSuccessful()) {
-                                                                for (final DocumentSnapshot document : task.getResult()) {
-                                                                    document.getReference().collection("Subjects").document(class_id).delete();
-                                                                }
-                                                            }
-                                                        }
-                                                    });
+                                        if (displayName.equals(classesList.get(position).getName())){
+                                            rename_text.setError("Name is still same");
+                                            rename_text.requestFocus();
+                                            return;
+                                        }
+
+                                        if (displayName.isEmpty()){
+                                            rename_text.setError("Name required");
+                                            rename_text.requestFocus();
+                                            return;
+                                        }
+
+                                        final Map<String, Object> data = new HashMap<>();
+                                        data.put("Name",displayName);
+
+                                        final Map<String, Object> data2 = new HashMap<>();
+                                        data2.put("Subject_Name",displayName);
+
+                                        mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id).update(data);
+                                        mFirestore.collection("Users").whereEqualTo("Institute_Admin",Institute[0]+"_No").get().addOnCompleteListener(task -> {
+                                            if (task.isSuccessful()){
+                                                for (final DocumentSnapshot document : task.getResult()) {
+                                                    document.getReference().collection("Subjects").document(class_id).update(data2);
                                                 }
-                                            })
-                                            .setNegativeButton("Cancel", null)
-                                            .show();
-                                    break;
-                            }
-                            return false;
-                        }
-                    });
-                    //displaying the popup
-                    popup.show();
-                }
+                                            }
+                                        });
+                                        Toast.makeText(context, "Class Edited", Toast.LENGTH_LONG).show();
+                                        ((Activity)context).finish();
+                                        context.startActivity(new Intent(context, MainActivity.class));
+                                    });
+                            builder.setView(attnView);
+                            builder.setNegativeButton("Cancel",null);
+
+                            // builder.setIcon(R.drawable.record);
+                            android.app.AlertDialog alert = builder.create();
+                            alert.show();
+                            break;
+                        case R.id.delete_option:
+                            mFirestore.collection("Users").document(email_red).get().addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+                                    Institute[0] = document.getString("Institute");
+                                }
+                            });
+                            new AlertDialog.Builder(context)
+                                    .setTitle("Delete this Class?")
+                                    .setMessage("Warning : You cannot undo this.")
+                                    .setCancelable(false)
+                                    .setPositiveButton("DELETE", (dialog, id) -> mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            mFirestore.collection("Users").whereEqualTo("Institute_Admin", Institute[0] +"_No").get().addOnCompleteListener(task -> {
+                                                if (task.isSuccessful()) {
+                                                    for (final DocumentSnapshot document : task.getResult()) {
+                                                        document.getReference().collection("Subjects").document(class_id).delete();
+                                                    }
+                                                }
+                                            });
+                                            mRootRef.child("Announcement").child(email_red).child(class_id).removeValue();
+                                            mRootRef.child("Chat").child(email_red).child(class_id).removeValue();
+                                            KToast.successToast((Activity) context, "Class Deleted", Gravity.BOTTOM,KToast.LENGTH_LONG);
+
+                                        }
+                                    })
+                                            .addOnFailureListener(e -> Toast.makeText(context, "Error in deleting classes", Toast.LENGTH_LONG).show()))
+                                    .setNegativeButton("Cancel", null)
+                                    .show();
+                            break;
+                    }
+                    return false;
+                });
+                //displaying the popup
+                popup.show();
             });
         }
     }
@@ -159,7 +191,7 @@ public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.
     @Override
     public int getItemCount() {
         if(classesList.size() == 0){return 1;}
-            return classesList.size();
+        return classesList.size();
     }
 
     @Override

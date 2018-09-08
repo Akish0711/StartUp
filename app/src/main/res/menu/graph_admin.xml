@@ -6,8 +6,7 @@
     <item
         android:id="@+id/admin_graph"
         android:title="@string/graph"
-        android:orderInCategory="101"
-        android:icon="@drawable/graph"
+        android:icon="@drawable/marks"
         app:showAsAction="always"
         />
 

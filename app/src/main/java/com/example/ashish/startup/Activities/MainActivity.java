@@ -1,7 +1,6 @@
 package com.example.ashish.startup.Activities;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -38,8 +37,6 @@ import com.example.ashish.startup.Fragments.SettingsFragment;
 import com.example.ashish.startup.Others.CircleTransform;
 import com.example.ashish.startup.R;
 import com.github.clans.fab.FloatingActionMenu;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -52,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private NavigationView navigationView;
     private DrawerLayout drawer;
-    private View navHeader;
     private ImageView imgNavHeaderBg, imgProfile;
     private TextView txtName, txtWebsite;
     private Toolbar toolbar;
@@ -72,8 +68,6 @@ public class MainActivity extends AppCompatActivity {
     // toolbar titles respected to selected nav menu item
     private String[] activityTitles;
 
-    // flag to load home fragment when user presses back key
-    private boolean shouldLoadHomeFragOnBackPress = true;
     private Handler mHandler;
 
     @Override
@@ -105,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         floatingActionMenu.setClosedOnTouchOutside(true);
 
         // Navigation view header
-        navHeader = navigationView.getHeaderView(0);
+        View navHeader = navigationView.getHeaderView(0);
         txtName = navHeader.findViewById(R.id.name);
         txtWebsite = navHeader.findViewById(R.id.website);
         imgNavHeaderBg = navHeader.findViewById(R.id.img_header_bg);
@@ -114,19 +108,12 @@ public class MainActivity extends AppCompatActivity {
         // load toolbar titles from string resources
         activityTitles = getResources().getStringArray(R.array.nav_item_activity_titles);
 
-        new_user.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                verifyPermissions();
-            }
-        });
+        new_user.setOnClickListener(view -> verifyPermissions());
 
 
-        new_class.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this,NewClass.class));
-            }
+        new_class.setOnClickListener(view -> {
+            finish();
+            startActivity(new Intent(MainActivity.this,NewClass.class));
         });
 
         // load nav menu header data
@@ -146,14 +133,13 @@ public class MainActivity extends AppCompatActivity {
         String[] permissions = {Manifest.permission.SEND_SMS};
         if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 permissions[0]) == PackageManager.PERMISSION_GRANTED){
+            finish();
             startActivity(new Intent(MainActivity.this, CreateAccount.class));
         }else{
             ActivityCompat.requestPermissions(MainActivity.this, permissions, REQUEST_CODE);
         }
 
     }
-
-
     /***
      * Load navigation menu header information
      * like background image, profile image
@@ -166,23 +152,20 @@ public class MainActivity extends AppCompatActivity {
         String email = user.getEmail();
         String email_red = email.substring(0, email.length() - 10);
         // name, website
-        rootRef.collection("Users").document(email_red).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()){
-                    DocumentSnapshot document = task.getResult();
-                    txtName.setText(user.getDisplayName());
-                    txtWebsite.setText(document.getString("Email"));
-                    // Loading profile image
-                    if (user.getPhotoUrl()!=null) {
-                        Glide.with(getApplicationContext())
-                                .load(user.getPhotoUrl().toString())
-                                .crossFade()
-                                .thumbnail(0.5f)
-                                .bitmapTransform(new CircleTransform(MainActivity.this))
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .into(imgProfile);
-                    }
+        rootRef.collection("Users").document(email_red).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                DocumentSnapshot document = task.getResult();
+                txtName.setText(user.getDisplayName());
+                txtWebsite.setText(document.getString("Email"));
+                // Loading profile image
+                if (user.getPhotoUrl()!=null) {
+                    Glide.with(getApplicationContext())
+                            .load(user.getPhotoUrl().toString())
+                            .crossFade()
+                            .thumbnail(0.5f)
+                            .bitmapTransform(new CircleTransform(MainActivity.this))
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(imgProfile);
                 }
             }
         });
@@ -192,7 +175,6 @@ public class MainActivity extends AppCompatActivity {
                 .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imgNavHeaderBg);
-
     }
 
     /***
@@ -341,6 +323,7 @@ public class MainActivity extends AppCompatActivity {
 
         // This code loads home fragment when back key is pressed
         // when user is in other fragment than home
+        boolean shouldLoadHomeFragOnBackPress = true;
         if (shouldLoadHomeFragOnBackPress) {
             // checking if user is on other navigation menu
             // rather than home
@@ -376,13 +359,11 @@ public class MainActivity extends AppCompatActivity {
             new AlertDialog.Builder(this)
                     .setMessage("Are you sure you want to Logout?")
                     .setCancelable(false)
-                    .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            FirebaseAuth.getInstance().signOut();
-                            finish();
-                            startActivity(new Intent(MainActivity.this, Login.class));
-                            KToast.successToast(MainActivity.this, "Logged Out", Gravity.BOTTOM,KToast.LENGTH_LONG);
-                        }
+                    .setPositiveButton("Logout", (dialog, id1) -> {
+                        FirebaseAuth.getInstance().signOut();
+                        finish();
+                        startActivity(new Intent(MainActivity.this, Login.class));
+                        KToast.successToast(MainActivity.this, "Logged Out", Gravity.BOTTOM,KToast.LENGTH_LONG);
                     })
                     .setNegativeButton("Cancel", null)
                     .show();

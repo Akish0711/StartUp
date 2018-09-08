@@ -32,7 +32,6 @@
             android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_margin="16dp"
             android:layout_marginBottom="16dp"
             android:layout_marginEnd="16dp"
@@ -48,14 +47,16 @@
             app:menu_labels_colorPressed="@color/colorPrimary"
             app:menu_labels_textColor="#000000"
             app:menu_openDirection="up"
-            app:menu_showShadow="true">
+            app:menu_shadowXOffset="0dp"
+            app:menu_shadowYOffset="0.5dp">
 
             <com.github.clans.fab.FloatingActionButton
                 android:id="@+id/floatingActionItem1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/add_user"
-                app:fabSize="mini"
+                app:fab_shadowXOffset="0dp"
+                app:fab_shadowYOffset="1dp"
                 app:fab_colorNormal="@color/colorPrimary"
                 app:fab_colorPressed="@color/colorPrimary"
                 app:fab_label="Create New User" />
@@ -65,14 +66,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/add_class"
-                app:fabSize="mini"
+                app:fab_shadowYOffset="1dp"
+                app:fab_shadowXOffset="0dp"
                 app:fab_colorNormal="@color/colorPrimary"
                 app:fab_colorPressed="@color/colorPrimary"
                 app:fab_label="Add New Class" />
 
         </com.github.clans.fab.FloatingActionMenu>
-
     </RelativeLayout>
-
-
 </android.support.design.widget.CoordinatorLayout>

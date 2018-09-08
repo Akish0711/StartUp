@@ -44,8 +44,6 @@ public class UpdateAttendance extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_attendance);
 
-        final LayoutInflater layoutInflater = LayoutInflater.from(this);
-
         if (getIntent().hasExtra("class_id")) {
             final String class_id = getIntent().getStringExtra("class_id");
 
@@ -124,15 +122,6 @@ public class UpdateAttendance extends AppCompatActivity {
                                                 //do things
                                             }
                                         });
-                                final View attnView = layoutInflater.inflate(R.layout.add_students,null);
-
-                                EditText editCountry =attnView.findViewById(R.id.editCountry);
-                                EditText editYear =attnView.findViewById(R.id.editYear);
-
-                                editCountry.setText("India");
-                                editYear.setText("2018");
-
-                                builder.setView(attnView);
                                 builder.setNegativeButton("Cancel",null);
 
                                // builder.setIcon(R.drawable.record);
