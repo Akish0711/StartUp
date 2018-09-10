@@ -105,7 +105,7 @@ public class MarksCardAdapter extends RecyclerView.Adapter<MarksCardAdapter.View
                                            holder.marks_obtained.setText((String)doc.get(email));
 
                                            if(!b.equals("Max_marks")){
-                                               Log.e( "onComplete: ",(String)doc.get(b+".com") + "  " +doc.getId() );
+                                               Log.e( "onComplete: ", doc.get(b+".com") + "  " +doc.getId() );
                                                mMarks.add(Integer.parseInt((String)doc.get(b+".com")));
                                            }
                                        } catch (Exception e) {

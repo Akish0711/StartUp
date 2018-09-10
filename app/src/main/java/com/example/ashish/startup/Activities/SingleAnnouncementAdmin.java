@@ -20,6 +20,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -27,6 +29,7 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.example.ashish.startup.Adapters.SingleAnnouncementAdapter;
 import com.example.ashish.startup.R;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,13 +46,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class Announcement extends AppCompatActivity {
+public class SingleAnnouncementAdmin extends AppCompatActivity {
 
     private EditText mChatMessageView;
     private static final int CHOOSE_IMAGE = 101 ;
@@ -61,6 +66,13 @@ public class Announcement extends AppCompatActivity {
     private String profileImageUrl;
     private static final int REQUEST_CODE = 1;
     private ProgressDialog progressDialog;
+    private RecyclerView mUploadList;
+    private List<String> fileNameList;
+    private List<String> fileDoneList;
+    private SingleAnnouncementAdapter singleAnnouncementAdapter;
+    Uri uriProfileImage;
+    private List<Uri> listUri;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +96,17 @@ public class Announcement extends AppCompatActivity {
             ImageButton mChatSendBtn = findViewById(R.id.chat_send_btn);
             mChatMessageView = findViewById(R.id.chat_message_view);
             FloatingActionButton mFabSendAttachment = findViewById(R.id.fab_send_attachment);
+            mUploadList = findViewById(R.id.upload_list);
+            fileNameList = new ArrayList<>();
+            fileDoneList = new ArrayList<>();
+            listUri = new ArrayList<>();
+
+            singleAnnouncementAdapter = new SingleAnnouncementAdapter(fileNameList,fileDoneList);
+
+            mUploadList.setLayoutManager(new LinearLayoutManager(this));
+            mUploadList.setHasFixedSize(true);
+            mUploadList.setAdapter(singleAnnouncementAdapter);
+
             String email = mAuth.getCurrentUser().getEmail();
             email_red = email.substring(0, email.length() - 10);
 
@@ -91,37 +114,69 @@ public class Announcement extends AppCompatActivity {
             mRootRef.child("Chat").child(email_red).child(class_id).child("seen").setValue(true);
 
             mChatSendBtn.setOnClickListener(v -> {
-                String message = mChatMessageView.getText().toString();
-                DateFormat df1=new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
-                final String time=df1.format(Calendar.getInstance().getTime());
-                if (!TextUtils.isEmpty(message)){
+                uploadAnnouncement();
+            });
 
-                    String user_ref = "Announcement/"+email_red+"/"+class_id;
+            mFabSendAttachment.setOnClickListener(view -> verifyPermissions());
+        }
+    }
 
-                    DatabaseReference user_message_push = mRootRef.child("Announcement")
-                            .child(email_red).child(class_id).push();
+    private void uploadAnnouncement() {
+        String message = mChatMessageView.getText().toString();
+        DateFormat df1=new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
+        final String time=df1.format(Calendar.getInstance().getTime());
+        if (!TextUtils.isEmpty(message)){
+            String user_ref = "Announcement/"+email_red+"/"+class_id;
 
-                    String push_id = user_message_push.getKey();
+            DatabaseReference user_message_push = mRootRef.child("Announcement").child(email_red).child(class_id).push();
+            String push_id = user_message_push.getKey();
 
-                    Map messageMap = new HashMap();
-                    messageMap.put("Message", message);
-                    messageMap.put("Time",time);
-                    messageMap.put("Type", 1);
+            Map messageMap = new HashMap();
+            messageMap.put("Message", message);
+            messageMap.put("Time",time);
 
-                    Map messageUserMap = new HashMap();
-                    messageUserMap.put(user_ref+"/"+push_id,messageMap);
+            Map messageUserMap = new HashMap();
+            messageUserMap.put(user_ref+"/"+push_id,messageMap);
 
-                    mChatMessageView.setText("");
+            mRootRef.updateChildren(messageUserMap, (databaseError, databaseReference) -> {
+                if (databaseError!=null){
 
-                    mRootRef.updateChildren(messageUserMap, (databaseError, databaseReference) -> {
-                        if (databaseError!=null){
-
-                        }
-                    });
-                    finish();
                 }
             });
-            mFabSendAttachment.setOnClickListener(view -> verifyPermissions());
+
+            if (listUri!= null){
+                for (int x=0;x<listUri.size();x++) {
+                    final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("message/" + email_red + "/" + System.currentTimeMillis() + ".jpg");
+                    int finalX = x;
+                    profileImageRef.putFile(listUri.get(x)).addOnSuccessListener(taskSnapshot -> profileImageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        Uri downloadUrl = uri;
+                        profileImageUrl = downloadUrl.toString();
+                        String image_ref = "Announcement/" + email_red + "/" + class_id + "/" + push_id;
+
+                        DatabaseReference user_image_push = mRootRef.child("Announcement").child(email_red).child(class_id).push();
+                        String image_push_id = user_image_push.getKey();
+
+                        Map imageMap = new HashMap();
+                        imageMap.put("Message", profileImageUrl);
+                        imageMap.put("Name", fileNameList.get(finalX));
+
+                        Map imageUserMap = new HashMap();
+                        imageUserMap.put(image_ref + "/" + image_push_id, imageMap);
+
+                        mRootRef.updateChildren(imageUserMap, (databaseError, databaseReference) -> {
+                            if (databaseError != null) {
+
+                            }
+                        });
+                    }))
+                            .addOnFailureListener(e -> KToast.errorToast(SingleAnnouncementAdmin.this, e.getMessage(), Gravity.BOTTOM, KToast.LENGTH_SHORT));
+                }
+            }
+            finish();
+        }
+        else {
+            mChatMessageView.setError("Message field cannot be empty");
+            mChatMessageView.requestFocus();
         }
     }
 
@@ -135,54 +190,43 @@ public class Announcement extends AppCompatActivity {
         progressDialog.setTitle("Uploading File...");
         progressDialog.setCancelable(false);
 
-        Uri uriProfileImage;
-        if(requestCode == CHOOSE_IMAGE && resultCode == Activity.RESULT_OK && data!=null && data.getData()!=null){
-            uriProfileImage = data.getData();
-            InputStream imageStream = null;
-            try {
-                imageStream = getContentResolver().openInputStream(uriProfileImage);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-            selectedImage = getResizedBitmap(selectedImage, 1500);// 400 is for example, replace with desired size
-            uriProfileImage = getImageUri(getApplicationContext(), selectedImage);
+        if(requestCode == CHOOSE_IMAGE && resultCode == Activity.RESULT_OK){
 
-            DateFormat df1=new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
-            final String time=df1.format(Calendar.getInstance().getTime());
-
-            final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("message/"+email_red+"/"+System.currentTimeMillis()+"jpg");
-
-            profileImageRef.putFile(uriProfileImage).addOnSuccessListener(taskSnapshot -> profileImageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                Uri downloadUrl = uri;
-                profileImageUrl = downloadUrl.toString();
-                String user_ref = "Announcement/"+email_red+"/"+class_id;
-
-                DatabaseReference user_message_push = mRootRef.child("Announcement")
-                        .child(email_red).child(class_id).push();
-
-                String push_id = user_message_push.getKey();
-                Map messageMap = new HashMap();
-                messageMap.put("Message", profileImageUrl);
-                messageMap.put("Type", 2);
-                messageMap.put("Time",time);
-
-                Map messageUserMap = new HashMap();
-                messageUserMap.put(user_ref+"/"+push_id,messageMap);
-
-                mRootRef.updateChildren(messageUserMap, (databaseError, databaseReference) -> {
-                    if (databaseError!=null){
-
+            if (data.getClipData()!=null){
+                int totalItemsSelected = data.getClipData().getItemCount();
+                for (int i=0;i<totalItemsSelected;i++){
+                    uriProfileImage = data.getClipData().getItemAt(i).getUri();
+                    InputStream imageStream = null;
+                    try {
+                        imageStream = getContentResolver().openInputStream(uriProfileImage);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
                     }
-                });
-                progressDialog.dismiss();
-            }))
-                    .addOnFailureListener(e -> KToast.errorToast(Announcement.this,e.getMessage(), Gravity.BOTTOM,KToast.LENGTH_SHORT)).addOnProgressListener(taskSnapshot -> {
-                        progressDialog.show();
-                        int currentProgress = (int) (100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                        progressDialog.setProgress(currentProgress);
-                    });
-
+                    Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                    selectedImage = getResizedBitmap(selectedImage, 1500);// 400 is for example, replace with desired size
+                    uriProfileImage = getImageUri(getApplicationContext(), selectedImage);
+                    String filename = getFilename(uriProfileImage);
+                    fileNameList.add(filename);
+                    singleAnnouncementAdapter.notifyDataSetChanged();
+                    listUri.add(uriProfileImage);
+                }
+            }
+            else if (data.getData()!=null){
+                uriProfileImage = data.getData();
+                InputStream imageStream = null;
+                try {
+                    imageStream = getContentResolver().openInputStream(uriProfileImage);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                selectedImage = getResizedBitmap(selectedImage, 1500);// 400 is for example, replace with desired size
+                uriProfileImage = getImageUri(getApplicationContext(), selectedImage);
+                String filename = getFilename(uriProfileImage);
+                fileNameList.add(filename);
+                singleAnnouncementAdapter.notifyDataSetChanged();
+                listUri.add(uriProfileImage);
+            }
         }else if (requestCode == PICK_IMAGE_CAMERA && resultCode == Activity.RESULT_OK ) {
             int targetW = 590;
             int targetH = 590;
@@ -204,71 +248,25 @@ public class Announcement extends AppCompatActivity {
 
             Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
             uriProfileImage = getImageUri(getApplicationContext(), bitmap);
+            String filename = getFilename(uriProfileImage);
+            fileNameList.add(filename);
+            singleAnnouncementAdapter.notifyDataSetChanged();
+            listUri.add(uriProfileImage);
 
-            DateFormat df1=new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
-            final String time=df1.format(Calendar.getInstance().getTime());
-
-            final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("message/"+email_red+"/"+System.currentTimeMillis()+"jpg");
-
-            profileImageRef.putFile(uriProfileImage).addOnSuccessListener(taskSnapshot -> profileImageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                Uri downloadUrl = uri;
-                profileImageUrl = downloadUrl.toString();
-                String user_ref = "Announcement/"+email_red+"/"+class_id;
-
-                DatabaseReference user_message_push = mRootRef.child("Announcement")
-                        .child(email_red).child(class_id).push();
-
-                String push_id = user_message_push.getKey();
-                Map messageMap = new HashMap();
-                messageMap.put("Message", profileImageUrl);
-                messageMap.put("Type", 2);
-                messageMap.put("Time",time);
-
-                Map messageUserMap = new HashMap();
-                messageUserMap.put(user_ref+"/"+push_id,messageMap);
-
-                mRootRef.updateChildren(messageUserMap, (databaseError, databaseReference) -> {
-                    if (databaseError!=null){
-
-                    }
-                });
-                progressDialog.dismiss();
-            }))
-                    .addOnFailureListener(e -> KToast.errorToast(Announcement.this,e.getMessage(), Gravity.BOTTOM,KToast.LENGTH_SHORT)).addOnProgressListener(taskSnapshot -> {
-                        progressDialog.show();
-                        int currentProgress = (int) (100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                        progressDialog.setProgress(currentProgress);
-                    });
         }else if (requestCode == PICK_ATTACHMENT && resultCode == RESULT_OK && data != null && data.getData() != null){
             Uri uri_pdf = data.getData();
-            String uriString = uri_pdf.toString();
-            File myFile = new File(uriString);
-            String displayName = null;
-
-            if (uriString.startsWith("content://")) {
-                Cursor cursor = null;
-                try {
-                    cursor = getApplicationContext().getContentResolver().query(uri_pdf, null, null, null, null);
-                    if (cursor != null && cursor.moveToFirst()) {
-                        displayName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-                    }
-                } finally {
-                    cursor.close();
-                }
-            } else if (uriString.startsWith("file://")) {
-                displayName = myFile.getName();
-            }
+            String filename = getFilename(uri_pdf);
 
             StorageMetadata metadata = new StorageMetadata.Builder()
-                    .setCustomMetadata("myPDFfile", displayName)
+                    .setCustomMetadata("myPDFfile", filename)
                     .build();
 
             DateFormat df1=new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
             final String time=df1.format(Calendar.getInstance().getTime());
 
-            final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("message/"+email_red+"/"+System.currentTimeMillis()+displayName);
+            final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("message/"+email_red+"/"+System.currentTimeMillis()+filename);
 
-            final String finalDisplayName = displayName;
+            final String finalDisplayName = filename;
             profileImageRef.putFile(uri_pdf,metadata).addOnSuccessListener(taskSnapshot -> profileImageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                 Uri downloadUrl = uri;
                 profileImageUrl = downloadUrl.toString();
@@ -294,7 +292,7 @@ public class Announcement extends AppCompatActivity {
                 });
                 progressDialog.dismiss();
 
-            })).addOnFailureListener(e -> KToast.errorToast(Announcement.this,e.getMessage(), Gravity.BOTTOM,KToast.LENGTH_SHORT)).addOnProgressListener(taskSnapshot -> {
+            })).addOnFailureListener(e -> KToast.errorToast(SingleAnnouncementAdmin.this,e.getMessage(), Gravity.BOTTOM,KToast.LENGTH_SHORT)).addOnProgressListener(taskSnapshot -> {
                 progressDialog.show();
                 int currentProgress = (int) (100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
                 progressDialog.setProgress(currentProgress);
@@ -329,8 +327,11 @@ public class Announcement extends AppCompatActivity {
         builder.setItems(options, (dialog, item) -> {
             if (options[item].equals("Choose From Gallery")) {
                 dialog.dismiss();
-                Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(gallery, CHOOSE_IMAGE);
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent,"Select Picture"),CHOOSE_IMAGE);
             }else if (options[item].equals("Camera")){
                 dialog.dismiss();
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -344,7 +345,7 @@ public class Announcement extends AppCompatActivity {
                     }
                     // Continue only if the File was successfully created
                     if (photoFile != null) {
-                        Uri photoURI = FileProvider.getUriForFile(Announcement.this,
+                        Uri photoURI = FileProvider.getUriForFile(SingleAnnouncementAdmin.this,
                                 "com.example.ashish.startup.fileprovider",
                                 photoFile);
                         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
@@ -406,12 +407,34 @@ public class Announcement extends AppCompatActivity {
                 permissions[2]) == PackageManager.PERMISSION_GRANTED){
             showImageChooser();
         }else{
-            ActivityCompat.requestPermissions(Announcement.this, permissions, REQUEST_CODE);
+            ActivityCompat.requestPermissions(SingleAnnouncementAdmin.this, permissions, REQUEST_CODE);
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         verifyPermissions();
+    }
+
+    public String getFilename(Uri uri){
+        String result =null;
+        if (uri.getScheme().equals("content")){
+            Cursor cursor = getContentResolver().query(uri,null,null,null,null);
+            try{
+                if (cursor!=null&&cursor.moveToFirst()){
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            }finally {
+                cursor.close();
+            }
+        }
+        if (result == null){
+            result = uri.getPath();
+            int cut = result.lastIndexOf("/");
+            if (cut!=-1){
+                result = result.substring(cut+1);
+            }
+        }
+        return result;
     }
 }

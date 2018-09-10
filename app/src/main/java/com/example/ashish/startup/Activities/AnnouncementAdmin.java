@@ -30,7 +30,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewClass2 extends AppCompatActivity {
+public class AnnouncementAdmin extends AppCompatActivity {
 
     private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
@@ -52,7 +52,7 @@ public class NewClass2 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_class2);
+        setContentView(R.layout.activity_announcement_admin);
 
         if (getIntent().hasExtra("class_id")){
             final String class_id = getIntent().getStringExtra("class_id");
@@ -108,14 +108,14 @@ public class NewClass2 extends AppCompatActivity {
             });
 
             add_students.setOnClickListener(view -> {
-                Intent intent = new Intent(NewClass2.this,AddStudents.class);
+                Intent intent = new Intent(AnnouncementAdmin.this,AddStudents.class);
                 intent.putExtra("class_id", class_id);
                 intent.putExtra("institute",Institute[0]);
                 startActivity(intent);
             });
 
             take_attendance.setOnClickListener(view -> {
-                Intent intent = new Intent(NewClass2.this,TakeAttendance.class);
+                Intent intent = new Intent(AnnouncementAdmin.this,TakeAttendance.class);
                 intent.putExtra("class_id", class_id);
                 intent.putExtra("institute",Institute[0]);
                 intent.putExtra("username", email_red);
@@ -123,14 +123,14 @@ public class NewClass2 extends AppCompatActivity {
             });
 
             marks.setOnClickListener(v -> {
-                Intent intent = new Intent(NewClass2.this,UploadMarks.class);
+                Intent intent = new Intent(AnnouncementAdmin.this,UploadMarks.class);
                 intent.putExtra("class_id", class_id);
                 intent.putExtra("institute",Institute[0]);
                 startActivity(intent);
             });
 
             announcement.setOnClickListener(v -> {
-                Intent intent = new Intent(NewClass2.this,Announcement.class);
+                Intent intent = new Intent(AnnouncementAdmin.this,SingleAnnouncementAdmin.class);
                 intent.putExtra("class_id", class_id);
                 intent.putExtra("institute",Institute[0]);
                 startActivity(intent);

@@ -98,7 +98,7 @@
         <activity android:name=".Authentication.ReAuthentication" />
         <activity android:name=".Activities.nonadmin" />
         <activity
-            android:name=".Activities.UserNewClass"
+            android:name=".Activities.AnnouncementStudents"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.UserAttendance"
@@ -106,7 +106,7 @@
         <activity android:name=".Activities.UserMarks" />
         <activity android:name=".Activities.CreateNewTest" />
         <activity android:name=".Activities.GetMarks" />
-        <activity android:name=".Activities.Announcement" />
+        <activity android:name=".Activities.SingleAnnouncementAdmin" />
         <activity android:name=".Authentication.CreateAccount" />
         <activity android:name=".Util.AnimateToolbar"/>
         <activity
@@ -114,7 +114,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity android:name=".Activities.NewClass" />
         <activity
-            android:name=".Activities.NewClass2"
+            android:name=".Activities.AnnouncementAdmin"
             android:screenOrientation="portrait" />
         <activity android:name=".Activities.AddStudents">
             <meta-data
@@ -132,7 +132,7 @@
         <activity
             android:name=".Activities.UploadMarks"
             android:screenOrientation="portrait" />
-        <activity android:name=".Activities.AnnouncementStudents" />
+        <activity android:name=".Activities.SingleAnnouncementStudents" />
         <activity android:name=".Activities.FullScreenImage" />
     </application>
 

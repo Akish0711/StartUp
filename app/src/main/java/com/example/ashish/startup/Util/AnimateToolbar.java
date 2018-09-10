@@ -46,7 +46,7 @@ public class AnimateToolbar extends AppCompatActivity {
         collapsingToolbar.setTitle(getString(R.string.android_desserts));
 
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
-                R.drawable.header);
+                R.drawable.announcement);
 
         Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
             @SuppressWarnings("ResourceType")
