@@ -8,6 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.example.ashish.startup.Adapters.AdminMessageAdapter;
+import com.example.ashish.startup.Models.SingleMessage;
 import com.example.ashish.startup.R;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -15,15 +17,17 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+import java.util.List;
 
-public class SingleAnnouncementStudents extends AppCompatActivity {
-
-    private String class_id;
-    private String email_red;
-    private RecyclerView mMessagesList;
-    private LinearLayoutManager mLinearLayout;
+public class ViewSingleAnnouncement extends AppCompatActivity {
 
     private DatabaseReference mRootRef;
+    private RecyclerView mMessagesList;
+    private List<SingleMessage> messageList;
+    private LinearLayoutManager mLinearLayout;
+    private AdminMessageAdapter mAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +35,8 @@ public class SingleAnnouncementStudents extends AppCompatActivity {
         setContentView(R.layout.activity_single_announcement_students);
 
         if (getIntent().hasExtra("class_id")&& getIntent().hasExtra("Teacher_Name")&& getIntent().hasExtra("message_id")&& getIntent().hasExtra("text_message")) {
-            class_id = getIntent().getStringExtra("subject_id");
-            email_red = getIntent().getStringExtra("Teacher_Name");
+            String class_id = getIntent().getStringExtra("subject_id");
+            String email_red = getIntent().getStringExtra("Teacher_Name");
             String message_id = getIntent().getStringExtra("message_id");
             String text_message = getIntent().getStringExtra("text_message");
 
@@ -45,15 +49,14 @@ public class SingleAnnouncementStudents extends AppCompatActivity {
                 getSupportActionBar().setTitle("Announcements");
             }
 
+            messageList = new ArrayList<>();
             TextView message = findViewById(R.id.message);
             mMessagesList = findViewById(R.id.messages_list);
             mLinearLayout = new LinearLayoutManager(this);
             mMessagesList.setHasFixedSize(true);
             mMessagesList.setLayoutManager(mLinearLayout);
-
             mRootRef = FirebaseDatabase.getInstance().getReference();
             message.setText(text_message);
-            loadmessage(class_id,email_red,message_id);
         }
     }
 

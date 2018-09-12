@@ -131,5 +131,4 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
 }

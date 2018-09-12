@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.ashish.startup.Activities.SingleAnnouncementStudents;
+import com.example.ashish.startup.Activities.ViewSingleAnnouncement;
 import com.example.ashish.startup.Models.Message;
 import com.example.ashish.startup.R;
 
@@ -43,7 +43,7 @@ public class UserMessageAdapter extends RecyclerView.Adapter<UserMessageAdapter.
         holder.Time.setText(messageList.get(position).getTime());
         final String message_id = messageList.get(position).messageID;
         holder.mView.setOnClickListener(v -> {
-            Intent intent = new Intent(context,SingleAnnouncementStudents.class);
+            Intent intent = new Intent(context,ViewSingleAnnouncement.class);
             intent.putExtra("class_id", class_id);
             intent.putExtra("Teacher_Name", Teacher_Name);
             intent.putExtra("message_id",message_id);

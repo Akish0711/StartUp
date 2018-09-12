@@ -128,15 +128,12 @@ public class GetMarks extends AppCompatActivity {
                 }
             });
 
-            viewDetailedMarks.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(GetMarks.this,ViewMarks.class);
-                    intent.putExtra("marksID",marksID);
-                    intent.putExtra("class_id",class_id);
-                    intent.putExtra("email_red",email_red);
-                    startActivity(intent);
-                }
+            viewDetailedMarks.setOnClickListener(v -> {
+                Intent intent = new Intent(GetMarks.this,ViewMarks.class);
+                intent.putExtra("marksID",marksID);
+                intent.putExtra("class_id",class_id);
+                intent.putExtra("email_red",email_red);
+                startActivity(intent);
             });
 
             updateMarks.setOnClickListener(v -> {

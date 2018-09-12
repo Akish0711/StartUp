@@ -149,22 +149,19 @@ public class nonadmin extends AppCompatActivity {
         String email = user.getEmail();
         String email_red = email.substring(0, email.length() - 10);
         // name, website
-        rootRef.collection("Users").document(email_red).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()){
-                    DocumentSnapshot document = task.getResult();
-                    txtName.setText(user.getDisplayName());
-                    txtWebsite.setText(document.getString("Email"));
-                    // Loading profile image
-                    if (user.getPhotoUrl()!=null) {
-                        Glide.with(getApplicationContext()).load(user.getPhotoUrl().toString())
-                                .crossFade()
-                                .thumbnail(0.5f)
-                                .bitmapTransform(new CircleTransform(nonadmin.this))
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .into(imgProfile);
-                    }
+        rootRef.collection("Users").document(email_red).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                DocumentSnapshot document = task.getResult();
+                txtName.setText(user.getDisplayName());
+                txtWebsite.setText(document.getString("Email"));
+                // Loading profile image
+                if (user.getPhotoUrl()!=null) {
+                    Glide.with(getApplicationContext()).load(user.getPhotoUrl().toString())
+                            .crossFade()
+                            .thumbnail(0.5f)
+                            .bitmapTransform(new CircleTransform(nonadmin.this))
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(imgProfile);
                 }
             }
         });

@@ -20,7 +20,6 @@ import com.example.ashish.startup.Activities.MainActivity;
 import com.example.ashish.startup.Activities.AnnouncementAdmin;
 import com.example.ashish.startup.Models.Classes;
 import com.example.ashish.startup.R;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -154,21 +153,18 @@ public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.
                                     .setTitle("Delete this Class?")
                                     .setMessage("Warning : You cannot undo this.")
                                     .setCancelable(false)
-                                    .setPositiveButton("DELETE", (dialog, id) -> mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            mFirestore.collection("Users").whereEqualTo("Institute_Admin", Institute[0] +"_No").get().addOnCompleteListener(task -> {
-                                                if (task.isSuccessful()) {
-                                                    for (final DocumentSnapshot document : task.getResult()) {
-                                                        document.getReference().collection("Subjects").document(class_id).delete();
-                                                    }
+                                    .setPositiveButton("DELETE", (dialog, id) -> mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id).delete().addOnSuccessListener(aVoid -> {
+                                        mFirestore.collection("Users").whereEqualTo("Institute_Admin", Institute[0] +"_No").get().addOnCompleteListener(task -> {
+                                            if (task.isSuccessful()) {
+                                                for (final DocumentSnapshot document : task.getResult()) {
+                                                    document.getReference().collection("Subjects").document(class_id).delete();
                                                 }
-                                            });
-                                            mRootRef.child("SingleAnnouncementAdmin").child(email_red).child(class_id).removeValue();
-                                            mRootRef.child("Chat").child(email_red).child(class_id).removeValue();
-                                            KToast.successToast((Activity) context, "Class Deleted", Gravity.BOTTOM,KToast.LENGTH_LONG);
+                                            }
+                                        });
+                                        mRootRef.child("Announcement").child(email_red).child(class_id).removeValue();
+                                        mRootRef.child("Chat").child(email_red).child(class_id).removeValue();
+                                        KToast.successToast((Activity) context, "Class Deleted", Gravity.BOTTOM,KToast.LENGTH_LONG);
 
-                                        }
                                     })
                                             .addOnFailureListener(e -> Toast.makeText(context, "Error in deleting classes", Toast.LENGTH_LONG).show()))
                                     .setNegativeButton("Cancel", null)

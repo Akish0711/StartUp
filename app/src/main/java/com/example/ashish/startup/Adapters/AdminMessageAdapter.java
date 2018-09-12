@@ -1,6 +1,7 @@
 package com.example.ashish.startup.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
@@ -11,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.ashish.startup.Activities.ViewSingleAnnouncement;
 import com.example.ashish.startup.Models.Message;
 import com.example.ashish.startup.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,18 +23,19 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
-public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
+public class AdminMessageAdapter extends RecyclerView.Adapter<AdminMessageAdapter.ViewHolder> {
 
     private List<Message> messageList;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference mRootRef;
-    private String class_id;
+    private String class_id, email_red;
     private Context context;
 
-    public MessageAdapter(Context context, List<Message> messageList, String class_id){
+    public AdminMessageAdapter(Context context, List<Message> messageList, String class_id, String email_red){
         this.messageList = messageList;
         this.context = context;
         this.class_id = class_id;
+        this.email_red = email_red;
     }
 
     @NonNull
@@ -45,9 +49,19 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-        holder.Text.setText(messageList.get(position).getMessage());
+        String text_message = messageList.get(position).getMessage();
+        holder.Text.setText(text_message);
         final String message_id = messageList.get(position).messageID;
         holder.Time.setText(messageList.get(position).getTime());
+        holder.mView.setOnClickListener(v -> {
+            Intent intent = new Intent(context,ViewSingleAnnouncement.class);
+            intent.putExtra("class_id", class_id);
+            intent.putExtra("Teacher_Name", email_red);
+            intent.putExtra("message_id",message_id);
+            intent.putExtra("text_message",text_message);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        });
         holder.delete_option.setOnClickListener(view -> {
             mRootRef = FirebaseDatabase.getInstance().getReference();
             firebaseAuth = FirebaseAuth.getInstance();
@@ -68,7 +82,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                                 .setTitle("Delete this Announcement?")
                                 .setMessage("Warning : You cannot undo this.")
                                 .setPositiveButton("DELETE", (dialog, which) -> {
-                                    mRootRef.child("SingleAnnouncementAdmin").child(email_red).child(class_id).child(message_id).removeValue().addOnCompleteListener(task -> Toast.makeText(context, "SingleAnnouncementAdmin Deleted", Toast.LENGTH_LONG).show());
+                                    mRootRef.child("Announcement").child(email_red).child(class_id).child(message_id).removeValue().addOnCompleteListener(task -> Toast.makeText(context, "MakeAnnouncement Deleted", Toast.LENGTH_LONG).show());
                                 }).setNegativeButton("Cancel", null)
                                 .show();
                         break;

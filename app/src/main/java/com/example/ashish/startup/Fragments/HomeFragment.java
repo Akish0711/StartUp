@@ -51,28 +51,25 @@ public class HomeFragment extends Fragment {
         String email = user.getEmail();
         String email_red = email.substring(0, email.length() - 10);
         // name, website
-        rootRef.collection("Users").document(email_red).collection("Subjects").addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot documentSnapshots, @Nullable FirebaseFirestoreException e) {
-                for (DocumentChange doc: documentSnapshots.getDocumentChanges()){
-                    switch (doc.getType()) {
-                        case ADDED:
-                            String class_id = doc.getDocument().getId();
-                            Classes classes = doc.getDocument().toObject(Classes.class).withID(class_id);
-                            classesList.add(classes);
-                            keyList.add(class_id);
-                            classesListAdapter.notifyDataSetChanged();
-                            break;
-                        case MODIFIED:
-                            break;
-                        case REMOVED:
-                            class_id = doc.getDocument().getId();
-                            int index = keyList.indexOf(class_id);
-                            classesList.remove(index);
-                            keyList.remove(index);
-                            classesListAdapter.notifyDataSetChanged();
-                            break;
-                    }
+        rootRef.collection("Users").document(email_red).collection("Subjects").addSnapshotListener((documentSnapshots, e) -> {
+            for (DocumentChange doc: documentSnapshots.getDocumentChanges()){
+                switch (doc.getType()) {
+                    case ADDED:
+                        String class_id = doc.getDocument().getId();
+                        Classes classes = doc.getDocument().toObject(Classes.class).withID(class_id);
+                        classesList.add(classes);
+                        keyList.add(class_id);
+                        classesListAdapter.notifyDataSetChanged();
+                        break;
+                    case MODIFIED:
+                        break;
+                    case REMOVED:
+                        class_id = doc.getDocument().getId();
+                        int index = keyList.indexOf(class_id);
+                        classesList.remove(index);
+                        keyList.remove(index);
+                        classesListAdapter.notifyDataSetChanged();
+                        break;
                 }
             }
         });

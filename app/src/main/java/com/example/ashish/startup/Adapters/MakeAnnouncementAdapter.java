@@ -11,12 +11,12 @@ import com.example.ashish.startup.R;
 
 import java.util.List;
 
-public class SingleAnnouncementAdapter extends RecyclerView.Adapter<SingleAnnouncementAdapter.ViewHolder>{
+public class MakeAnnouncementAdapter extends RecyclerView.Adapter<MakeAnnouncementAdapter.ViewHolder>{
 
     public List<String> fileNameList;
     public List<String> fileDoneList;
 
-    public SingleAnnouncementAdapter(List<String> fileNameList, List<String> fileDoneList){
+    public MakeAnnouncementAdapter(List<String> fileNameList, List<String> fileDoneList){
         this.fileDoneList = fileDoneList;
         this.fileNameList = fileNameList;
     }

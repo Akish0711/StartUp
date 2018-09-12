@@ -29,7 +29,7 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import com.example.ashish.startup.Adapters.SingleAnnouncementAdapter;
+import com.example.ashish.startup.Adapters.MakeAnnouncementAdapter;
 import com.example.ashish.startup.R;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -54,7 +54,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class SingleAnnouncementAdmin extends AppCompatActivity {
+public class MakeAnnouncement extends AppCompatActivity {
 
     private EditText mChatMessageView;
     private static final int CHOOSE_IMAGE = 101 ;
@@ -69,7 +69,7 @@ public class SingleAnnouncementAdmin extends AppCompatActivity {
     private RecyclerView mUploadList;
     private List<String> fileNameList;
     private List<String> fileDoneList;
-    private SingleAnnouncementAdapter singleAnnouncementAdapter;
+    private MakeAnnouncementAdapter makeAnnouncementAdapter;
     Uri uriProfileImage;
     private List<Uri> listUri;
 
@@ -101,11 +101,11 @@ public class SingleAnnouncementAdmin extends AppCompatActivity {
             fileDoneList = new ArrayList<>();
             listUri = new ArrayList<>();
 
-            singleAnnouncementAdapter = new SingleAnnouncementAdapter(fileNameList,fileDoneList);
+            makeAnnouncementAdapter = new MakeAnnouncementAdapter(fileNameList,fileDoneList);
 
             mUploadList.setLayoutManager(new LinearLayoutManager(this));
             mUploadList.setHasFixedSize(true);
-            mUploadList.setAdapter(singleAnnouncementAdapter);
+            mUploadList.setAdapter(makeAnnouncementAdapter);
 
             String email = mAuth.getCurrentUser().getEmail();
             email_red = email.substring(0, email.length() - 10);
@@ -169,7 +169,7 @@ public class SingleAnnouncementAdmin extends AppCompatActivity {
                             }
                         });
                     }))
-                            .addOnFailureListener(e -> KToast.errorToast(SingleAnnouncementAdmin.this, e.getMessage(), Gravity.BOTTOM, KToast.LENGTH_SHORT));
+                            .addOnFailureListener(e -> KToast.errorToast(MakeAnnouncement.this, e.getMessage(), Gravity.BOTTOM, KToast.LENGTH_SHORT));
                 }
             }
             finish();
@@ -207,7 +207,7 @@ public class SingleAnnouncementAdmin extends AppCompatActivity {
                     uriProfileImage = getImageUri(getApplicationContext(), selectedImage);
                     String filename = getFilename(uriProfileImage);
                     fileNameList.add(filename);
-                    singleAnnouncementAdapter.notifyDataSetChanged();
+                    makeAnnouncementAdapter.notifyDataSetChanged();
                     listUri.add(uriProfileImage);
                 }
             }
@@ -224,7 +224,7 @@ public class SingleAnnouncementAdmin extends AppCompatActivity {
                 uriProfileImage = getImageUri(getApplicationContext(), selectedImage);
                 String filename = getFilename(uriProfileImage);
                 fileNameList.add(filename);
-                singleAnnouncementAdapter.notifyDataSetChanged();
+                makeAnnouncementAdapter.notifyDataSetChanged();
                 listUri.add(uriProfileImage);
             }
         }else if (requestCode == PICK_IMAGE_CAMERA && resultCode == Activity.RESULT_OK ) {
@@ -250,7 +250,7 @@ public class SingleAnnouncementAdmin extends AppCompatActivity {
             uriProfileImage = getImageUri(getApplicationContext(), bitmap);
             String filename = getFilename(uriProfileImage);
             fileNameList.add(filename);
-            singleAnnouncementAdapter.notifyDataSetChanged();
+            makeAnnouncementAdapter.notifyDataSetChanged();
             listUri.add(uriProfileImage);
 
         }else if (requestCode == PICK_ATTACHMENT && resultCode == RESULT_OK && data != null && data.getData() != null){
@@ -292,7 +292,7 @@ public class SingleAnnouncementAdmin extends AppCompatActivity {
                 });
                 progressDialog.dismiss();
 
-            })).addOnFailureListener(e -> KToast.errorToast(SingleAnnouncementAdmin.this,e.getMessage(), Gravity.BOTTOM,KToast.LENGTH_SHORT)).addOnProgressListener(taskSnapshot -> {
+            })).addOnFailureListener(e -> KToast.errorToast(MakeAnnouncement.this,e.getMessage(), Gravity.BOTTOM,KToast.LENGTH_SHORT)).addOnProgressListener(taskSnapshot -> {
                 progressDialog.show();
                 int currentProgress = (int) (100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
                 progressDialog.setProgress(currentProgress);
@@ -345,7 +345,7 @@ public class SingleAnnouncementAdmin extends AppCompatActivity {
                     }
                     // Continue only if the File was successfully created
                     if (photoFile != null) {
-                        Uri photoURI = FileProvider.getUriForFile(SingleAnnouncementAdmin.this,
+                        Uri photoURI = FileProvider.getUriForFile(MakeAnnouncement.this,
                                 "com.example.ashish.startup.fileprovider",
                                 photoFile);
                         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
@@ -407,7 +407,7 @@ public class SingleAnnouncementAdmin extends AppCompatActivity {
                 permissions[2]) == PackageManager.PERMISSION_GRANTED){
             showImageChooser();
         }else{
-            ActivityCompat.requestPermissions(SingleAnnouncementAdmin.this, permissions, REQUEST_CODE);
+            ActivityCompat.requestPermissions(MakeAnnouncement.this, permissions, REQUEST_CODE);
         }
     }
 

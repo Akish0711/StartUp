@@ -1,7 +1,6 @@
 package com.example.ashish.startup.Activities;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,12 +10,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
 
-import com.example.ashish.startup.Adapters.MessageAdapter;
+import com.example.ashish.startup.Adapters.AdminMessageAdapter;
 import com.example.ashish.startup.Models.Message;
 import com.example.ashish.startup.R;
 import com.github.clans.fab.FloatingActionButton;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -32,15 +29,11 @@ import java.util.List;
 
 public class AnnouncementAdmin extends AppCompatActivity {
 
-    private FirebaseFirestore mFirestore;
-    private FirebaseAuth mAuth;
-    private RelativeLayout add_students,take_attendance, marks;
-    private FloatingActionButton announcement;
     private RecyclerView mMessagesList;
     private List<Message> messageList;
     private List<String> keyList;
     private LinearLayoutManager mLinearLayout;
-    private MessageAdapter mAdapter;
+    private AdminMessageAdapter mAdapter;
     private SwipeRefreshLayout mRefreshLayout;
     private DatabaseReference mRootRef;
     private static final int TOTAL_ITEMS_TO_LOAD = 10;
@@ -68,15 +61,17 @@ public class AnnouncementAdmin extends AppCompatActivity {
 
             messageList = new ArrayList<>();
             keyList = new ArrayList<>();
-            mFirestore = FirebaseFirestore.getInstance();
-            mAuth = FirebaseAuth.getInstance();
+            FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
             mRootRef = FirebaseDatabase.getInstance().getReference();
+            String email = mAuth.getCurrentUser().getEmail();
+            final String email_red = email.substring(0, email.length() - 10);
 
-            add_students = findViewById(R.id.add_students);
-            take_attendance = findViewById(R.id.take_attendance);
-            marks = findViewById(R.id.marks);
-            announcement = findViewById(R.id.announcement);
-            mAdapter = new MessageAdapter(this,messageList,class_id);
+            RelativeLayout add_students = findViewById(R.id.add_students);
+            RelativeLayout take_attendance = findViewById(R.id.take_attendance);
+            RelativeLayout marks = findViewById(R.id.marks);
+            FloatingActionButton announcement = findViewById(R.id.announcement);
+            mAdapter = new AdminMessageAdapter(this,messageList,class_id, email_red);
             mMessagesList = findViewById(R.id.messages_list);
             mRefreshLayout = findViewById(R.id.message_swipe_layout);
             mLinearLayout = new LinearLayoutManager(this);
@@ -84,8 +79,6 @@ public class AnnouncementAdmin extends AppCompatActivity {
             mMessagesList.setLayoutManager(mLinearLayout);
             mMessagesList.setAdapter(mAdapter);
 
-            String email = mAuth.getCurrentUser().getEmail();
-            final String email_red = email.substring(0, email.length() - 10);
             final String[] Institute = new String[1];
 
             mRootRef.child("Chat").child(email_red).child(class_id).child("seen").setValue(true);
@@ -97,13 +90,10 @@ public class AnnouncementAdmin extends AppCompatActivity {
                 loadMoreMessages(class_id,email_red);
             });
 
-            mFirestore.collection("Users").document(email_red).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        Institute[0] = document.getString("Institute");
-                    }
+            mFirestore.collection("Users").document(email_red).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    Institute[0] = document.getString("Institute");
                 }
             });
 
@@ -130,7 +120,7 @@ public class AnnouncementAdmin extends AppCompatActivity {
             });
 
             announcement.setOnClickListener(v -> {
-                Intent intent = new Intent(AnnouncementAdmin.this,SingleAnnouncementAdmin.class);
+                Intent intent = new Intent(AnnouncementAdmin.this,MakeAnnouncement.class);
                 intent.putExtra("class_id", class_id);
                 intent.putExtra("institute",Institute[0]);
                 startActivity(intent);
