@@ -2,15 +2,13 @@ package com.example.ashish.startup.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -22,17 +20,13 @@ import com.example.ashish.startup.Activities.MainActivity;
 import com.example.ashish.startup.Activities.NewClass2;
 import com.example.ashish.startup.Models.Classes;
 import com.example.ashish.startup.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.onurkaganaldemir.ktoastlib.KToast;
 
 import java.util.HashMap;
@@ -75,7 +69,9 @@ public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.
             holder.mView.setOnClickListener(view -> {
                 Intent intent = new Intent(context,NewClass2.class);
                 intent.putExtra("class_id", class_id);
-                context.startActivity(intent);
+                ActivityOptionsCompat options = ActivityOptionsCompat.
+                        makeSceneTransitionAnimation((Activity)context,(View)view, "className");
+                context.startActivity(intent,options.toBundle());
             });
 
             holder.option_view.setOnClickListener(view -> {

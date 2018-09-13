@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +18,7 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.example.ashish.startup.Adapters.MarksInputListAdapter;
@@ -44,12 +48,17 @@ public class GetMarks extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private List<Marks> marksInputList;
     private MarksInputListAdapter marksInputListAdapter;
-    private Button submitMarks, viewDetailedMarks, updateMarks;
+    private Button submitMarks;
+    private ImageView viewDetailedMarks, updateMarks;
     private ProgressBar progressBar;
     ProgressDialog dialog;
     String Institute,class_id,marksID,email_red;
-    int i;
+    private int i;
     Map<String,Object> data;
+
+    private boolean appBarExpanded = true;
+    private AppBarLayout appBarLayout;
+    private CollapsingToolbarLayout collapsingToolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,14 +75,17 @@ public class GetMarks extends AppCompatActivity {
             marksID = getIntent().getStringExtra("marksID");
             class_id = getIntent().getStringExtra("class_id");
 
-            Toolbar toolbar = findViewById(R.id.my_toolbar);
+            Toolbar toolbar = findViewById(R.id.get_marks_toolbar);
             setSupportActionBar(toolbar);
 
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 getSupportActionBar().setDisplayShowHomeEnabled(true);
-                getSupportActionBar().setTitle("Submit Marks");
             }
+
+            appBarLayout = findViewById(R.id.appbar_get_marks);
+            collapsingToolbar = findViewById(R.id.collapsing_toolbar_activity_get_marks);
+            collapsingToolbar.setTitle("Submit Marks");
 
             submitMarks = findViewById(R.id.submit_marks);
             viewDetailedMarks = findViewById(R.id.view_detailed_marks);
@@ -83,13 +95,23 @@ public class GetMarks extends AppCompatActivity {
             progressBar.setScaleY(2f);
             dialog = new ProgressDialog(this);
 
-
             mMainList = findViewById(R.id.get_marks_list);
             mMainList.setHasFixedSize(true);
             mMainList.setLayoutManager(new LinearLayoutManager(this));
             mMainList.setAdapter(marksInputListAdapter);
 
             mFirestore = FirebaseFirestore.getInstance();
+
+            appBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+                //  Vertical offset == 0 indicates appBar is fully expanded.
+                if (Math.abs(verticalOffset) > 200) {
+                    appBarExpanded = false;
+                    invalidateOptionsMenu();
+                } else {
+                    appBarExpanded = true;
+                    invalidateOptionsMenu();
+                }
+            });
 
             final FirebaseUser user = mAuth.getCurrentUser();
             String email = user.getEmail();
@@ -139,9 +161,12 @@ public class GetMarks extends AppCompatActivity {
                 }
             });
 
+            View view = findViewById(R.id.submit_marks);
             updateMarks.setOnClickListener(v -> {
                 Intent intent = new Intent(GetMarks.this, AnimateToolbar.class);
-                startActivity(intent);
+                ActivityOptionsCompat options = ActivityOptionsCompat.
+                        makeSceneTransitionAnimation(this,(View)view, "updateMarksAnimation");
+                startActivity(intent,options.toBundle());
             });
         }
 
@@ -188,12 +213,8 @@ public class GetMarks extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == android.R.id.home){
             onBackPressed();
             return true;

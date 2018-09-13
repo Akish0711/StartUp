@@ -1,15 +1,17 @@
 package com.example.ashish.startup.Activities;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.RelativeLayout;
+import android.widget.ImageView;
 
 import com.example.ashish.startup.Adapters.MessageAdapter;
 import com.example.ashish.startup.Models.Message;
@@ -34,7 +36,7 @@ public class NewClass2 extends AppCompatActivity {
 
     private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
-    private RelativeLayout add_students,take_attendance, marks;
+    private ImageView add_students,take_attendance, marks;
     private FloatingActionButton announcement;
     private RecyclerView mMessagesList;
     private List<Message> messageList;
@@ -49,6 +51,10 @@ public class NewClass2 extends AppCompatActivity {
     private String mLastKey = "";
     private String mPrevKey = "";
 
+    private boolean appBarExpanded = true;
+    private AppBarLayout appBarLayout;
+    private CollapsingToolbarLayout collapsingToolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,14 +63,17 @@ public class NewClass2 extends AppCompatActivity {
         if (getIntent().hasExtra("class_id")){
             final String class_id = getIntent().getStringExtra("class_id");
 
-            Toolbar toolbar = findViewById(R.id.my_toolbar);
+            Toolbar toolbar = findViewById(R.id.new_class2_toolbar);
             setSupportActionBar(toolbar);
 
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 getSupportActionBar().setDisplayShowHomeEnabled(true);
-                getSupportActionBar().setTitle("Your Class");
             }
+
+            appBarLayout = findViewById(R.id.appbar_new_class2);
+            collapsingToolbar = findViewById(R.id.collapsing_toolbar_activity_new_class2);
+            collapsingToolbar.setTitle("Your Class");
 
             messageList = new ArrayList<>();
             keyList = new ArrayList<>();
@@ -72,9 +81,9 @@ public class NewClass2 extends AppCompatActivity {
             mAuth = FirebaseAuth.getInstance();
             mRootRef = FirebaseDatabase.getInstance().getReference();
 
-            add_students = findViewById(R.id.add_students);
-            take_attendance = findViewById(R.id.take_attendance);
-            marks = findViewById(R.id.marks);
+            add_students = findViewById(R.id.add_students_image);
+            take_attendance = findViewById(R.id.take_attendance_image);
+            marks = findViewById(R.id.marks_image);
             announcement = findViewById(R.id.announcement);
             mAdapter = new MessageAdapter(this,messageList,class_id);
             mMessagesList = findViewById(R.id.messages_list);
@@ -83,6 +92,17 @@ public class NewClass2 extends AppCompatActivity {
             mMessagesList.setHasFixedSize(true);
             mMessagesList.setLayoutManager(mLinearLayout);
             mMessagesList.setAdapter(mAdapter);
+
+            appBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+                //  Vertical offset == 0 indicates appBar is fully expanded.
+                if (Math.abs(verticalOffset) > 200) {
+                    appBarExpanded = false;
+                    invalidateOptionsMenu();
+                } else {
+                    appBarExpanded = true;
+                    invalidateOptionsMenu();
+                }
+            });
 
             String email = mAuth.getCurrentUser().getEmail();
             final String email_red = email.substring(0, email.length() - 10);

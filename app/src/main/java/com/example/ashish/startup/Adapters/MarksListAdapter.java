@@ -1,7 +1,9 @@
 package com.example.ashish.startup.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,15 +52,14 @@ public class MarksListAdapter extends RecyclerView.Adapter<MarksListAdapter.View
 
             final String marks_id = testList.get(position).marksID;
 
-            holder.mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(context,GetMarks.class);
-                    intent.putExtra("marksID", marks_id);
-                    intent.putExtra("institute",institute);
-                    intent.putExtra("class_id",c);
-                    context.startActivity(intent);
-                }
+            holder.mView.setOnClickListener(view -> {
+                Intent intent = new Intent(context,GetMarks.class);
+                intent.putExtra("marksID", marks_id);
+                intent.putExtra("institute",institute);
+                intent.putExtra("class_id",c);
+                ActivityOptionsCompat options = ActivityOptionsCompat.
+                        makeSceneTransitionAnimation((Activity)context,(View)view, "testName");
+                context.startActivity(intent,options.toBundle());
             });
         }
     }

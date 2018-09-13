@@ -6,6 +6,8 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -14,7 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.RelativeLayout;
+import android.widget.ImageView;
 
 import com.example.ashish.startup.Adapters.MessageAdapter;
 import com.example.ashish.startup.Models.Message;
@@ -44,11 +46,16 @@ public class UserNewClass extends AppCompatActivity {
     private MessageAdapter mAdapter;
     private SwipeRefreshLayout mRefreshLayout;
     private DatabaseReference mRootRef;
+    private ImageView view_atttendance,view_marks,contact;
     private static final int TOTAL_ITEMS_TO_LOAD = 10;
     private int mCurrentPage = 1;
     private int itemPos = 0;
     private String mLastKey = "";
     private String mPrevKey = "";
+
+    private boolean appBarExpanded = true;
+    private AppBarLayout appBarLayout;
+    private CollapsingToolbarLayout collapsingToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,18 +86,33 @@ public class UserNewClass extends AppCompatActivity {
             mMessagesList.setHasFixedSize(true);
             mMessagesList.setLayoutManager(mLinearLayout);
             mMessagesList.setAdapter(mAdapter);
-            RelativeLayout view_atttendance = findViewById(R.id.view_attendance);
-            RelativeLayout view_marks = findViewById(R.id.view_marks);
-            RelativeLayout contact = findViewById(R.id.contact);
 
-            Toolbar toolbar = findViewById(R.id.my_toolbar);
+            view_atttendance = findViewById(R.id.view_attendance_image);
+            view_marks = findViewById(R.id.view_marks_image);
+            contact = findViewById(R.id.contact_image);
+
+            Toolbar toolbar = findViewById(R.id.user_new_class_toolbar);
             setSupportActionBar(toolbar);
 
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 getSupportActionBar().setDisplayShowHomeEnabled(true);
-                getSupportActionBar().setTitle(subject_name);
             }
+
+            appBarLayout = findViewById(R.id.appbar_user_new_class);
+            collapsingToolbar = findViewById(R.id.collapsing_toolbar_activity_user_new_class);
+            collapsingToolbar.setTitle(subject_name);
+
+            appBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+                //  Vertical offset == 0 indicates appBar is fully expanded.
+                if (Math.abs(verticalOffset) > 200) {
+                    appBarExpanded = false;
+                    invalidateOptionsMenu();
+                } else {
+                    appBarExpanded = true;
+                    invalidateOptionsMenu();
+                }
+            });
 
             view_atttendance.setOnClickListener(view -> {
                 Intent intent = new Intent(UserNewClass.this, UserAttendance.class);

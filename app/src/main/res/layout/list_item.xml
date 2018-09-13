@@ -21,7 +21,9 @@
         app:cardElevation="3dp"
         app:cardUseCompatPadding="true"
         card_view:cardBackgroundColor="@color/colorPrimary"
-        card_view:cardCornerRadius="2dp">
+        card_view:cardCornerRadius="2dp"
+        android:transitionName="className"
+        >
 
         <RelativeLayout
             android:layout_width="match_parent"

@@ -21,7 +21,9 @@
         app:cardUseCompatPadding="true"
         android:layoutAnimation="@anim/layout_animation_fall_down"
         card_view:cardBackgroundColor="@color/green"
-        card_view:cardCornerRadius="2dp">
+        card_view:cardCornerRadius="2dp"
+        android:transitionName="testName"
+        >
 
           <TextView
               android:id="@+id/tName"

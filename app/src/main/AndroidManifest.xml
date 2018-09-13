@@ -3,8 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.ashish.startup">
 
-    <uses-sdk tools:overrideLibrary="com.shashank.sony.fancygifdialoglib" />
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -12,7 +10,9 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS"/>
+
+    <uses-sdk tools:overrideLibrary="com.shashank.sony.fancygifdialoglib,com.highsoft.highcharts"/>
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -133,7 +133,7 @@
             android:name=".Activities.UploadMarks"
             android:screenOrientation="portrait" />
         <activity android:name=".Activities.AnnouncementStudents" />
-        <activity android:name=".Activities.FullScreenImage" />
+        <activity android:name=".Activities.FullScreenImage"></activity>
     </application>
 
 </manifest>
