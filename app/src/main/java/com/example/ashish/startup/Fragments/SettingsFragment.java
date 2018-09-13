@@ -72,8 +72,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
-        Button change_btn = (Button)view.findViewById(R.id.change_btn);
-        Button editProfile = (Button)view.findViewById(R.id.editProfile);
+        Button change_btn = view.findViewById(R.id.change_btn);
+        Button editProfile = view.findViewById(R.id.editProfile);
         change_btn.setOnClickListener(this);
         editProfile.setOnClickListener(this);
         return view;
@@ -131,5 +131,4 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
 }

@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.ashish.startup.Activities.UserNewClass;
+import com.example.ashish.startup.Activities.AnnouncementStudents;
 import com.example.ashish.startup.Models.Subject;
 import com.example.ashish.startup.R;
 
@@ -46,7 +46,7 @@ public class SubjectsListAdapter extends RecyclerView.Adapter<SubjectsListAdapte
             final String subject_id = subjectList.get(position).subjectID;
 
             holder.mView.setOnClickListener(view -> {
-                Intent intent = new Intent(context, UserNewClass.class);
+                Intent intent = new Intent(context, AnnouncementStudents.class);
                 intent.putExtra("subject_id", subject_id);
                 intent.putExtra("subject_name", subjectList.get(position).getSubject_Name());
                 intent.putExtra("Teacher_Name", subjectList.get(position).getTeacher_Name());

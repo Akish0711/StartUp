@@ -4,28 +4,19 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.example.ashish.startup.Adapters.SubjectsListAdapter;
 import com.example.ashish.startup.Models.Subject;
 import com.example.ashish.startup.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +26,7 @@ public class UserHomeFragment extends android.support.v4.app.Fragment {
     private SubjectsListAdapter subjectsListAdapter;
     private List<Subject> subjectList;
     private FirebaseAuth firebaseAuth;
+    private List<String> keyList;
 
     public UserHomeFragment() {
 
@@ -44,6 +36,7 @@ public class UserHomeFragment extends android.support.v4.app.Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         firebaseAuth = FirebaseAuth.getInstance();
+        keyList = new ArrayList<>();
         loadClasses();
     }
 
@@ -54,28 +47,31 @@ public class UserHomeFragment extends android.support.v4.app.Fragment {
         String email = user.getEmail();
         String email_red = email.substring(0, email.length() - 10);
 
-        rootRef.collection("Users").document(email_red).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()){
-                    final DocumentSnapshot document = task.getResult();
-                    document.getReference().collection("Subjects").addSnapshotListener(new EventListener<QuerySnapshot>() {
-                        @Override
-                        public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                            for (DocumentChange doc: documentSnapshots.getDocumentChanges()){
-                                if (doc.getType()== DocumentChange.Type.ADDED){
-                                    String subjectID = doc.getDocument().getId();
-                                    Subject subjects = doc.getDocument().toObject(Subject.class).withID(subjectID);
-                                    subjectList.add(subjects);
-                                    subjectsListAdapter.notifyDataSetChanged();
-                                }
-                            }
-                        }
-                    });
+        rootRef.collection("Users").document(email_red).collection("Subjects").addSnapshotListener((documentSnapshots, e) -> {
+            for (DocumentChange doc: documentSnapshots.getDocumentChanges()){
+                switch (doc.getType()) {
+                    case ADDED:
+                        String subjectID = doc.getDocument().getId();
+                        Subject subjects = doc.getDocument().toObject(Subject.class).withID(subjectID);
+                        subjectList.add(subjects);
+                        subjectsListAdapter.notifyDataSetChanged();
+                        keyList.add(subjectID);
+                        break;
+                    case MODIFIED:
+                        break;
+                    case REMOVED:
+                        subjectID = doc.getDocument().getId();
+                        int index = keyList.indexOf(subjectID);
+                        subjectList.remove(index);
+                        keyList.remove(index);
+                        subjectsListAdapter.notifyDataSetChanged();
+                        break;
                 }
             }
         });
     }
+
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override

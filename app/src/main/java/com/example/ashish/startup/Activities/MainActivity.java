@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         new_class.setOnClickListener(view -> {
-            finish();
+            floatingActionMenu.close(true);
             startActivity(new Intent(MainActivity.this,NewClass.class));
         });
 
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
         String[] permissions = {Manifest.permission.SEND_SMS};
         if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 permissions[0]) == PackageManager.PERMISSION_GRANTED){
-            finish();
+            floatingActionMenu.close(true);
             startActivity(new Intent(MainActivity.this, CreateAccount.class));
         }else{
             ActivityCompat.requestPermissions(MainActivity.this, permissions, REQUEST_CODE);
