@@ -13,7 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
-import com.example.ashish.startup.Adapters.MessageAdapter;
+import com.example.ashish.startup.Adapters.AdminMessageAdapter;
 import com.example.ashish.startup.Models.Message;
 import com.example.ashish.startup.R;
 import com.github.clans.fab.FloatingActionButton;
@@ -32,7 +32,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewClass2 extends AppCompatActivity {
+public class AnnouncementAdmin extends AppCompatActivity {
 
     private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
@@ -42,7 +42,7 @@ public class NewClass2 extends AppCompatActivity {
     private List<Message> messageList;
     private List<String> keyList;
     private LinearLayoutManager mLinearLayout;
-    private MessageAdapter mAdapter;
+    private AdminMessageAdapter mAdapter;
     private SwipeRefreshLayout mRefreshLayout;
     private DatabaseReference mRootRef;
     private static final int TOTAL_ITEMS_TO_LOAD = 10;
@@ -58,7 +58,7 @@ public class NewClass2 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_class2);
+        setContentView(R.layout.activity_announcement_admin);
 
         if (getIntent().hasExtra("class_id")){
             final String class_id = getIntent().getStringExtra("class_id");
@@ -80,12 +80,14 @@ public class NewClass2 extends AppCompatActivity {
             mFirestore = FirebaseFirestore.getInstance();
             mAuth = FirebaseAuth.getInstance();
             mRootRef = FirebaseDatabase.getInstance().getReference();
+            String email = mAuth.getCurrentUser().getEmail();
+            final String email_red = email.substring(0, email.length() - 10);
 
             add_students = findViewById(R.id.add_students_image);
             take_attendance = findViewById(R.id.take_attendance_image);
             marks = findViewById(R.id.marks_image);
             announcement = findViewById(R.id.announcement);
-            mAdapter = new MessageAdapter(this,messageList,class_id);
+            mAdapter = new AdminMessageAdapter(this,messageList,class_id,email_red);
             mMessagesList = findViewById(R.id.messages_list);
             mRefreshLayout = findViewById(R.id.message_swipe_layout);
             mLinearLayout = new LinearLayoutManager(this);
@@ -104,8 +106,6 @@ public class NewClass2 extends AppCompatActivity {
                 }
             });
 
-            String email = mAuth.getCurrentUser().getEmail();
-            final String email_red = email.substring(0, email.length() - 10);
             final String[] Institute = new String[1];
 
             mRootRef.child("Chat").child(email_red).child(class_id).child("seen").setValue(true);
@@ -128,14 +128,14 @@ public class NewClass2 extends AppCompatActivity {
             });
 
             add_students.setOnClickListener(view -> {
-                Intent intent = new Intent(NewClass2.this,AddStudents.class);
+                Intent intent = new Intent(AnnouncementAdmin.this,AddStudents.class);
                 intent.putExtra("class_id", class_id);
                 intent.putExtra("institute",Institute[0]);
                 startActivity(intent);
             });
 
             take_attendance.setOnClickListener(view -> {
-                Intent intent = new Intent(NewClass2.this,TakeAttendance.class);
+                Intent intent = new Intent(AnnouncementAdmin.this,TakeAttendance.class);
                 intent.putExtra("class_id", class_id);
                 intent.putExtra("institute",Institute[0]);
                 intent.putExtra("username", email_red);
@@ -143,14 +143,14 @@ public class NewClass2 extends AppCompatActivity {
             });
 
             marks.setOnClickListener(v -> {
-                Intent intent = new Intent(NewClass2.this,UploadMarks.class);
+                Intent intent = new Intent(AnnouncementAdmin.this,UploadMarks.class);
                 intent.putExtra("class_id", class_id);
                 intent.putExtra("institute",Institute[0]);
                 startActivity(intent);
             });
 
             announcement.setOnClickListener(v -> {
-                Intent intent = new Intent(NewClass2.this,Announcement.class);
+                Intent intent = new Intent(AnnouncementAdmin.this,ViewSingleAnnouncement.class);
                 intent.putExtra("class_id", class_id);
                 intent.putExtra("institute",Institute[0]);
                 startActivity(intent);

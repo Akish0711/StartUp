@@ -16,8 +16,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ashish.startup.Activities.AnnouncementAdmin;
 import com.example.ashish.startup.Activities.MainActivity;
-import com.example.ashish.startup.Activities.NewClass2;
 import com.example.ashish.startup.Models.Classes;
 import com.example.ashish.startup.R;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -67,7 +67,7 @@ public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.
             holder.nameText.setText(classesList.get(position).getName());
             final String class_id = classesList.get(position).classID;
             holder.mView.setOnClickListener(view -> {
-                Intent intent = new Intent(context,NewClass2.class);
+                Intent intent = new Intent(context,AnnouncementAdmin.class);
                 intent.putExtra("class_id", class_id);
                 ActivityOptionsCompat options = ActivityOptionsCompat.
                         makeSceneTransitionAnimation((Activity)context,(View)view, "className");
