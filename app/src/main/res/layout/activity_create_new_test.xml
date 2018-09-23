@@ -63,7 +63,7 @@
             android:layout_gravity="center_horizontal"
             android:ems="10"
             android:hint="Enter Max Marks"
-            android:inputType="textPersonName" />
+            android:inputType="numberDecimal" />
     </android.support.design.widget.TextInputLayout>
 
     <ProgressBar

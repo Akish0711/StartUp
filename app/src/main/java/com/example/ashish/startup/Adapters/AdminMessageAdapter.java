@@ -82,7 +82,7 @@ public class AdminMessageAdapter extends RecyclerView.Adapter<AdminMessageAdapte
                                 .setTitle("Delete this Announcement?")
                                 .setMessage("Warning : You cannot undo this.")
                                 .setPositiveButton("DELETE", (dialog, which) -> {
-                                    mRootRef.child("Announcement").child(email_red).child(class_id).child(message_id).removeValue().addOnCompleteListener(task -> Toast.makeText(context, "MakeAnnouncement Deleted", Toast.LENGTH_LONG).show());
+                                    mRootRef.child("Announcement").child(email_red).child(class_id).child(message_id).removeValue().addOnCompleteListener(task -> Toast.makeText(context, "Announcement Deleted", Toast.LENGTH_LONG).show());
                                 }).setNegativeButton("Cancel", null)
                                 .show();
                         break;

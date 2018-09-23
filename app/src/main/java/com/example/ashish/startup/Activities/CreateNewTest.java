@@ -1,5 +1,6 @@
 package com.example.ashish.startup.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -92,6 +93,12 @@ public class CreateNewTest extends AppCompatActivity {
                 KToast.successToast(CreateNewTest.this,"New Test Created Successfully.",Gravity.BOTTOM,KToast.LENGTH_SHORT);
             }
         });
+
+        Intent intent = new Intent(CreateNewTest.this,GetMarks.class);
+        intent.putExtra("class_id",subject_id);
+        intent.putExtra("marksID",tName);
+        intent.putExtra("institute","XYZ");
+        startActivity(intent);
     }
 
     @Override

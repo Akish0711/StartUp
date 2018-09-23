@@ -17,7 +17,6 @@ import com.example.ashish.startup.Adapters.MarksListAdapter;
 import com.example.ashish.startup.Models.Marks;
 import com.example.ashish.startup.R;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,7 +36,7 @@ public class TestFragment extends android.support.v4.app.Fragment {
     private FirebaseAuth firebaseAuth;
     private List<Marks> marksList;
     private MarksListAdapter marksListAdapter;
-    private String c,institute;
+    private String c,email_red,institute;
 
     public TestFragment(){
 
@@ -60,7 +59,7 @@ public class TestFragment extends android.support.v4.app.Fragment {
 
         final FirebaseUser user = firebaseAuth.getCurrentUser();
         String email = user.getEmail();
-        String email_red = email.substring(0, email.length() - 10);
+        email_red = email.substring(0, email.length() - 10);
 
         try{
         rootRef.collection("Users").document(email_red).collection("Subjects").document(c).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -83,12 +82,7 @@ public class TestFragment extends android.support.v4.app.Fragment {
                     });
                 }
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e("error",e.getLocalizedMessage());
-            }
-        });
+        }).addOnFailureListener(e -> Log.e("error",e.getLocalizedMessage()));
         }
         catch (Exception e){e.getLocalizedMessage();}
     }
@@ -102,7 +96,7 @@ public class TestFragment extends android.support.v4.app.Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.test_list);
 
         marksList = new ArrayList<>();
-        marksListAdapter = new MarksListAdapter(getContext(),marksList,institute,c);
+        marksListAdapter = new MarksListAdapter(getContext(),marksList,email_red,c,institute);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(marksListAdapter);

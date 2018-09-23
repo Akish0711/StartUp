@@ -40,7 +40,7 @@ public class MarksCardAdapter extends RecyclerView.Adapter<MarksCardAdapter.View
     public Context context;
     private FirebaseFirestore rootRef;
     private String subId,tId,email;
-    private Set<Integer> mMarks ;
+    private Set<Float> mMarks ;
 
     public MarksCardAdapter(Context context, List<Marks> marksList,String subID,String tID,String email){
         this.testList = marksList;
@@ -106,7 +106,7 @@ public class MarksCardAdapter extends RecyclerView.Adapter<MarksCardAdapter.View
 
                                            if(!b.equals("Max_marks")){
                                                Log.e( "onComplete: ", doc.get(b+".com") + "  " +doc.getId() );
-                                               mMarks.add(Integer.parseInt((String)doc.get(b+".com")));
+                                               mMarks.add(Float.parseFloat((String)doc.get(b+".com")));
                                            }
                                        } catch (Exception e) {
                                        }
@@ -175,7 +175,7 @@ public class MarksCardAdapter extends RecyclerView.Adapter<MarksCardAdapter.View
                     Number[] series2_data = new Number[mMarks.size()];
 
                     int i = 0;
-                    for(int m : mMarks){
+                    for(float m : mMarks){
                         series2_data[i] = m;
                         i++;
                     }

@@ -62,7 +62,7 @@ public class AnnouncementAdmin extends AppCompatActivity {
 
         if (getIntent().hasExtra("class_id")){
             final String class_id = getIntent().getStringExtra("class_id");
-
+            final String class_name = getIntent().getStringExtra("class_name");
             Toolbar toolbar = findViewById(R.id.new_class2_toolbar);
             setSupportActionBar(toolbar);
 
@@ -73,7 +73,7 @@ public class AnnouncementAdmin extends AppCompatActivity {
 
             appBarLayout = findViewById(R.id.appbar_new_class2);
             collapsingToolbar = findViewById(R.id.collapsing_toolbar_activity_new_class2);
-            collapsingToolbar.setTitle("Your Class");
+            collapsingToolbar.setTitle(class_name);
 
             messageList = new ArrayList<>();
             keyList = new ArrayList<>();
@@ -159,7 +159,7 @@ public class AnnouncementAdmin extends AppCompatActivity {
     }
 
     private void loadMoreMessages(String class_id, String email_red) {
-        DatabaseReference messageRef = mRootRef.child("Announcement").child(email_red).child(class_id);
+        DatabaseReference messageRef = mRootRef.child("Chat").child(email_red).child(class_id);
         Query messageQuery = messageRef.orderByKey().endAt(mLastKey).limitToLast(10);
 
         messageQuery.addChildEventListener(new ChildEventListener() {

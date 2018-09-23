@@ -26,13 +26,10 @@ import android.widget.Toast;
 import com.example.ashish.startup.Adapters.UsersListAdapter;
 import com.example.ashish.startup.Models.Users;
 import com.example.ashish.startup.R;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.onurkaganaldemir.ktoastlib.KToast;
 
 import java.util.ArrayList;
@@ -94,135 +91,104 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
 
             String email = mAuth.getCurrentUser().getEmail();
 
-            mFirestore.collection("Users").whereEqualTo("Institute_Admin", Institute+"_No").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        for (final DocumentSnapshot document : task.getResult()) {
-                            document.getReference().collection("Subjects").document(class_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull final Task<DocumentSnapshot> task) {
-                                    if (task.isSuccessful()){
-                                        DocumentSnapshot doc = task.getResult();
-                                        if (doc == null || !doc.exists()) {
-                                            document.getReference().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                    if (task.isSuccessful()){
-                                                        progressBar.setVisibility(View.GONE);
-                                                        DocumentSnapshot doc = task.getResult();
-                                                        Users users = doc.toObject(Users.class);
-                                                        usersList.add(users);
-                                                        Collections.sort(usersList, Users.BY_NAME_ALPHABETICAL);
-                                                        usersListAdapter.notifyDataSetChanged();
-                                                    }
-                                                }
-                                            }).addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    notifyUser(e.getLocalizedMessage());
-                                                }
-                                            });
+            mFirestore.collection("Users").whereEqualTo("Institute_Admin", Institute+"_No").get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    for (final DocumentSnapshot document : task.getResult()) {
+                        document.getReference().collection("Subjects").document(class_id).get().addOnCompleteListener(task12 -> {
+                            if (task12.isSuccessful()){
+                                DocumentSnapshot doc = task12.getResult();
+                                if (doc == null || !doc.exists()) {
+                                    document.getReference().get().addOnCompleteListener(task1 -> {
+                                        if (task1.isSuccessful()){
+                                            progressBar.setVisibility(View.GONE);
+                                            DocumentSnapshot doc1 = task1.getResult();
+                                            Users users = doc1.toObject(Users.class);
+                                            usersList.add(users);
+                                            Collections.sort(usersList, Users.BY_NAME_ALPHABETICAL);
+                                            usersListAdapter.notifyDataSetChanged();
                                         }
-                                        else{
-                                            final Handler[] handler = {new Handler()};
-                                            handler[0].postDelayed(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    //Do something after 100ms
-                                                    if(usersList.size() == 0){
-                                                        if(!alreadyExecuted[0]) {
-                                                            alreadyExecuted[0] = true;
-                                                            progressBar.setVisibility(View.GONE);
-                                                            n_record_image.setVisibility(View.VISIBLE);
-                                                            n_record_text.setVisibility(View.VISIBLE);
+                                    }).addOnFailureListener(e -> notifyUser(e.getLocalizedMessage()));
+                                }
+                                else{
+                                    final Handler[] handler = {new Handler()};
+                                    handler[0].postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            //Do something after 100ms
+                                            if(usersList.size() == 0){
+                                                if(!alreadyExecuted[0]) {
+                                                    alreadyExecuted[0] = true;
+                                                    progressBar.setVisibility(View.GONE);
+                                                    n_record_image.setVisibility(View.VISIBLE);
+                                                    n_record_text.setVisibility(View.VISIBLE);
 
-                                                            //                notifyUser("All the registered users have already been added.");
-                                                        }
-                                                    }
+                                                    //                notifyUser("All the registered users have already been added.");
                                                 }
-                                            }, 1000);
-                                            Log.e("Position : ","inside else");
+                                            }
                                         }
-                                    }
+                                    }, 1000);
+                                    Log.e("Position : ","inside else");
+                                }
+                            }
 
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    notifyUser(e.getLocalizedMessage());
-                                }
-                            });
-                        }
+                        }).addOnFailureListener(e -> notifyUser(e.getLocalizedMessage()));
                     }
                 }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    notifyUser(e.getLocalizedMessage());
-                }
-            });
+            }).addOnFailureListener(e -> notifyUser(e.getLocalizedMessage()));
 
             final String email_red = email.substring(0, email.length() - 10);
-            mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        subject[0] = document.getString("Name");
-                    }
+            mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id).get()
+                    .addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    subject[0] = document.getString("Name");
                 }
             });
 
-            selected.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    List list = usersListAdapter.getSelectedItem();
-                    if (list.size() > 0) {
-                        int index = 0;
-                        for (index = 0; index < list.size(); index++) {
-                            final Users model = (Users) list.get(index);
-                            mFirestore.collection("Users").whereEqualTo("Username", model.getUsername()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        for (DocumentSnapshot document : task.getResult()) {
-                                            Map<String, Object> data = new HashMap<>();
-                                            data.put("Teacher_Name", email_red);
-                                            data.put("Subject_Name", subject[0]);
-                                            data.put("Total_Present",0);
-                                            data.put("Total_Class",0);
-                                            data.put("Percentage",0);
-                                            data.put("Name", model.getName());
-                                            data.put("Username", model.getUsername());
-                                            document.getReference().collection("Subjects").document(class_id).set(data);
-                                        }
-                                    }
-
+            selected.setOnClickListener(view -> {
+                List list = usersListAdapter.getSelectedItem();
+                if (list.size() > 0) {
+                    int index = 0;
+                    for (index = 0; index < list.size(); index++) {
+                        final Users model = (Users) list.get(index);
+                        mFirestore.collection("Users").whereEqualTo("Username", model.getUsername()).get().addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                for (DocumentSnapshot document : task.getResult()) {
+                                    Map<String, Object> data = new HashMap<>();
+                                    data.put("Teacher_Name", email_red);
+                                    data.put("Subject_Name", subject[0]);
+                                    data.put("Total_Present",0);
+                                    data.put("Total_Class",0);
+                                    data.put("Percentage",0);
+                                    data.put("Name", model.getName());
+                                    data.put("Username", model.getUsername());
+                                    document.getReference().collection("Subjects").document(class_id).set(data);
                                 }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    // notifyUser(e.getLocalizedMessage());
-                                }
-                            });
+                            }
 
-                            Map<String, Object> student = new HashMap<>();
-                            student.put("Name", model.getName());
-                            student.put("Username", model.getUsername());
-                            mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id).collection("Students").document().set(student);
-                        }
-                        if (index == 1) {
-                            KToast.successToast(AddStudents.this, index + " Student Added",Gravity.BOTTOM ,KToast.LENGTH_AUTO);
-                        }
-                        if (index > 1) {
-                            KToast.successToast(AddStudents.this, index + " Students Added",Gravity.BOTTOM ,KToast.LENGTH_AUTO);
-                        }
-                        finish();
-                        startActivity(new Intent(AddStudents.this, MainActivity.class));
-                    } else {
-                        notifyUser("Please select a Student");
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // notifyUser(e.getLocalizedMessage());
+                            }
+                        });
+
+                        Map<String, Object> student = new HashMap<>();
+                        student.put("Name", model.getName());
+                        student.put("Username", model.getUsername());
+                        mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id)
+                                .collection("Students").document().set(student);
                     }
+                    if (index == 1) {
+                        KToast.successToast(AddStudents.this, index + " Student Added",Gravity.BOTTOM ,KToast.LENGTH_AUTO);
+                    }
+                    if (index > 1) {
+                        KToast.successToast(AddStudents.this, index + " Students Added",Gravity.BOTTOM ,KToast.LENGTH_AUTO);
+                    }
+                    finish();
+                    startActivity(new Intent(AddStudents.this, MainActivity.class));
+                } else {
+                    notifyUser("Please select a Student");
                 }
             });
 

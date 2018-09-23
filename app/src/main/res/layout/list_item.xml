@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="-4dp"
@@ -19,11 +18,11 @@
         android:foreground="?android:attr/selectableItemBackground"
         android:paddingBottom="0dp"
         app:cardElevation="3dp"
+        android:layoutAnimation="@anim/layout_animation_fall_down"
         app:cardUseCompatPadding="true"
         card_view:cardBackgroundColor="@color/colorPrimary"
         card_view:cardCornerRadius="2dp"
-        android:transitionName="className"
-        >
+        android:transitionName="className">
 
         <RelativeLayout
             android:layout_width="match_parent"

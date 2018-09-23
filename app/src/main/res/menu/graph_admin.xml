@@ -9,5 +9,11 @@
         android:icon="@drawable/marks"
         app:showAsAction="always"
         />
+    <item
+        android:id="@+id/enter_marks"
+        android:title="Enter Marks"
+        android:icon="@drawable/input_marks"
+        app:showAsAction="always"
+        />
 
 </menu>

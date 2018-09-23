@@ -1,5 +1,6 @@
 package com.example.ashish.startup.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.example.ashish.startup.Adapters.AdminViewMarksListAdapter;
 import com.example.ashish.startup.Models.Marks;
@@ -48,23 +48,24 @@ public class ViewMarks extends AppCompatActivity {
     private ProgressBar progressBar;
     private RecyclerView marksListView;
     private List<Marks> marksList;
-    private Set<Integer> mMarks = new HashSet<>();
+    private Set<Float> mMarks = new HashSet<>();
     private AdminViewMarksListAdapter adminViewMarksListAdapter;
-    FirebaseAuth mAuth;
+    private FirebaseAuth mAuth;
+    private String email_red,marksID,class_id,institute;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_marks);
 
-        marksList = new ArrayList<>();
-        adminViewMarksListAdapter = new AdminViewMarksListAdapter(marksList);
         mAuth = FirebaseAuth.getInstance();
 
-        if(getIntent().hasExtra("class_id") && getIntent().hasExtra("email_red") && getIntent().hasExtra("marksID")){
-            final String class_id = getIntent().getStringExtra("class_id");
-            final String marksID = getIntent().getStringExtra("marksID");
-            final String email_red = getIntent().getStringExtra("email_red");
+        if(getIntent().hasExtra("class_id") && getIntent().hasExtra("email_red")
+                && getIntent().hasExtra("marksID") && getIntent().hasExtra("institute") ){
+           class_id = getIntent().getStringExtra("class_id");
+           marksID = getIntent().getStringExtra("marksID");
+           email_red = getIntent().getStringExtra("email_red");
+           institute = getIntent().getStringExtra("institute");
 
             android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar_view_marks);
             setSupportActionBar(toolbar);
@@ -72,8 +73,10 @@ public class ViewMarks extends AppCompatActivity {
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 getSupportActionBar().setDisplayShowHomeEnabled(true);
-                getSupportActionBar().setTitle("View Marks");
+                getSupportActionBar().setTitle(marksID + " Marks");
             }
+            marksList = new ArrayList<>();
+            adminViewMarksListAdapter = new AdminViewMarksListAdapter(marksList,marksID,class_id,email_red);
 
             marksListView = findViewById(R.id.view_marks_recycler_view);
             progressBar = findViewById(R.id.progressBarViewMarks);
@@ -100,7 +103,13 @@ public class ViewMarks extends AppCompatActivity {
                                           Marks marks = new Marks() ;
                                           marks.setName(b.replace("@gmail",""));
                                           marks.setMax_marks((String)doc.get("Max_marks"));
-                                          mMarks.add(Integer.parseInt((String)doc.get(b+".com")));
+
+                                          if(doc.get(b + ".com") == null || ((String)doc.get(b + ".com")).isEmpty()){
+                                              mMarks.add(Float.valueOf(0));
+                                          }
+                                          else {
+                                              mMarks.add(Float.parseFloat((String) doc.get(b + ".com")));
+                                          }
                                           marks.setInputMarks((String)doc.get(b+".com"));
                                           marks.setUsername(b.replace("@gmail",""));
 
@@ -112,7 +121,8 @@ public class ViewMarks extends AppCompatActivity {
                                           adminViewMarksListAdapter.notifyDataSetChanged();
                                         }
                                         catch (Exception e){
-                                            Log.e("error : ",e.getLocalizedMessage()+"" );
+                                      e.printStackTrace();
+                                            Log.e("error : ",e.getLocalizedMessage()+"" + e.getMessage()  );
                                         }
                             }
                         }
@@ -121,6 +131,7 @@ public class ViewMarks extends AppCompatActivity {
             });
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -136,6 +147,14 @@ public class ViewMarks extends AppCompatActivity {
             onBackPressed();
             return true;
         }
+        if ( id == R.id.enter_marks ){
+            Intent intent = new Intent(ViewMarks.this,GetMarks.class);
+            intent.putExtra("class_id",class_id);
+            intent.putExtra("marksID",marksID);
+            intent.putExtra("institute",institute);
+            startActivity(intent);
+        }
+
         if(id == R.id.admin_graph){
 
             final LayoutInflater inflater = getLayoutInflater();
@@ -197,7 +216,7 @@ public class ViewMarks extends AppCompatActivity {
                 Number[] series2_data = new Number[mMarks.size()];
 
                 int i = 0;
-                for(int m : mMarks){
+                for(float m : mMarks){
                     series2_data[i] = m;
                     i++;
                 }
@@ -220,13 +239,11 @@ public class ViewMarks extends AppCompatActivity {
             alert.setView(alertLayout);
             alert.setCancelable(false);
 
-            alert.setNegativeButton("Cancel", (dialog, which) -> Toast.makeText(getBaseContext(), "Cancel clicked", Toast.LENGTH_SHORT).show());
-            alert.setPositiveButton("Done", (dialog, which) -> Toast.makeText(getBaseContext(), "Done click", Toast.LENGTH_SHORT).show());
+            alert.setPositiveButton("Done",(dialog, which) -> {});
 
             AlertDialog dialog = alert.create();
 
             dialog.show();
-            Toast.makeText(getApplicationContext(),"This is graph",Toast.LENGTH_SHORT).show();
             }catch (NullPointerException e){
                 Log.e("",e.getLocalizedMessage());
             }

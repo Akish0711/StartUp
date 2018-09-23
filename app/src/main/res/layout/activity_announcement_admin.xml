@@ -141,6 +141,7 @@
         app:fab_colorNormal="@color/colorPrimary"
         app:fab_colorPressed="@color/colorPrimary"
         app:fab_shadowXOffset="0dp"
-        app:fab_shadowYOffset="0.5dp" />
+        app:fab_shadowYOffset="0.5dp"
+        />
 
 </android.support.design.widget.CoordinatorLayout>

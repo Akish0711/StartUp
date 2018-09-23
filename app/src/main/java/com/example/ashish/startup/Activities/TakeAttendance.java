@@ -69,7 +69,8 @@ public class TakeAttendance extends AppCompatActivity {
 
             mFirestore = FirebaseFirestore.getInstance();
 
-            mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id).collection("Students").addSnapshotListener((documentSnapshots, e) -> {
+            mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id)
+                                            .collection("Students").addSnapshotListener((documentSnapshots, e) -> {
                 for (DocumentChange doc: documentSnapshots.getDocumentChanges()){
                     switch (doc.getType()) {
                         case ADDED:

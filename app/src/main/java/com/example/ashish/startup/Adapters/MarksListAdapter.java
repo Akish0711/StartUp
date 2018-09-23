@@ -1,18 +1,21 @@
 package com.example.ashish.startup.Adapters;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.ashish.startup.Activities.GetMarks;
+import com.example.ashish.startup.Activities.ViewMarks;
 import com.example.ashish.startup.Models.Marks;
 import com.example.ashish.startup.R;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.onurkaganaldemir.ktoastlib.KToast;
 
 import java.util.List;
 
@@ -20,12 +23,14 @@ public class MarksListAdapter extends RecyclerView.Adapter<MarksListAdapter.View
 
     public List<Marks> testList;
     public Context context;
-    public String institute,c;
+    public String email_red,c,institute;
+    private FirebaseFirestore mFirestore;
 
-    public MarksListAdapter(Context context, List<Marks> marksList,String ins,String c){
+    public MarksListAdapter(Context context, List<Marks> marksList,String email_red,String c,String institute){
         this.testList = marksList;
         this.context = context;
-        this.institute = ins;
+        this.email_red = email_red;
+        this.institute = institute;
         this.c = c;
     }
 
@@ -51,15 +56,33 @@ public class MarksListAdapter extends RecyclerView.Adapter<MarksListAdapter.View
             holder.max_marks.setText(testList.get(position).getMax_marks());
 
             final String marks_id = testList.get(position).marksID;
+            mFirestore = FirebaseFirestore.getInstance();
 
             holder.mView.setOnClickListener(view -> {
-                Intent intent = new Intent(context,GetMarks.class);
+                Intent intent = new Intent(context,ViewMarks.class);
                 intent.putExtra("marksID", marks_id);
-                intent.putExtra("institute",institute);
                 intent.putExtra("class_id",c);
-                ActivityOptionsCompat options = ActivityOptionsCompat.
-                        makeSceneTransitionAnimation((Activity)context,(View)view, "testName");
-                context.startActivity(intent,options.toBundle());
+                intent.putExtra("email_red",email_red);
+                intent.putExtra("institute",institute);
+                context.startActivity(intent);
+            });
+
+            holder.mView.setOnLongClickListener(view -> {
+                new AlertDialog.Builder(context)
+                        .setTitle("Delete this test ?")
+                        .setMessage("Warning : You cannot undo this.")
+                        .setCancelable(false)
+                        .setPositiveButton("Delete", (dialog, which) -> {
+                            mFirestore.collection("Users").document(email_red).collection("Subjects")
+                                    .document(c).collection("Marks").document(testList.get(position).getMarksID()).delete().addOnSuccessListener(aVoid ->
+                                    KToast.infoToast((Activity) context, "Test Deleted", Gravity.BOTTOM,KToast.LENGTH_LONG))
+                                    .addOnFailureListener(e -> {
+                                        KToast.errorToast((Activity) context, "Couldn't Delete.Try Again !!", Gravity.BOTTOM,KToast.LENGTH_LONG);
+                                    });
+                        })
+                        .setNegativeButton("Cancel",null)
+                        .show();
+                return true;
             });
         }
     }

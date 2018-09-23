@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +44,7 @@ public class MarksInputListAdapter extends RecyclerView.Adapter<MarksInputListAd
         if(viewType == 2){
             holder.user_name.setText(marksInputList.get(position).getUsername());
             holder.display_name.setText(marksInputList.get(position).getName());
-            holder.marks.setText(marksInputList.get(position).getInputMarks());
+            holder.marks.setText( marksInputList.get(position).getInputMarks());
 
             holder.marks.addTextChangedListener(new TextWatcher() {
                 @Override
