@@ -34,10 +34,6 @@ import java.util.List;
 
 public class AnnouncementAdmin extends AppCompatActivity {
 
-    private FirebaseFirestore mFirestore;
-    private FirebaseAuth mAuth;
-    private ImageView add_students,take_attendance, marks;
-    private FloatingActionButton announcement;
     private RecyclerView mMessagesList;
     private List<Message> messageList;
     private List<String> keyList;
@@ -50,10 +46,6 @@ public class AnnouncementAdmin extends AppCompatActivity {
     private int itemPos = 0;
     private String mLastKey = "";
     private String mPrevKey = "";
-
-    private boolean appBarExpanded = true;
-    private AppBarLayout appBarLayout;
-    private CollapsingToolbarLayout collapsingToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,22 +63,22 @@ public class AnnouncementAdmin extends AppCompatActivity {
                 getSupportActionBar().setDisplayShowHomeEnabled(true);
             }
 
-            appBarLayout = findViewById(R.id.appbar_new_class2);
-            collapsingToolbar = findViewById(R.id.collapsing_toolbar_activity_new_class2);
+            AppBarLayout appBarLayout1 = findViewById(R.id.appbar_new_class2);
+            CollapsingToolbarLayout collapsingToolbar = findViewById(R.id.collapsing_toolbar_activity_new_class2);
             collapsingToolbar.setTitle(class_name);
 
             messageList = new ArrayList<>();
             keyList = new ArrayList<>();
-            mFirestore = FirebaseFirestore.getInstance();
-            mAuth = FirebaseAuth.getInstance();
+            FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
             mRootRef = FirebaseDatabase.getInstance().getReference();
             String email = mAuth.getCurrentUser().getEmail();
             final String email_red = email.substring(0, email.length() - 10);
 
-            add_students = findViewById(R.id.add_students_image);
-            take_attendance = findViewById(R.id.take_attendance_image);
-            marks = findViewById(R.id.marks_image);
-            announcement = findViewById(R.id.announcement);
+            ImageView add_students = findViewById(R.id.add_students_image);
+            ImageView take_attendance = findViewById(R.id.take_attendance_image);
+            ImageView marks = findViewById(R.id.marks_image);
+            FloatingActionButton announcement = findViewById(R.id.announcement);
             mAdapter = new AdminMessageAdapter(this,messageList,class_id,email_red);
             mMessagesList = findViewById(R.id.messages_list);
             mRefreshLayout = findViewById(R.id.message_swipe_layout);
@@ -95,13 +87,11 @@ public class AnnouncementAdmin extends AppCompatActivity {
             mMessagesList.setLayoutManager(mLinearLayout);
             mMessagesList.setAdapter(mAdapter);
 
-            appBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+            appBarLayout1.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
                 //  Vertical offset == 0 indicates appBar is fully expanded.
                 if (Math.abs(verticalOffset) > 200) {
-                    appBarExpanded = false;
                     invalidateOptionsMenu();
                 } else {
-                    appBarExpanded = true;
                     invalidateOptionsMenu();
                 }
             });
@@ -150,7 +140,7 @@ public class AnnouncementAdmin extends AppCompatActivity {
             });
 
             announcement.setOnClickListener(v -> {
-                Intent intent = new Intent(AnnouncementAdmin.this,ViewSingleAnnouncement.class);
+                Intent intent = new Intent(AnnouncementAdmin.this,MakeAnnouncement.class);
                 intent.putExtra("class_id", class_id);
                 intent.putExtra("institute",Institute[0]);
                 startActivity(intent);
@@ -159,7 +149,7 @@ public class AnnouncementAdmin extends AppCompatActivity {
     }
 
     private void loadMoreMessages(String class_id, String email_red) {
-        DatabaseReference messageRef = mRootRef.child("Chat").child(email_red).child(class_id);
+        DatabaseReference messageRef = mRootRef.child("Announcement").child(email_red).child(class_id);
         Query messageQuery = messageRef.orderByKey().endAt(mLastKey).limitToLast(10);
 
         messageQuery.addChildEventListener(new ChildEventListener() {
@@ -231,7 +221,11 @@ public class AnnouncementAdmin extends AppCompatActivity {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
+                String messageKey = dataSnapshot.getKey();
+                Message message = dataSnapshot.getValue(Message.class).withID(messageKey);
+                int index = keyList.indexOf(messageKey);
+                messageList.set(index, message);
+                mAdapter.notifyDataSetChanged();
             }
 
             @Override

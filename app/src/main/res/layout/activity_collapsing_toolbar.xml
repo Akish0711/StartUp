@@ -22,14 +22,13 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
             <ImageView
-                android:id="@+id/headerImageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/header"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
                 android:transitionName="updateMarksAnimation"
                 app:layout_collapseMode="parallax" />
+            <!--android:background="@drawable/header"-->
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/anim_toolbar"
@@ -38,19 +37,19 @@
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-                <Button
-                    android:layout_width="107dp"
-                    android:layout_height="68dp"
-                    android:layout_marginTop="100dp"
-                    android:layout_marginLeft="80dp"
-                    android:text="Button" />
+            <Button
+                android:layout_width="107dp"
+                android:layout_height="68dp"
+                android:layout_marginTop="100dp"
+                android:layout_marginLeft="80dp"
+                android:text="Button" />
 
-                <Button
-                    android:layout_width="107dp"
-                    android:layout_height="68dp"
-                    android:layout_marginTop="100dp"
-                    android:layout_marginLeft="200dp"
-                    android:text="Button2" />
+            <Button
+                android:layout_width="107dp"
+                android:layout_height="68dp"
+                android:layout_marginTop="100dp"
+                android:layout_marginLeft="200dp"
+                android:text="Button2" />
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 

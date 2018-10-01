@@ -22,7 +22,7 @@ import java.util.List;
 
 public class AdminViewMarksListAdapter extends RecyclerView.Adapter<AdminViewMarksListAdapter.ViewHolder>{
 
-    public List<Marks> viewMarksList ;
+    private List<Marks> viewMarksList ;
     private FirebaseFirestore mFirestore;
     private String marksID,class_id,email_red;
 
@@ -98,7 +98,7 @@ public class AdminViewMarksListAdapter extends RecyclerView.Adapter<AdminViewMar
                 final AlertDialog dialog = alertDialog.create();
                 dialog.show();
 
-                ((AlertDialog)dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
 
                 // Now set the textchange listener for edittext
                 input.addTextChangedListener(new TextWatcher() {
@@ -117,11 +117,11 @@ public class AdminViewMarksListAdapter extends RecyclerView.Adapter<AdminViewMar
                         // Check if edittext is empty
                         if (TextUtils.isEmpty(s)) {
                             // Disable ok button
-                            ((AlertDialog) dialog).getButton(
+                            dialog.getButton(
                                     AlertDialog.BUTTON_POSITIVE).setEnabled(false);
                         } else {
                             // Something into edit text. Enable the button.
-                            ((AlertDialog) dialog).getButton(
+                            dialog.getButton(
                                     AlertDialog.BUTTON_POSITIVE).setEnabled(true);
                         }
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.MakeAnnouncement">
+    tools:context=".Activities.EditAnnouncement">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
@@ -45,7 +45,7 @@
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/upload_list"
+        android:id="@+id/messages_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"

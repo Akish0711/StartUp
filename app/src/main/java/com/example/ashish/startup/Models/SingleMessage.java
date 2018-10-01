@@ -2,19 +2,39 @@ package com.example.ashish.startup.Models;
 
 public class SingleMessage {
 
-    private String Message;
+    private String Name;
+    private String URL;
+    private int Type;
 
-    public String getMessage() {
-        return Message;
+    public int getType() {
+        return Type;
     }
-    public void setMessage(String message) {
-        Message = message;
+
+    public void setType(int type) {
+        Type = type;
+    }
+
+    public String getURL() {
+        return URL;
+    }
+
+    public void setURL(String URL) {
+        this.URL = URL;
+    }
+
+    public String getName() {
+        return Name;
+    }
+    public void setName(String name) {
+        Name = name;
     }
 
     public SingleMessage(){
     }
 
-    public SingleMessage(String message) {
-        Message = message;
+    public SingleMessage(String name, String url, int type) {
+        Name = name;
+        URL = url;
+        Type = type;
     }
 }

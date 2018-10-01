@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ashish.startup.Activities.EditAnnouncement;
 import com.example.ashish.startup.Activities.ViewSingleAnnouncement;
 import com.example.ashish.startup.Models.Message;
 import com.example.ashish.startup.R;
@@ -50,6 +51,15 @@ public class AdminMessageAdapter extends RecyclerView.Adapter<AdminMessageAdapte
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
         String text_message = messageList.get(position).getMessage();
+        String text_time = messageList.get(position).getTime();
+        String edited_time = messageList.get(position).getEdited();
+        if (edited_time!=null){
+            holder.Edited_time.setVisibility(View.VISIBLE);
+            holder.Edited_time.setText(edited_time);
+        }else{
+            holder.Edited_time.setVisibility(View.GONE);
+        }
+
         holder.Text.setText(text_message);
         final String message_id = messageList.get(position).messageID;
         holder.Time.setText(messageList.get(position).getTime());
@@ -76,6 +86,14 @@ public class AdminMessageAdapter extends RecyclerView.Adapter<AdminMessageAdapte
             popup.setOnMenuItemClickListener(item -> {
                 switch (item.getItemId()) {
                     case R.id.edit_option:
+                        Intent intent = new Intent(context, EditAnnouncement.class);
+                        intent.putExtra("email_red", email_red);
+                        intent.putExtra("class_id",class_id);
+                        intent.putExtra("message_id", message_id);
+                        intent.putExtra("text_message",text_message);
+                        intent.putExtra("text_time",text_time);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(intent);
                         break;
                     case R.id.delete_option:
                         new AlertDialog.Builder(context)
@@ -101,7 +119,7 @@ public class AdminMessageAdapter extends RecyclerView.Adapter<AdminMessageAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         View mView;
-        TextView Text, Time;
+        TextView Text, Time, Edited_time;
         public Button delete_option;
 
         public ViewHolder(View itemView) {
@@ -110,6 +128,7 @@ public class AdminMessageAdapter extends RecyclerView.Adapter<AdminMessageAdapte
             Text = mView.findViewById(R.id.textView_message_text);
             Time = mView.findViewById(R.id.textView_message_time);
             delete_option = mView.findViewById(R.id.option_view);
+            Edited_time = mView.findViewById(R.id.edited_time);
         }
     }
 }

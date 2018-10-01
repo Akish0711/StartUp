@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -25,9 +24,7 @@ import java.util.Map;
 public class NewClass extends AppCompatActivity {
 
     private EditText name_class;
-    private Button new_class;
     private FirebaseAuth mAuth;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +32,7 @@ public class NewClass extends AppCompatActivity {
         setContentView(R.layout.activity_new_class);
 
         name_class = findViewById(R.id.name_class);
-        new_class = findViewById(R.id.new_class);
+        Button new_class = findViewById(R.id.new_class);
         mAuth = FirebaseAuth.getInstance();
 
         Toolbar toolbar = findViewById(R.id.my_toolbar);
@@ -47,12 +44,7 @@ public class NewClass extends AppCompatActivity {
             getSupportActionBar().setTitle("Create New Class");
         }
 
-        new_class.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createNewClass();
-            }
-        });
+        new_class.setOnClickListener(view -> createNewClass());
     }
 
     private void createNewClass() {
@@ -87,7 +79,7 @@ public class NewClass extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == android.R.id.home){
-            startActivity(new Intent(NewClass.this,MainActivity.class));
+            onBackPressed();
             return true;
         }
 

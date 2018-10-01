@@ -1,58 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
-    android:layout_marginBottom="8dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginStart="8dp">
-    <RelativeLayout
-        android:layout_width="250dp"
-        android:layout_height="60dp"
-        android:layout_gravity="end"
-        android:background="@drawable/rect_round_primary_color">
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true">
 
-        <ImageView
-            android:id="@+id/imageView_message_image"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/pdf_send"
-            android:paddingEnd="8dp"
-            android:paddingStart="8dp"
-            android:paddingTop="8dp"
-            android:scaleType="fitStart"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="8dp" />
+    <ImageView
+        android:id="@+id/pdf_holder"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.062"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/pdf" />
 
-        <TextView
-            android:id="@+id/textView_message_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="8dp"
-            android:textColor="#fff"
-            android:textSize="12sp"
-            tools:text="3:00 PM"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="8dp" />
-
-        <TextView
-            android:id="@+id/pdf_file_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@+id/imageView_message_image"
-            android:text="File Name"
-            android:paddingLeft="8dp"
-            android:textColor="#fff"
-            android:textStyle="bold"
-            android:layout_toRightOf="@+id/imageView_message_image" />
-    </RelativeLayout>
-</FrameLayout>
+    <TextView
+        android:id="@+id/upload_filename"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="TextView"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/pdf_holder"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.526" />
+</android.support.constraint.ConstraintLayout>

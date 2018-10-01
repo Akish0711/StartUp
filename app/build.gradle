@@ -21,7 +21,6 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
-        resConfigs "en"
     }
     buildTypes {
         release {
@@ -38,12 +37,12 @@ android {
 
 dependencies {
     //firebase
-    implementation 'com.google.firebase:firebase-firestore:17.0.4'
-    implementation 'com.google.firebase:firebase-core:16.0.1'
-    implementation 'com.google.firebase:firebase-messaging:17.1.0'
-    implementation 'com.google.firebase:firebase-auth:16.0.2'
-    implementation 'com.google.firebase:firebase-storage:16.0.1'
-    implementation 'com.google.firebase:firebase-database:16.0.1'
+    implementation 'com.google.firebase:firebase-firestore:17.1.0'
+    implementation 'com.google.firebase:firebase-core:16.0.3'
+    implementation 'com.google.firebase:firebase-messaging:17.3.2'
+    implementation 'com.google.firebase:firebase-auth:16.0.3'
+    implementation 'com.google.firebase:firebase-storage:16.0.2'
+    implementation 'com.google.firebase:firebase-database:16.0.2'
 
     //support
     implementation 'com.android.support:design:27.1.1'
@@ -73,6 +72,5 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation 'com.github.Shashank02051997:FancyGifDialog-Android:1.1'
     implementation 'com.highsoft.highcharts:highcharts:6.1.1'
-
 }
 apply plugin: 'com.google.gms.google-services'

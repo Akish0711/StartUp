@@ -26,10 +26,13 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
-import com.example.ashish.startup.Adapters.MakeAnnouncementAdapter;
-import com.example.ashish.startup.R;
 
-import com.google.firebase.auth.FirebaseAuth;
+import com.example.ashish.startup.Adapters.MakeAnnouncementAdapter;
+import com.example.ashish.startup.Models.SingleMessage;
+import com.example.ashish.startup.R;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -50,9 +53,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class MakeAnnouncement extends AppCompatActivity {
+public class EditAnnouncement extends AppCompatActivity {
 
-    private EditText mChatMessageView;
     private static final int CHOOSE_IMAGE = 101 ;
     private static final int PICK_IMAGE_CAMERA =188 ;
     private static final int PICK_ATTACHMENT = 102;
@@ -60,23 +62,34 @@ public class MakeAnnouncement extends AppCompatActivity {
     private DatabaseReference mRootRef;
     private String class_id;
     private String email_red;
+    private String message_id;
+    private String text_time;
     private String profileImageUrl;
-    private List<String> fileNameList;
-    private MakeAnnouncementAdapter makeAnnouncementAdapter;
+    private EditText mChatMessageView;
     Uri uriProfileImage;
     private List<Uri> listUri;
     private List<Uri> listUriPdf;
+    private List<String> listStringUri;
+    private List<String> listStringUriPdf;
     private List<String> listpos;
+    private List<String> fileNameList;
+    private MakeAnnouncementAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_announcement);
+        setContentView(R.layout.activity_edit_announcement);
 
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
-        if (getIntent().hasExtra("class_id")) {
+        if (getIntent().hasExtra("email_red")
+                && getIntent().hasExtra("class_id")
+                && getIntent().hasExtra("message_id")
+                && getIntent().hasExtra("text_message")
+                && getIntent().hasExtra("text_time")) {
+            email_red = getIntent().getStringExtra("email_red");
             class_id = getIntent().getStringExtra("class_id");
+            message_id = getIntent().getStringExtra("message_id");
+            String text_message = getIntent().getStringExtra("text_message");
+            text_time = getIntent().getStringExtra("text_time");
 
             Toolbar toolbar = findViewById(R.id.my_toolbar);
             setSupportActionBar(toolbar);
@@ -84,30 +97,83 @@ public class MakeAnnouncement extends AppCompatActivity {
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 getSupportActionBar().setDisplayShowHomeEnabled(true);
-                getSupportActionBar().setTitle("Announcements");
+                getSupportActionBar().setTitle("Edit");
             }
 
-            mChatMessageView = findViewById(R.id.chat_message_view);
-            RecyclerView mUploadList = findViewById(R.id.upload_list);
             fileNameList = new ArrayList<>();
             listUri = new ArrayList<>();
             listUriPdf = new ArrayList<>();
+            listStringUri = new ArrayList<>();
+            listStringUriPdf = new ArrayList<>();
             listpos = new ArrayList<>();
-            List<String> listStringUri = new ArrayList<>();
-            List<String> listStringUriPdf = new ArrayList<>();
-
-            makeAnnouncementAdapter = new MakeAnnouncementAdapter(fileNameList,listUri,listUriPdf,listpos, listStringUri, listStringUriPdf,this);
-
-            mUploadList.setLayoutManager(new LinearLayoutManager(this));
-            mUploadList.setHasFixedSize(true);
-            mUploadList.setAdapter(makeAnnouncementAdapter);
-
-            String email = mAuth.getCurrentUser().getEmail();
-            email_red = email.substring(0, email.length() - 10);
+            mChatMessageView = findViewById(R.id.chat_message_view);
 
             mRootRef = FirebaseDatabase.getInstance().getReference();
-            mRootRef.child("Chat").child(email_red).child(class_id).child("seen").setValue(true);
+            mAdapter = new MakeAnnouncementAdapter(fileNameList,listUri,listUriPdf,listpos,listStringUri,listStringUriPdf,this);
+            RecyclerView mMessagesList = findViewById(R.id.messages_list);
+            LinearLayoutManager mLinearLayout = new LinearLayoutManager(this);
+            mMessagesList.setHasFixedSize(true);
+            mMessagesList.setLayoutManager(mLinearLayout);
+            mMessagesList.setAdapter(mAdapter);
+
+            mChatMessageView.setText(text_message);
+            loadmessage(class_id, email_red, message_id);
         }
+    }
+
+    private void loadmessage(String class_id, String email_red, String message_id) {
+        DatabaseReference messageRef = mRootRef.child("Announcement").child(email_red).child(class_id).child(message_id);
+        messageRef.keepSynced(true);
+
+        messageRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if (dataSnapshot.child("Name").exists()) {
+                    SingleMessage message = dataSnapshot.getValue(SingleMessage.class);
+                    String url = message.getURL();
+                    Uri uri_url = Uri.parse(url);
+
+                    if (message.getType()==1){
+                        listUri.add(uri_url);
+                        fileNameList.add(message.getName());
+                        listpos.add("image");
+                        listUriPdf.add(null);
+                        listStringUri.add(url);
+                        listStringUriPdf.add(null);
+                        mAdapter.notifyDataSetChanged();
+                    }
+                    else{
+                        listUriPdf.add(uri_url);
+                        fileNameList.add(message.getName());
+                        listpos.add("pdf");
+                        listUri.add(null);
+                        listStringUri.add(null);
+                        listStringUriPdf.add(url);
+                        mAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void uploadAnnouncement() {
@@ -115,17 +181,16 @@ public class MakeAnnouncement extends AppCompatActivity {
         DateFormat df1=new SimpleDateFormat("MMM dd (hh:mm a)", Locale.ENGLISH);
         final String time=df1.format(Calendar.getInstance().getTime());
         if (!TextUtils.isEmpty(message)){
-            String user_ref = "Announcement/"+email_red+"/"+class_id;
-
-            DatabaseReference user_message_push = mRootRef.child("Announcement").child(email_red).child(class_id).push();
-            String push_id = user_message_push.getKey();
+            String message_ref = "Announcement/"+email_red+"/"+class_id;
+            String attachment_ref = "Announcement/" + email_red + "/" + class_id + "/" + message_id;
 
             Map messageMap = new HashMap();
             messageMap.put("Message", message);
-            messageMap.put("Time",time);
+            messageMap.put("Time",text_time);
+            messageMap.put("Edited","Edited: "+time);
 
             Map messageUserMap = new HashMap();
-            messageUserMap.put(user_ref+"/"+push_id,messageMap);
+            messageUserMap.put(message_ref+"/"+message_id,messageMap);
 
             mRootRef.updateChildren(messageUserMap, (databaseError, databaseReference) -> {
                 if (databaseError!=null){
@@ -133,18 +198,58 @@ public class MakeAnnouncement extends AppCompatActivity {
                 }
             });
 
+            for (int x=0; x<listStringUri.size();x++){
+                if (listStringUri.get(x)!=null) {
+                    DatabaseReference user_message_push = mRootRef.child("Announcement").child(email_red).child(class_id).child(message_id).push();
+                    String push_id = user_message_push.getKey();
+
+                    Map StringImageMap = new HashMap();
+                    StringImageMap.put("URL", listStringUri.get(x));
+                    StringImageMap.put("Name", fileNameList.get(x));
+                    StringImageMap.put("Type", 1);
+
+                    Map attachmentImageMap = new HashMap();
+                    attachmentImageMap.put(attachment_ref + "/" + push_id, StringImageMap);
+
+                    mRootRef.updateChildren(attachmentImageMap, (databaseError, databaseReference) -> {
+                        if (databaseError != null) {
+
+                        }
+                    });
+                }
+            }
+
+            for (int x=0; x<listStringUriPdf.size();x++){
+                if (listStringUriPdf.get(x)!=null) {
+                    DatabaseReference user_message_push = mRootRef.child("Announcement").child(email_red).child(class_id).child(message_id).push();
+                    String push_id = user_message_push.getKey();
+
+                    Map StringPdfMap = new HashMap();
+                    StringPdfMap.put("URL", listStringUriPdf.get(x));
+                    StringPdfMap.put("Name", fileNameList.get(x));
+                    StringPdfMap.put("Type", 2);
+
+                    Map attachmentPdfMap = new HashMap();
+                    attachmentPdfMap.put(attachment_ref + "/" + push_id, StringPdfMap);
+
+                    mRootRef.updateChildren(attachmentPdfMap, (databaseError, databaseReference) -> {
+                        if (databaseError != null) {
+
+                        }
+                    });
+                }
+            }
+
             if (listUri.size()!= 0){
-                for (int x=0;x<listUri.size();x++) {
+                for (int x=listStringUri.size();x<listUri.size();x++) {
                     if (listUri.get(x)!=null) {
                         final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("message/" + email_red + "/"+ fileNameList.get(x));
                         int finalX = x;
                         profileImageRef.putFile(listUri.get(x)).addOnSuccessListener(taskSnapshot -> profileImageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                            Uri downloadUrl = uri;
-                            profileImageUrl = downloadUrl.toString();
-                            String image_ref = "Announcement/" + email_red + "/" + class_id + "/" + push_id;
+                            profileImageUrl = uri.toString();
 
-                            DatabaseReference user_image_push = mRootRef.child("Announcement").child(email_red).child(class_id).push();
-                            String image_push_id = user_image_push.getKey();
+                            DatabaseReference user_image_push = mRootRef.child("Announcement").child(email_red).child(class_id).child(message_id).push();
+                            String push_id = user_image_push.getKey();
 
                             Map imageMap = new HashMap();
                             imageMap.put("URL", profileImageUrl);
@@ -152,7 +257,7 @@ public class MakeAnnouncement extends AppCompatActivity {
                             imageMap.put("Type", 1);
 
                             Map imageUserMap = new HashMap();
-                            imageUserMap.put(image_ref + "/" + image_push_id, imageMap);
+                            imageUserMap.put(attachment_ref + "/" + push_id, imageMap);
 
                             mRootRef.updateChildren(imageUserMap, (databaseError, databaseReference) -> {
                                 if (databaseError != null) {
@@ -160,7 +265,7 @@ public class MakeAnnouncement extends AppCompatActivity {
                                 }
                             });
                         }))
-                                .addOnFailureListener(e -> KToast.errorToast(MakeAnnouncement.this, e.getMessage(), Gravity.BOTTOM, KToast.LENGTH_SHORT));
+                                .addOnFailureListener(e -> KToast.errorToast(EditAnnouncement.this, e.getMessage(), Gravity.BOTTOM, KToast.LENGTH_SHORT));
                     }
                 }
             }
@@ -173,26 +278,25 @@ public class MakeAnnouncement extends AppCompatActivity {
                         profileImageRef.putFile(listUriPdf.get(y)).addOnSuccessListener(taskSnapshot -> profileImageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                             Uri downloadUrl = uri;
                             profileImageUrl = downloadUrl.toString();
-                            String image_ref = "Announcement/" + email_red + "/" + class_id + "/" + push_id;
 
                             DatabaseReference user_image_push = mRootRef.child("Announcement").child(email_red).child(class_id).push();
                             String image_push_id = user_image_push.getKey();
 
-                            Map imageMap = new HashMap();
-                            imageMap.put("URL", profileImageUrl);
-                            imageMap.put("Name", fileNameList.get(finalY));
-                            imageMap.put("Type", 2);
+                            Map pdfMap = new HashMap();
+                            pdfMap.put("URL", profileImageUrl);
+                            pdfMap.put("Name", fileNameList.get(finalY));
+                            pdfMap.put("Type", 2);
 
-                            Map imageUserMap = new HashMap();
-                            imageUserMap.put(image_ref + "/" + image_push_id, imageMap);
+                            Map pdfUserMap = new HashMap();
+                            pdfUserMap.put(attachment_ref + "/" + image_push_id, pdfMap);
 
-                            mRootRef.updateChildren(imageUserMap, (databaseError, databaseReference) -> {
+                            mRootRef.updateChildren(pdfUserMap, (databaseError, databaseReference) -> {
                                 if (databaseError != null) {
 
                                 }
                             });
                         }))
-                                .addOnFailureListener(e -> KToast.errorToast(MakeAnnouncement.this, e.getMessage(), Gravity.BOTTOM, KToast.LENGTH_SHORT));
+                                .addOnFailureListener(e -> KToast.errorToast(EditAnnouncement.this, e.getMessage(), Gravity.BOTTOM, KToast.LENGTH_SHORT));
                     }
                 }
             }
@@ -228,7 +332,7 @@ public class MakeAnnouncement extends AppCompatActivity {
                     listpos.add("image");
                     listUri.add(uriProfileImage);
                     listUriPdf.add(null);
-                    makeAnnouncementAdapter.notifyDataSetChanged();
+                    mAdapter.notifyDataSetChanged();
                 }
             }
             else if (data.getData()!=null){
@@ -247,7 +351,7 @@ public class MakeAnnouncement extends AppCompatActivity {
                 listpos.add("image");
                 listUri.add(uriProfileImage);
                 listUriPdf.add(null);
-                makeAnnouncementAdapter.notifyDataSetChanged();
+                mAdapter.notifyDataSetChanged();
             }
         }else if (requestCode == PICK_IMAGE_CAMERA && resultCode == Activity.RESULT_OK ) {
             int targetW = 590;
@@ -275,7 +379,7 @@ public class MakeAnnouncement extends AppCompatActivity {
             listpos.add("image");
             listUri.add(uriProfileImage);
             listUriPdf.add(null);
-            makeAnnouncementAdapter.notifyDataSetChanged();
+            mAdapter.notifyDataSetChanged();
 
         }else if (requestCode == PICK_ATTACHMENT && resultCode == RESULT_OK && data != null && data.getData() != null){
             uriProfileImage = data.getData();
@@ -284,29 +388,10 @@ public class MakeAnnouncement extends AppCompatActivity {
             listpos.add("pdf");
             listUriPdf.add(uriProfileImage);
             listUri.add(null);
-            makeAnnouncementAdapter.notifyDataSetChanged();
+            mAdapter.notifyDataSetChanged();
         }
     }
 
-    public Uri getImageUri(Context inContext, Bitmap inImage) {
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
-    }
-
-    public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
-        int width = image.getWidth();
-        int height = image.getHeight();
-
-        float bitmapRatio = (float)width / (float) height;
-        if (bitmapRatio > 1) {
-            width = maxSize;
-            height = (int) (width / bitmapRatio);
-        } else {
-            height = maxSize;
-            width = (int) (height * bitmapRatio);
-        }
-        return Bitmap.createScaledBitmap(image, width, height, true);
-    }
 
     private void showImageChooser() {
         final CharSequence[] options = {"Camera", "Choose From Gallery", "Documents", "Cancel"};
@@ -333,7 +418,7 @@ public class MakeAnnouncement extends AppCompatActivity {
                     }
                     // Continue only if the File was successfully created
                     if (photoFile != null) {
-                        Uri photoURI = FileProvider.getUriForFile(MakeAnnouncement.this,
+                        Uri photoURI = FileProvider.getUriForFile(EditAnnouncement.this,
                                 "com.example.ashish.startup.fileprovider",
                                 photoFile);
                         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
@@ -411,13 +496,33 @@ public class MakeAnnouncement extends AppCompatActivity {
                 permissions[2]) == PackageManager.PERMISSION_GRANTED){
             showImageChooser();
         }else{
-            ActivityCompat.requestPermissions(MakeAnnouncement.this, permissions, REQUEST_CODE);
+            ActivityCompat.requestPermissions(EditAnnouncement.this, permissions, REQUEST_CODE);
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         verifyPermissions();
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        float bitmapRatio = (float)width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+        return Bitmap.createScaledBitmap(image, width, height, true);
     }
 
     public String getFilename(Uri uri){

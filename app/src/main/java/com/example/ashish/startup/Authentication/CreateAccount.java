@@ -2,7 +2,6 @@ package com.example.ashish.startup.Authentication;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
@@ -14,13 +13,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
-import com.example.ashish.startup.Activities.MainActivity;
 import com.example.ashish.startup.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -119,31 +114,27 @@ public class CreateAccount extends AppCompatActivity {
 
         String email = mAuth1.getCurrentUser().getEmail();
         String email_red = email.substring(0, email.length() - 10);
-        rootRef.collection("Users").document(email_red).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    final String Institute = document.getString("Institute");
-                    progressBar.setVisibility(View.VISIBLE);
+        rootRef.collection("Users").document(email_red).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                final String Institute = document.getString("Institute");
+                progressBar.setVisibility(View.VISIBLE);
 
-                    genPswd = genRandomPswd();
+                genPswd = genRandomPswd();
 
-                    mAuth2.createUserWithEmailAndPassword(user + "@gmail.com", genPswd).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            progressBar.setVisibility(View.GONE);
-                            if (task.isSuccessful()) {
-                                KToast.successToast(CreateAccount.this, "User Registered Successfully.", Gravity.BOTTOM, KToast.LENGTH_SHORT);
+                mAuth2.createUserWithEmailAndPassword(user + "@gmail.com", genPswd).addOnCompleteListener(task1 -> {
+                    progressBar.setVisibility(View.GONE);
+                    if (task1.isSuccessful()) {
+                        KToast.successToast(CreateAccount.this, "User Registered Successfully.", Gravity.BOTTOM, KToast.LENGTH_SHORT);
 
-                                Map<String, Object> data = new HashMap<>();
-                                data.put("Name", display_name);
-                                data.put("Username", user);
-                                data.put("Institute_Admin", Institute + "_No");
-                                data.put("Admin","No");
-                                data.put("Phone",phoneNo);
-                                rootRef.collection("Users").document(user).set(data);
-                                Log.e("Password : ",genPswd + "");
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("Name", display_name);
+                        data.put("Username", user);
+                        data.put("Institute_Admin", Institute + "_No");
+                        data.put("Admin","No");
+                        data.put("Phone",phoneNo);
+                        rootRef.collection("Users").document(user).set(data);
+                        Log.e("Password : ",genPswd + "");
 
 //                                Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("sms:" + phoneNo));
 //                                intent.putExtra("sms_body","Login Details \n\nUsername : "+user+"\nPassword : " + genPswd);
@@ -170,29 +161,22 @@ public class CreateAccount extends AppCompatActivity {
 //                                   Log.e("response status",response.getStatusText());
 //                               }
 
-                                    SmsManager smsManager = SmsManager.getDefault();
-                                    smsManager.sendTextMessage(phoneNo, null, "Welcome OnBoard !!\n\nHere are your Login Details \n\nUsername : " + user + "\nPassword : " + genPswd, null, null);
+                            SmsManager smsManager = SmsManager.getDefault();
+                            smsManager.sendTextMessage(phoneNo, null, "Welcome OnBoard !!\n\nHere are your Login Details \n\nUsername : " + user + "\nPassword : " + genPswd, null, null);
 
-                                mAuth2.signOut();
-                                finish();
-                                startActivity(new Intent(CreateAccount.this, CreateAccount.class));
-                            } else {
-                                if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                                    KToast.errorToast(CreateAccount.this, "This User is already registered.", Gravity.BOTTOM, KToast.LENGTH_SHORT);
-                                } else {
-                                    KToast.errorToast(CreateAccount.this, task.getException().getMessage(), Gravity.BOTTOM, KToast.LENGTH_SHORT);
-                                }
-                            }
+                        mAuth2.signOut();
+                        finish();
+                        startActivity(new Intent(CreateAccount.this, CreateAccount.class));
+                    } else {
+                        if (task1.getException() instanceof FirebaseAuthUserCollisionException) {
+                            KToast.errorToast(CreateAccount.this, "This User is already registered.", Gravity.BOTTOM, KToast.LENGTH_SHORT);
+                        } else {
+                            KToast.errorToast(CreateAccount.this, task1.getException().getMessage(), Gravity.BOTTOM, KToast.LENGTH_SHORT);
                         }
-                    });
-                }
+                    }
+                });
             }
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        startActivity(new Intent(CreateAccount.this, MainActivity.class));
     }
 
     @Override

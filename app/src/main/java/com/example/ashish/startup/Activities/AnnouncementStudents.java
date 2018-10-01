@@ -46,16 +46,11 @@ public class AnnouncementStudents extends AppCompatActivity {
     private UserMessageAdapter mAdapter;
     private SwipeRefreshLayout mRefreshLayout;
     private DatabaseReference mRootRef;
-    private ImageView view_atttendance,view_marks,contact;
     private static final int TOTAL_ITEMS_TO_LOAD = 10;
     private int mCurrentPage = 1;
     private int itemPos = 0;
     private String mLastKey = "";
     private String mPrevKey = "";
-
-    private boolean appBarExpanded = true;
-    private AppBarLayout appBarLayout;
-    private CollapsingToolbarLayout collapsingToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,9 +82,9 @@ public class AnnouncementStudents extends AppCompatActivity {
             mMessagesList.setLayoutManager(mLinearLayout);
             mMessagesList.setAdapter(mAdapter);
 
-            view_atttendance = findViewById(R.id.view_attendance_image);
-            view_marks = findViewById(R.id.view_marks_image);
-            contact = findViewById(R.id.contact_image);
+            ImageView view_atttendance = findViewById(R.id.view_attendance_image);
+            ImageView view_marks = findViewById(R.id.view_marks_image);
+            ImageView contact = findViewById(R.id.contact_image);
 
             Toolbar toolbar = findViewById(R.id.user_new_class_toolbar);
             setSupportActionBar(toolbar);
@@ -99,17 +94,15 @@ public class AnnouncementStudents extends AppCompatActivity {
                 getSupportActionBar().setDisplayShowHomeEnabled(true);
             }
 
-            appBarLayout = findViewById(R.id.appbar_user_new_class);
-            collapsingToolbar = findViewById(R.id.collapsing_toolbar_activity_user_new_class);
+            AppBarLayout appBarLayout1 = findViewById(R.id.appbar_user_new_class);
+            CollapsingToolbarLayout collapsingToolbar = findViewById(R.id.collapsing_toolbar_activity_user_new_class);
             collapsingToolbar.setTitle(subject_name);
 
-            appBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+            appBarLayout1.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
                 //  Vertical offset == 0 indicates appBar is fully expanded.
                 if (Math.abs(verticalOffset) > 200) {
-                    appBarExpanded = false;
                     invalidateOptionsMenu();
                 } else {
-                    appBarExpanded = true;
                     invalidateOptionsMenu();
                 }
             });
@@ -171,10 +164,10 @@ public class AnnouncementStudents extends AppCompatActivity {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
-                Message message = dataSnapshot.getValue(Message.class);
+                String messageKey = dataSnapshot.getKey();
+                Message message = dataSnapshot.getValue(Message.class).withID(messageKey);
                 itemPos++;
                 if(itemPos == 1){
-                    String messageKey = dataSnapshot.getKey();
                     mLastKey = messageKey;
                     mPrevKey = messageKey;
                 }

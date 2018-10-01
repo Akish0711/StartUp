@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.ashish.startup">
 
+    <uses-sdk tools:overrideLibrary="com.shashank.sony.fancygifdialoglib,com.highsoft.highcharts" />
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -10,9 +12,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.SEND_SMS"/>
-
-    <uses-sdk tools:overrideLibrary="com.shashank.sony.fancygifdialoglib,com.highsoft.highcharts"/>
+    <uses-permission android:name="android.permission.SEND_SMS" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -108,12 +108,11 @@
         <activity android:name=".Activities.GetMarks" />
         <activity android:name=".Activities.ViewSingleAnnouncement" />
         <activity android:name=".Authentication.CreateAccount" />
-        <activity android:name=".Util.AnimateToolbar"/>
+        <activity android:name=".Util.AnimateToolbar" />
         <activity
             android:name=".Activities.EditProfile"
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity android:name=".Activities.NewClass" />
-
         <activity android:name=".Activities.AddStudents">
             <meta-data
                 android:name="android.app.searchable"
@@ -126,12 +125,14 @@
         <activity android:name=".Activities.TakeAttendance" />
         <activity android:name=".Activities.ViewAttendance" />
         <activity android:name=".Activities.UpdateAttendance" />
-        <activity android:name=".Activities.ViewMarks"/>
+        <activity android:name=".Activities.ViewMarks" />
         <activity
             android:name=".Activities.UploadMarks"
             android:screenOrientation="portrait" />
         <activity android:name=".Activities.AnnouncementStudents" />
-        <activity android:name=".Activities.FullScreenImage"></activity>
+        <activity android:name=".Activities.FullScreenImage" />
+        <activity android:name=".Activities.MakeAnnouncement" />
+        <activity android:name=".Activities.EditAnnouncement"></activity>
     </application>
 
 </manifest>

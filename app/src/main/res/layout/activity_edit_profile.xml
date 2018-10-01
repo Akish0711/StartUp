@@ -59,7 +59,7 @@
         app:layout_constraintTop_toTopOf="@+id/changeImage" />
 
     <android.support.design.widget.TextInputLayout
-        android:layout_width="314dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
@@ -79,12 +79,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Display Name"
-            android:inputType="text"
+            android:inputType="textCapWords"
             android:singleLine="true" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:layout_width="314dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
@@ -109,7 +109,7 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:layout_width="314dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"

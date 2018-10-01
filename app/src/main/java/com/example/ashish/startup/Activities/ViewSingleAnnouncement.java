@@ -8,7 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.example.ashish.startup.Adapters.AdminMessageAdapter;
+import com.example.ashish.startup.Adapters.ViewSingleAnnouncementAdapter;
 import com.example.ashish.startup.Models.SingleMessage;
 import com.example.ashish.startup.R;
 import com.google.firebase.database.ChildEventListener;
@@ -23,19 +23,17 @@ import java.util.List;
 public class ViewSingleAnnouncement extends AppCompatActivity {
 
     private DatabaseReference mRootRef;
-    private RecyclerView mMessagesList;
     private List<SingleMessage> messageList;
-    private LinearLayoutManager mLinearLayout;
-    private AdminMessageAdapter mAdapter;
+    private ViewSingleAnnouncementAdapter mAdapter;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_single_announcement_students);
+        setContentView(R.layout.activity_view_single_announcement);
 
         if (getIntent().hasExtra("class_id")&& getIntent().hasExtra("Teacher_Name")&& getIntent().hasExtra("message_id")&& getIntent().hasExtra("text_message")) {
-            String class_id = getIntent().getStringExtra("subject_id");
+            String class_id = getIntent().getStringExtra("class_id");
             String email_red = getIntent().getStringExtra("Teacher_Name");
             String message_id = getIntent().getStringExtra("message_id");
             String text_message = getIntent().getStringExtra("text_message");
@@ -50,13 +48,17 @@ public class ViewSingleAnnouncement extends AppCompatActivity {
             }
 
             messageList = new ArrayList<>();
+            mRootRef = FirebaseDatabase.getInstance().getReference();
             TextView message = findViewById(R.id.message);
-            mMessagesList = findViewById(R.id.messages_list);
-            mLinearLayout = new LinearLayoutManager(this);
+            mAdapter = new ViewSingleAnnouncementAdapter(this,messageList);
+            RecyclerView mMessagesList = findViewById(R.id.messages_list);
+            LinearLayoutManager mLinearLayout = new LinearLayoutManager(this);
             mMessagesList.setHasFixedSize(true);
             mMessagesList.setLayoutManager(mLinearLayout);
-            mRootRef = FirebaseDatabase.getInstance().getReference();
+            mMessagesList.setAdapter(mAdapter);
+
             message.setText(text_message);
+            loadmessage(class_id, email_red, message_id);
         }
     }
 
@@ -67,7 +69,11 @@ public class ViewSingleAnnouncement extends AppCompatActivity {
         messageRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
+                if (dataSnapshot.child("Name").exists()) {
+                    SingleMessage message = dataSnapshot.getValue(SingleMessage.class);
+                    messageList.add(message);
+                    mAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override

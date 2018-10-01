@@ -71,7 +71,7 @@ public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.
                 intent.putExtra("class_id", class_id);
                 intent.putExtra("class_name",class_name);
                 ActivityOptionsCompat options = ActivityOptionsCompat.
-                        makeSceneTransitionAnimation((Activity)context,(View)view, "className");
+                        makeSceneTransitionAnimation((Activity)context, view, "className");
                 context.startActivity(intent,options.toBundle());
             });
 
