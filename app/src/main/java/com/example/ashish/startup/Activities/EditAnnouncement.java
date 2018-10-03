@@ -64,6 +64,7 @@ public class EditAnnouncement extends AppCompatActivity {
     private String email_red;
     private String message_id;
     private String text_time;
+    private String text_message;
     private String profileImageUrl;
     private EditText mChatMessageView;
     Uri uriProfileImage;
@@ -88,7 +89,7 @@ public class EditAnnouncement extends AppCompatActivity {
             email_red = getIntent().getStringExtra("email_red");
             class_id = getIntent().getStringExtra("class_id");
             message_id = getIntent().getStringExtra("message_id");
-            String text_message = getIntent().getStringExtra("text_message");
+            text_message = getIntent().getStringExtra("text_message");
             text_time = getIntent().getStringExtra("text_time");
 
             Toolbar toolbar = findViewById(R.id.my_toolbar);
@@ -303,7 +304,7 @@ public class EditAnnouncement extends AppCompatActivity {
             finish();
         }
         else {
-            mChatMessageView.setError("Message field cannot be empty");
+            mChatMessageView.setError("Message cannot be empty");
             mChatMessageView.requestFocus();
         }
     }
@@ -469,7 +470,13 @@ public class EditAnnouncement extends AppCompatActivity {
         }
 
         if(id==R.id.make_announcement){
-            uploadAnnouncement();
+            String message = mChatMessageView.getText().toString();
+            if (!message.equals(text_message)) {
+                uploadAnnouncement();
+            }else{
+                mChatMessageView.setError("No Changes Made");
+                mChatMessageView.requestFocus();
+            }
         }
 
         return super.onOptionsItemSelected(item);

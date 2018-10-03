@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#03A9F4</color>
-    <color name="colorPrimaryDark">#0288D1</color>
+    <color name="colorPrimary">#039AE9</color>
+    <color name="colorPrimaryDark">#007EBB</color>
     <color name="colorAccent">#ffffff</color>
+
+    <color name="colorPrimary2">#109D5B</color>
+    <color name="colorPrimaryDark2">#0A8145</color>
+
+    <color name="colorPrimary3">#9D28A9</color>
+    <color name="colorPrimaryDark3">#7A2489</color>
+
+    <color name="colorPrimary4">#FF551C</color>
+    <color name="colorPrimaryDark4">#D14421</color>
 
     <!-- Screens background color-->
     <color name="bg_screen1">#f64c73</color>

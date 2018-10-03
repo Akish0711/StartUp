@@ -3,7 +3,7 @@ package com.example.ashish.startup.Adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.ActivityOptionsCompat;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -34,7 +34,7 @@ import java.util.Map;
 
 public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.ViewHolder> {
 
-    public List<Classes> classesList;
+    private List<Classes> classesList;
     private FirebaseFirestore mFirestore;
     public Context context;
     private FirebaseAuth firebaseAuth;
@@ -45,8 +45,9 @@ public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.
         this.context = context;
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         if(viewType == 1){
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_class, parent, false);
@@ -59,7 +60,7 @@ public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         int viewType = getItemViewType(position);
         if(viewType == 2){
 
@@ -70,9 +71,7 @@ public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.
                 Intent intent = new Intent(context,AnnouncementAdmin.class);
                 intent.putExtra("class_id", class_id);
                 intent.putExtra("class_name",class_name);
-                ActivityOptionsCompat options = ActivityOptionsCompat.
-                        makeSceneTransitionAnimation((Activity)context, view, "className");
-                context.startActivity(intent,options.toBundle());
+                context.startActivity(intent);
             });
 
             holder.option_view.setOnClickListener(view -> {
@@ -201,7 +200,7 @@ public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         View mView;
-        public TextView nameText;
+        TextView nameText;
         public Button option_view;
         public ViewHolder(View itemView) {
             super(itemView);

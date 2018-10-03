@@ -79,9 +79,6 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
-        <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
         <!-- [END fcm_default_channel] -->
 
         <activity
@@ -113,7 +110,8 @@
             android:name=".Activities.EditProfile"
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity android:name=".Activities.NewClass" />
-        <activity android:name=".Activities.AddStudents">
+        <activity android:name=".Activities.AddStudents"
+            android:theme="@style/AppTheme4">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
@@ -122,13 +120,15 @@
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.TakeAttendance" />
+        <activity android:name=".Activities.TakeAttendance"
+            android:theme="@style/AppTheme3"/>
         <activity android:name=".Activities.ViewAttendance" />
         <activity android:name=".Activities.UpdateAttendance" />
         <activity android:name=".Activities.ViewMarks" />
         <activity
             android:name=".Activities.UploadMarks"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme2"/>
         <activity android:name=".Activities.AnnouncementStudents" />
         <activity android:name=".Activities.FullScreenImage" />
         <activity android:name=".Activities.MakeAnnouncement" />

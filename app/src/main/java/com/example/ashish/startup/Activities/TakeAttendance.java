@@ -34,6 +34,8 @@ public class TakeAttendance extends AppCompatActivity {
     private FirebaseFirestore mFirestore;
     private AttendanceListAdapter attendanceListAdapter;
     private List<Attendance> attendanceList;
+    private List<String> presentList;
+    private List<String> absentList;
     private FirebaseAuth mAuth;
 
     @Override
@@ -42,7 +44,9 @@ public class TakeAttendance extends AppCompatActivity {
         setContentView(R.layout.activity_take_attendance);
         mAuth = FirebaseAuth.getInstance();
         attendanceList = new ArrayList<>();
-        attendanceListAdapter = new AttendanceListAdapter(this,attendanceList);
+        presentList = new ArrayList<>();
+        absentList = new ArrayList<>();
+        attendanceListAdapter = new AttendanceListAdapter(this,attendanceList, presentList, absentList);
 
         if (getIntent().hasExtra("class_id")&& getIntent().hasExtra("institute")&& getIntent().hasExtra("username")) {
             final String class_id = getIntent().getStringExtra("class_id");
@@ -70,12 +74,13 @@ public class TakeAttendance extends AppCompatActivity {
             mFirestore = FirebaseFirestore.getInstance();
 
             mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id)
-                                            .collection("Students").addSnapshotListener((documentSnapshots, e) -> {
+                    .collection("Students").addSnapshotListener((documentSnapshots, e) -> {
                 for (DocumentChange doc: documentSnapshots.getDocumentChanges()){
                     switch (doc.getType()) {
                         case ADDED:
                             Attendance attendance = doc.getDocument().toObject(Attendance.class);
                             attendanceList.add(attendance);
+                            presentList.add(attendance.getUsername());
                             Collections.sort(attendanceList, Attendance.BY_NAME_ALPHABETICAL);
                             attendanceListAdapter.notifyDataSetChanged();
                             break;
@@ -108,12 +113,9 @@ public class TakeAttendance extends AppCompatActivity {
                 final int[] counter_present = new int[1];
                 DateFormat df1=new SimpleDateFormat("MMMM d, yyyy HH:mm:ss", Locale.ENGLISH);
                 final String time=df1.format(Calendar.getInstance().getTime());
-                List list = attendanceListAdapter.getSelectedItem();
-                List list2 = attendanceListAdapter.getUnselectedItem();
-                int index2;
-                for (index2 = 0; index2 < list2.size(); index2++) {
-                    final Attendance model = (Attendance) list2.get(index2);
-                    mFirestore.collection("Users").document(model.getUsername()).collection("Subjects").document(class_id).get().addOnCompleteListener(task -> {
+                for (int index2 = 0; index2 < presentList.size(); index2++) {
+                    int finalIndex = index2;
+                    mFirestore.collection("Users").document(presentList.get(index2)).collection("Subjects").document(class_id).get().addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             counter_total[0] = document.getLong("Total_Class").intValue();
@@ -129,17 +131,16 @@ public class TakeAttendance extends AppCompatActivity {
                             document.getReference().update(data);
 
                             Map<String, Object> data2 = new HashMap<>();
-                            data2.put(model.getUsername(), true );
-                            Map<String,Object> userData = new HashMap<>();
-                            userData.put(time,true);
+                            data2.put(presentList.get(finalIndex), true );
+
                             mFirestore.collection("Users").document(email_red1).collection("Subjects").document(class_id).collection("Attendance").document(time).set(data2, SetOptions.merge());
                         }
                     });
                 }
                 int index;
-                for (index = 0; index < list.size(); index++) {
-                    final Attendance model = (Attendance) list.get(index);
-                    mFirestore.collection("Users").document(model.getUsername()).collection("Subjects").document(class_id).get().addOnCompleteListener(task -> {
+                for (index = 0; index < absentList.size(); index++) {
+                    int finalIndex = index;
+                    mFirestore.collection("Users").document(absentList.get(index)).collection("Subjects").document(class_id).get().addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             counter_total[0] = document.getLong("Total_Class").intValue();
@@ -153,7 +154,7 @@ public class TakeAttendance extends AppCompatActivity {
                             document.getReference().update(data);
 
                             Map<String, Object> data2 = new HashMap<>();
-                            data2.put(model.getUsername(), false );
+                            data2.put(absentList.get(finalIndex), false );
                             mFirestore.collection("Users").document(email_red1).collection("Subjects").document(class_id).collection("Attendance").document(time).set(data2, SetOptions.merge());
                         }
                     });
@@ -167,6 +168,7 @@ public class TakeAttendance extends AppCompatActivity {
                 else {
                     Toast.makeText(TakeAttendance.this, index + " Students Marked Absent", Toast.LENGTH_LONG).show();
                 }
+                finish();
             });
         }
     }

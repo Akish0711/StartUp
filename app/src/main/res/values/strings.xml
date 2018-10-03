@@ -38,10 +38,8 @@
     <string name="add_selected_students">Add Selected Students</string>
     <string name="about_us">About Us !!  VISION 101 !!</string>
     <string name="submit_marks">Update Marks</string>
-    <string name="update_marks">UPDATE MARKS</string>
     <string name="no_records">No records as of now.</string>
     <string name="no_students">All the students have already been added.</string>
     <string name="no_records_as_of_now">No records as of now</string>
     <string name="graph">Graph</string>
-    <string name="android_desserts">android_desserts</string>
 </resources>

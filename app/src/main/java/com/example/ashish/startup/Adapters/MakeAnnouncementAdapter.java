@@ -80,7 +80,7 @@ public class MakeAnnouncementAdapter extends RecyclerView.Adapter<RecyclerView.V
                         .into(viewHolder1.image_holder);
 
                 viewHolder1.clear_button.setOnClickListener(v -> {
-                    if (listStringUri.size()<=position+1) {
+                    if (listStringUri.size()<=position+1 && listStringUri.size()!=0) {
                         listStringUri.remove(position);
                         listStringUriPdf.remove(position);
                         fileNameList.remove(position);
@@ -110,7 +110,7 @@ public class MakeAnnouncementAdapter extends RecyclerView.Adapter<RecyclerView.V
                 viewHolder2.fileNameView.setText(fileNameList.get(position));
 
                 viewHolder2.clear_button.setOnClickListener(v -> {
-                    if (listStringUriPdf.size()<=position+1) {
+                    if (listStringUriPdf.size()<=position+1 && listStringUriPdf.size()!=0) {
                         listStringUri.remove(position);
                         listStringUriPdf.remove(position);
                         fileNameList.remove(position);

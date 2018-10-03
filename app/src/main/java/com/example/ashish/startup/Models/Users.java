@@ -4,9 +4,7 @@ import java.util.Comparator;
 
 public class Users {
     private String Name, Username;
-    private int id;
     private boolean isSelected;
-
 
 public Users(){
 
@@ -27,13 +25,6 @@ public Users(){
         isSelected = selected;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
     public String getName() {
         return Name;
     }
@@ -51,7 +42,6 @@ public Users(){
     }
 
     public Users(String name, String username) {
-
         Name = name;
         Username = username;
     }

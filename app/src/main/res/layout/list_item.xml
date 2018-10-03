@@ -18,11 +18,9 @@
         android:foreground="?android:attr/selectableItemBackground"
         android:paddingBottom="0dp"
         app:cardElevation="3dp"
-        android:layoutAnimation="@anim/layout_animation_fall_down"
         app:cardUseCompatPadding="true"
         card_view:cardBackgroundColor="@color/colorPrimary"
-        card_view:cardCornerRadius="2dp"
-        android:transitionName="className">
+        card_view:cardCornerRadius="2dp">
 
         <RelativeLayout
             android:layout_width="match_parent"

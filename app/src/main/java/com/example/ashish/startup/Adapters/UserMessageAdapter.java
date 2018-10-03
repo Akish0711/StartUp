@@ -42,6 +42,14 @@ public class UserMessageAdapter extends RecyclerView.Adapter<UserMessageAdapter.
         holder.Text.setText(text_message);
         holder.Time.setText(messageList.get(position).getTime());
         final String message_id = messageList.get(position).messageID;
+        String edited_time = messageList.get(position).getEdited();
+        if (edited_time!=null){
+            holder.Edited_time.setVisibility(View.VISIBLE);
+            holder.Edited_time.setText(edited_time);
+        }else{
+            holder.Edited_time.setVisibility(View.GONE);
+        }
+
         holder.mView.setOnClickListener(v -> {
             Intent intent = new Intent(context,ViewSingleAnnouncement.class);
             intent.putExtra("class_id", class_id);
@@ -60,12 +68,13 @@ public class UserMessageAdapter extends RecyclerView.Adapter<UserMessageAdapter.
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         View mView;
-        TextView Text, Time;
+        TextView Text, Time, Edited_time;
         public ViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
             Text = mView.findViewById(R.id.textView_message_text);
             Time = mView.findViewById(R.id.textView_message_time);
+            Edited_time = mView.findViewById(R.id.edited_time);
         }
     }
 }

@@ -28,7 +28,7 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.View
         View mView;
         public TextView user_name;
         public TextView display_name;
-        public CheckBox checkBox;
+        CheckBox checkBox;
 
         public ViewHolder(View itemView) {
             super(itemView);

@@ -19,7 +19,6 @@
         android:paddingBottom="0dp"
         app:cardElevation="3dp"
         app:cardUseCompatPadding="true"
-        android:layoutAnimation="@anim/layout_animation_fall_down"
         card_view:cardBackgroundColor="@color/colorPrimary"
         card_view:cardCornerRadius="2dp">
 
@@ -42,7 +41,6 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginTop="70dp"
-            android:fontFamily="casual"
             android:padding="10dp"
             android:text="Attendance : "
             android:textColor="#ffffff"
@@ -59,7 +57,6 @@
             android:layout_marginLeft="105dp"
             android:padding="10dp"
             android:text=""
-            android:fontFamily="casual"
             android:textColor="#ffffff"
             android:textSize="18sp"
             android:textStyle="bold"

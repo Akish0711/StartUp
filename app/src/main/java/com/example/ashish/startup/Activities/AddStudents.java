@@ -78,7 +78,6 @@ public class AddStudents extends AppCompatActivity implements UsersListAdapter.U
             Button selected = findViewById(R.id.selected);
             progressBar = findViewById(R.id.progressBar);
             progressBar.setVisibility(View.VISIBLE);
-            progressBar.setScaleY(2f);
 
             n_record_image = findViewById(R.id.no_record_image);
             n_record_text = findViewById(R.id.no_record_text);

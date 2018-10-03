@@ -14,7 +14,6 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:text="Name"
-        android:fontFamily="@font/artifika"
         android:textColor="#000"
         android:textSize="20sp" />
 
@@ -28,7 +27,6 @@
         android:text=" "
         android:textColor="#000"
         android:textSize="20sp"
-        android:fontFamily="@font/artifika"
         android:layout_alignParentRight="true"
         android:layout_marginRight="55dp" />
 </RelativeLayout>

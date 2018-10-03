@@ -5,34 +5,10 @@ import java.util.Comparator;
 public class Attendance {
 
     private String Name, Username;
-    private int id;
-    private boolean isSelected;
     public Attendance(){
-
     }
 
-    public static final Comparator<Attendance> BY_NAME_ALPHABETICAL = new Comparator<Attendance>() {
-        @Override
-        public int compare(Attendance attendance, Attendance t1) {
-            return attendance.Username.compareTo(t1.Username);
-        }
-    };
-
-    public boolean isSelected() {
-        return isSelected;
-    }
-
-    public void setSelected(boolean selected) {
-        isSelected = selected;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    public static final Comparator<Attendance> BY_NAME_ALPHABETICAL = (attendance, t1) -> attendance.Username.compareTo(t1.Username);
 
     public Attendance(String name, String username) {
         Name = name;

@@ -41,14 +41,14 @@ public class AdminMessageAdapter extends RecyclerView.Adapter<AdminMessageAdapte
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_text_message, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
 
         String text_message = messageList.get(position).getMessage();
         String text_time = messageList.get(position).getTime();
@@ -99,9 +99,7 @@ public class AdminMessageAdapter extends RecyclerView.Adapter<AdminMessageAdapte
                         new AlertDialog.Builder(context)
                                 .setTitle("Delete this Announcement?")
                                 .setMessage("Warning : You cannot undo this.")
-                                .setPositiveButton("DELETE", (dialog, which) -> {
-                                    mRootRef.child("Announcement").child(email_red).child(class_id).child(message_id).removeValue().addOnCompleteListener(task -> Toast.makeText(context, "Announcement Deleted", Toast.LENGTH_LONG).show());
-                                }).setNegativeButton("Cancel", null)
+                                .setPositiveButton("DELETE", (dialog, which) -> mRootRef.child("Announcement").child(email_red).child(class_id).child(message_id).removeValue().addOnCompleteListener(task -> Toast.makeText(context, "Announcement Deleted", Toast.LENGTH_LONG).show())).setNegativeButton("Cancel", null)
                                 .show();
                         break;
                 }

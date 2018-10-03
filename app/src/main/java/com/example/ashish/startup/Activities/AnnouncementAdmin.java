@@ -17,8 +17,6 @@ import com.example.ashish.startup.Adapters.AdminMessageAdapter;
 import com.example.ashish.startup.Models.Message;
 import com.example.ashish.startup.R;
 import com.github.clans.fab.FloatingActionButton;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -107,13 +105,10 @@ public class AnnouncementAdmin extends AppCompatActivity {
                 loadMoreMessages(class_id,email_red);
             });
 
-            mFirestore.collection("Users").document(email_red).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        Institute[0] = document.getString("Institute");
-                    }
+            mFirestore.collection("Users").document(email_red).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    Institute[0] = document.getString("Institute");
                 }
             });
 
@@ -154,7 +149,7 @@ public class AnnouncementAdmin extends AppCompatActivity {
 
         messageQuery.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
 
                 String messageKey = dataSnapshot.getKey();
                 Message message = dataSnapshot.getValue(Message.class).withID(messageKey);
@@ -174,22 +169,22 @@ public class AnnouncementAdmin extends AppCompatActivity {
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
 
             }
 
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
             }
 
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, String s) {
 
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
@@ -202,7 +197,7 @@ public class AnnouncementAdmin extends AppCompatActivity {
 
         messageQuery.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
 
                 String messageKey = dataSnapshot.getKey();
                 Message message = dataSnapshot.getValue(Message.class).withID(messageKey);
@@ -220,7 +215,7 @@ public class AnnouncementAdmin extends AppCompatActivity {
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
                 String messageKey = dataSnapshot.getKey();
                 Message message = dataSnapshot.getValue(Message.class).withID(messageKey);
                 int index = keyList.indexOf(messageKey);
@@ -229,7 +224,7 @@ public class AnnouncementAdmin extends AppCompatActivity {
             }
 
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 int index = keyList.indexOf(dataSnapshot.getKey());
                 messageList.remove(index);
                 keyList.remove(index);
@@ -237,12 +232,12 @@ public class AnnouncementAdmin extends AppCompatActivity {
             }
 
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, String s) {
 
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
