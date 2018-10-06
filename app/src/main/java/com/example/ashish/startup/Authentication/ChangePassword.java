@@ -66,24 +66,21 @@ public class ChangePassword extends AppCompatActivity {
             dialog.setMessage("Changing Password, please wait!!!");
             dialog.show();
             user.updatePassword(change_pass.getText().toString())
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
-                                dialog.dismiss();
-                                KToast.successToast(ChangePassword.this,"Your Password has been Changed",Gravity.BOTTOM,KToast.LENGTH_AUTO);
-                                FirebaseAuth.getInstance().signOut();
-                                Intent intent = new Intent("finish");
-                                sendBroadcast(intent);
-                                finish();
-                                Intent i = new Intent(ChangePassword.this,Login.class);
-                                startActivity(i);
-                            }
-                            else
-                            {
-                                dialog.dismiss();
-                                KToast.errorToast(ChangePassword.this,"Password Could not be Changed. Logout and Try Again.",Gravity.BOTTOM,KToast.LENGTH_LONG);
-                            }
+                    .addOnCompleteListener(task -> {
+                        if(task.isSuccessful()){
+                            dialog.dismiss();
+                            KToast.successToast(ChangePassword.this,"Your Password has been Changed",Gravity.BOTTOM,KToast.LENGTH_AUTO);
+                            FirebaseAuth.getInstance().signOut();
+                            Intent intent = new Intent("finish");
+                            sendBroadcast(intent);
+                            finish();
+                            Intent i = new Intent(ChangePassword.this,Login.class);
+                            startActivity(i);
+                        }
+                        else
+                        {
+                            dialog.dismiss();
+                            KToast.errorToast(ChangePassword.this,"Password Could not be Changed. Logout and Try Again.",Gravity.BOTTOM,KToast.LENGTH_LONG);
                         }
                     });
         }

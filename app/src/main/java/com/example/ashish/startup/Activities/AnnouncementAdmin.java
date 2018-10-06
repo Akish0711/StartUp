@@ -116,6 +116,7 @@ public class AnnouncementAdmin extends AppCompatActivity {
                 Intent intent = new Intent(AnnouncementAdmin.this,AddStudents.class);
                 intent.putExtra("class_id", class_id);
                 intent.putExtra("institute",Institute[0]);
+                intent.putExtra("username", email_red);
                 startActivity(intent);
             });
 

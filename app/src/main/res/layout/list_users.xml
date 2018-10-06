@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
@@ -7,37 +8,37 @@
     android:paddingTop="5dp"
     android:paddingBottom="5dp"
     android:paddingStart="15dp"
-    android:paddingEnd="15dp">
+    android:paddingEnd="15dp"
+    android:focusable="true">
 
     <TextView
         android:id="@+id/display_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:text="Name"
         android:textColor="#000"
-        android:textSize="20dp" />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/display_name"
         android:layout_alignStart="@+id/display_name"
         android:layout_below="@+id/display_name"
         android:text="Username"
-        android:textSize="15dp" />
+        android:textSize="15sp" />
 
-    <CheckBox
-        android:padding="15dp"
-        android:id="@+id/checkbox"
-        android:layout_alignBaseline="@+id/name"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
+    <ImageView
+        android:id="@+id/check"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="43dp"
+        app:srcCompat="@drawable/checkbox_outline"
+        android:padding="8dp"/>
+
 
 </RelativeLayout>

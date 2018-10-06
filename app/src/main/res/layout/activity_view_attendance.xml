@@ -10,9 +10,9 @@
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
-        android:background="@color/colorPrimary"
+        android:background="@color/colorPrimary3"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/MyTheme" />
+        app:popupTheme="@style/MyTheme3" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/make_announcement"

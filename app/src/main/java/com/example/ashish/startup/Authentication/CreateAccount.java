@@ -9,10 +9,14 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.Toast;
 
+import com.example.ashish.startup.Activities.TakeAttendance;
 import com.example.ashish.startup.R;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -28,9 +32,10 @@ import java.util.Random;
 
 public class CreateAccount extends AppCompatActivity {
 
-    EditText username, name,phoneNumber;
+    EditText name,phoneNumber;
     Button createAccount;
     ProgressBar progressBar;
+    Spinner spinner;
 
     private static final String DATA = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     private String genPswd;
@@ -48,11 +53,17 @@ public class CreateAccount extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        username = findViewById(R.id.username);
         name = findViewById(R.id.name);
         phoneNumber = findViewById(R.id.phoneNumber);
         createAccount = findViewById(R.id.createAccount);
         progressBar = findViewById(R.id.progressBar3);
+        spinner = findViewById(R.id.spinner);
+
+        ArrayAdapter<String> myAdapter = new ArrayAdapter<>(CreateAccount.this,
+                android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.classes));
+
+        myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(myAdapter);
 
         mAuth1 = FirebaseAuth.getInstance();
         FirebaseOptions firebaseOptions = new FirebaseOptions.Builder()
@@ -72,12 +83,7 @@ public class CreateAccount extends AppCompatActivity {
             getSupportActionBar().setTitle("Create New Account");
         }
 
-        createAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                registerUser();
-            }
-        });
+        createAccount.setOnClickListener(view -> registerUser());
         random = new Random();
     }
 
@@ -92,34 +98,52 @@ public class CreateAccount extends AppCompatActivity {
     public void registerUser() {
         final FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
 
-        final String user = username.getText().toString();
+        String classes = spinner.getSelectedItem().toString();
         final String display_name = name.getText().toString();
         final String phoneNo = phoneNumber.getText().toString();
-        if (user.isEmpty()) {
-            username.setError("Username is required");
-            username.requestFocus();
-            return;
-        }
+        final String[] batch = new String[1];
 
         if (display_name.isEmpty()) {
             name.setError("Name is required");
             name.requestFocus();
             return;
-        }
-        if(phoneNo.isEmpty()){
-            phoneNumber.setError("Phone Number is required");
+        }else if (spinner == null || spinner.getSelectedItem() ==null || classes.equals("Class")) {
+            KToast.warningToast(this,"Class Required",Gravity.BOTTOM,KToast.LENGTH_LONG);
+            return;
+        }else if(phoneNo.isEmpty()){
+            phoneNumber.setError("Contact Number required");
             phoneNumber.requestFocus();
             return;
+        }else if(phoneNo.length()!=10){
+            phoneNumber.setError("Enter Correct Contact Number");
+            phoneNumber.requestFocus();
+            return;
+        }else{
+            rootRef.collection("Important").document("Batch").get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()){
+                    DocumentSnapshot document = task.getResult();
+                    batch[0] = document.getString(classes);
+                }
+            });
         }
 
         String email = mAuth1.getCurrentUser().getEmail();
         String email_red = email.substring(0, email.length() - 10);
         rootRef.collection("Users").document(email_red).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult();
-                final String Institute = document.getString("Institute");
                 progressBar.setVisibility(View.VISIBLE);
+                DocumentSnapshot document = task.getResult();
 
+                final String Institute = document.getString("Institute");
+                String code = document.getString("Code");
+                long total_students = document.getLong("Total Students");
+                total_students++;
+
+                Map<String, Object> update_data = new HashMap<>();
+                update_data.put("Total Students", total_students);
+                rootRef.collection("Users").document(email_red).update(update_data);
+
+                String user = batch[0]+code+total_students;
                 genPswd = genRandomPswd();
 
                 mAuth2.createUserWithEmailAndPassword(user + "@gmail.com", genPswd).addOnCompleteListener(task1 -> {

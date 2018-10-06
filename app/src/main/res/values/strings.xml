@@ -30,6 +30,15 @@
         <item>Settings</item>
     </string-array>
 
+    <string-array name="classes">
+        <item>Class</item>
+        <item>Class 8th</item>
+        <item>Class 9th</item>
+        <item>Class 10th</item>
+        <item>Class 11th</item>
+        <item>Class 12th</item>
+    </string-array>
+
     <string name="action_logout">Logout</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="update_attendance">update attendance</string>

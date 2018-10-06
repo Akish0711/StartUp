@@ -60,12 +60,7 @@ public class Login extends AppCompatActivity {
         mProgressBar =  findViewById(R.id.progressBar2);
         mProgressBar.setVisibility(View.GONE);
 
-        mLoginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startSign();
-            }
-        });
+        mLoginBtn.setOnClickListener(view -> startSign());
     }
 
     FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
@@ -106,7 +101,7 @@ public class Login extends AppCompatActivity {
     }
 
     public void startSign(){
-        final String email = mEmailField.getText().toString();
+        String email = mEmailField.getText().toString().toLowerCase();
         String password = mPasswordField.getText().toString();
 
         regToken = FirebaseInstanceId.getInstance().getToken();
@@ -117,56 +112,50 @@ public class Login extends AppCompatActivity {
 
         }else {
             mProgressBar.setVisibility(View.VISIBLE);
-            mAuth.signInWithEmailAndPassword(email+"@gmail.com", password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()){
-                        rootRef.collection("Users").document(email).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    DocumentSnapshot document = task.getResult();
+            mAuth.signInWithEmailAndPassword(email+"@gmail.com", password).addOnCompleteListener(task -> {
+                if (task.isSuccessful()){
+                    rootRef.collection("Users").document(email).get().addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+                            DocumentSnapshot document = task1.getResult();
 
-                                    //User has successfully logged in, save this information
-                                    // We need an Editor object to make preference changes.
-                                    SharedPreferences settings = getSharedPreferences(Login.PREFS_NAME, 0); // 0 - for private mode
-                                    SharedPreferences.Editor editor = settings.edit();
-                                    editor.putString("regId",regToken);
-                                    editor.apply();
+                            //User has successfully logged in, save this information
+                            // We need an Editor object to make preference changes.
+                            SharedPreferences settings = getSharedPreferences(Login.PREFS_NAME, 0); // 0 - for private mode
+                            SharedPreferences.Editor editor = settings.edit();
+                            editor.putString("regId",regToken);
+                            editor.apply();
 
-                                    if (document.getString("Admin").equals("Yes")) {
-                                        KToast.successToast(Login.this, "Logged in as admin.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
+                            if (document.getString("Admin").equals("Yes")) {
+                                KToast.successToast(Login.this, "Logged in as admin.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
 
-                                        //Set "hasLoggedIn" to true
-                                        editor.putInt("hasLoggedIn", 1);
+                                //Set "hasLoggedIn" to true
+                                editor.putInt("hasLoggedIn", 1);
 
-                                        // Commit the edits!
-                                        editor.apply();
+                                // Commit the edits!
+                                editor.apply();
 
-                                        finish();
-                                        startActivity(new Intent(Login.this, MainActivity.class));
-                                    } else {
-                                        KToast.successToast(Login.this, "Logged in as user.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
+                                finish();
+                                startActivity(new Intent(Login.this, MainActivity.class));
+                            } else {
+                                KToast.successToast(Login.this, "Logged in as user.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
 
-                                        //Set "hasLoggedIn" to true
-                                        editor.putInt("hasLoggedIn", 2);
+                                //Set "hasLoggedIn" to true
+                                editor.putInt("hasLoggedIn", 2);
 
-                                        // Commit the edits!
-                                        editor.apply();
+                                // Commit the edits!
+                                editor.apply();
 
-                                        finish();
-                                        startActivity(new Intent(Login.this, nonadmin.class));
-                                    }
-
-                                }else {
-                                    mProgressBar.setVisibility(View.GONE);
-                                    notifyUser( "Sign in problem.");
-                                }
+                                finish();
+                                startActivity(new Intent(Login.this, nonadmin.class));
                             }
-                        });
-                    }else{
-                        onFailure(task.getException());
-                    }
+
+                        }else {
+                            mProgressBar.setVisibility(View.GONE);
+                            notifyUser( "Sign in problem.");
+                        }
+                    });
+                }else{
+                    onFailure(task.getException());
                 }
             });
         }
