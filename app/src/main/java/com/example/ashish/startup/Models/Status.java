@@ -14,7 +14,7 @@ public class Status {
         }
     };
 
-private int Percentage;
+    private int Percentage;
     private String Name;
 
     public String getName() {

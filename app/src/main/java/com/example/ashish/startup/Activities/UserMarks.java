@@ -25,8 +25,9 @@ public class UserMarks extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_u_marks);
+        setContentView(R.layout.activity_user_marks_card);
 
         floatingActionMenu = findViewById(R.id.floatingActionMarksMenu);
         floatingActionMenu.setVisibility(View.INVISIBLE);

@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.ashish.startup.Fragments.TestFragment;
 import com.example.ashish.startup.R;
@@ -46,10 +47,13 @@ public class UploadMarks extends AppCompatActivity {
                 getSupportActionBar().setTitle("Upload Marks");
             }
 
-            createTest.setOnClickListener(view -> {
-                Intent intent = new Intent(UploadMarks.this,CreateNewTest.class);
-                intent.putExtra("class_id",class_id);
-                startActivity(intent);
+            createTest.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(UploadMarks.this,CreateNewTest.class);
+                    intent.putExtra("class_id",class_id);
+                    startActivity(intent);
+                }
             });
         }
 
@@ -65,20 +69,23 @@ public class UploadMarks extends AppCompatActivity {
     }
 
     private void loadHomeFragment() {
-        Runnable mPendingRunnable = () -> {
-            // update the main content by replacing fragments
-            TestFragment test = new TestFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString("class_id", class_id);
-            bundle.putString("institute",Institute);
-            test.setArguments(bundle);
+        Runnable mPendingRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // update the main content by replacing fragments
+                TestFragment test = new TestFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("class_id", class_id);
+                bundle.putString("institute",Institute);
+                test.setArguments(bundle);
 
-            Fragment fragment = test;
-            android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
-                    android.R.anim.fade_out);
-            fragmentTransaction.replace(R.id.fragment_frame, fragment, CURRENT_TAG);
-            fragmentTransaction.commitAllowingStateLoss();
+                Fragment fragment = test;
+                android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
+                        android.R.anim.fade_out);
+                fragmentTransaction.replace(R.id.fragment_frame, fragment, CURRENT_TAG);
+                fragmentTransaction.commitAllowingStateLoss();
+            }
         };
 
         // If mPendingRunnable is not null, then add to the message queue
@@ -86,6 +93,9 @@ public class UploadMarks extends AppCompatActivity {
             mHandler.post(mPendingRunnable);
         }
     }
+
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

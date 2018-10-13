@@ -4,18 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.ViewAttendance">
+    tools:context=".Activities.UpdateAttendanceNew">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/view_attendance_toolbar"
+        android:id="@+id/update_attendance_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
-        android:background="@color/colorPrimary3"
+        android:background="@color/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/MyTheme3" />
+        app:popupTheme="@style/MyTheme" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/attendance_details_list"
+        android:id="@+id/update_attendance_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?android:attr/actionBarSize" />

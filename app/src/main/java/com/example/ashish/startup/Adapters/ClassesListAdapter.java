@@ -36,7 +36,7 @@ public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.
 
     private List<Classes> classesList;
     private FirebaseFirestore mFirestore;
-    public Context context;
+    public  Context context;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference mRootRef;
 

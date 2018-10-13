@@ -1,11 +1,14 @@
 package com.example.ashish.startup.Activities;
 
+import android.annotation.TargetApi;
+import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
@@ -37,6 +40,8 @@ public class TakeAttendance extends AppCompatActivity {
     private List<String> presentList;
     private List<String> absentList;
     private FirebaseAuth mAuth;
+    private int mYear, mMonth, mDay, mHour, mMinute;
+    private String datee = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,14 +114,23 @@ public class TakeAttendance extends AppCompatActivity {
                 final String email_red1 = email.substring(0, email.length() - 10);
                 final int[] counter_total = new int[1];
                 final int[] counter_present = new int[1];
-                DateFormat df1=new SimpleDateFormat("MMMM d, yyyy HH:mm:ss", Locale.ENGLISH);
-                final String time=df1.format(Calendar.getInstance().getTime());
+                DateFormat df1 = new SimpleDateFormat("MMMM d, yyyy HH:mm:ss", Locale.ENGLISH);
+
+                final String time;
+                if(datee == null){
+                    time = df1.format(Calendar.getInstance().getTime());
+                }
+                else{
+                    time = datee;
+                }
+
                 for (int index2 = 0; index2 < presentList.size(); index2++) {
                     int finalIndex = index2;
-                    mFirestore.collection("Users").document(presentList.get(index2)).collection("Subjects").document(class_id).get().addOnCompleteListener(task -> {
+                    mFirestore.collection("Users").document(presentList.get(index2))
+                            .collection("Subjects").document(class_id).get().addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
-                            counter_total[0] = document.getLong("Total_Class").intValue();
+
                             counter_present[0] = document.getLong("Total_Present").intValue();
                             counter_total[0]++;
                             counter_present[0]++;
@@ -131,14 +145,17 @@ public class TakeAttendance extends AppCompatActivity {
                             Map<String, Object> data2 = new HashMap<>();
                             data2.put(presentList.get(finalIndex), true );
 
-                            mFirestore.collection("Users").document(email_red1).collection("Subjects").document(class_id).collection("Attendance").document(time).set(data2, SetOptions.merge());
+
+                            mFirestore.collection("Users").document(email_red1).collection("Subjects")
+                                    .document(class_id).collection("Attendance").document(time).set(data2, SetOptions.merge());
                         }
                     });
                 }
                 int index;
                 for (index = 0; index < absentList.size(); index++) {
                     int finalIndex = index;
-                    mFirestore.collection("Users").document(absentList.get(index)).collection("Subjects").document(class_id).get().addOnCompleteListener(task -> {
+                    mFirestore.collection("Users").document(absentList.get(index)).collection("Subjects")
+                            .document(class_id).get().addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             counter_total[0] = document.getLong("Total_Class").intValue();
@@ -153,7 +170,8 @@ public class TakeAttendance extends AppCompatActivity {
 
                             Map<String, Object> data2 = new HashMap<>();
                             data2.put(absentList.get(finalIndex), false );
-                            mFirestore.collection("Users").document(email_red1).collection("Subjects").document(class_id).collection("Attendance").document(time).set(data2, SetOptions.merge());
+                            mFirestore.collection("Users").document(email_red1).collection("Subjects")
+                                    .document(class_id).collection("Attendance").document(time).set(data2, SetOptions.merge());
                         }
                     });
                 }
@@ -170,18 +188,41 @@ public class TakeAttendance extends AppCompatActivity {
             });
         }
     }
+    @TargetApi(24)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == android.R.id.home){
             onBackPressed();
             return true;
         }
+
+        if(id == R.id.select_date){
+            final Calendar c = Calendar.getInstance();
+            mYear = c.get(Calendar.YEAR);
+            mMonth = c.get(Calendar.MONTH);
+            mDay = c.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                    (view, year, monthOfYear, dayOfMonth) ->
+                    {
+                        final SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy HH:mm:ss", Locale.ENGLISH);
+                        c.set(year,monthOfYear,dayOfMonth);
+                        datee = formatter.format(c.getTime());
+                    }, mYear, mMonth, mDay);
+
+            datePickerDialog.show();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        // show menu only when home fragment is selected
+        getMenuInflater().inflate(R.menu.attendance_menu, menu);
+        return true;
     }
 }

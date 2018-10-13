@@ -105,7 +105,9 @@
         <activity android:name=".Activities.GetMarks" />
         <activity android:name=".Activities.ViewSingleAnnouncement" />
         <activity android:name=".Authentication.CreateAccount" />
-        <activity android:name=".Util.AnimateToolbar" />
+        <activity android:name=".Activities.UpdateAttendanceNew"
+            android:theme="@style/AppTheme3"
+            />
         <activity
             android:name=".Activities.EditProfile"
             android:configChanges="orientation|keyboardHidden|screenSize" />

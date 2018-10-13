@@ -63,8 +63,8 @@
 
                     <ImageView
                         android:id="@+id/add_students_image"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
                         android:layout_centerInParent="true"
                         app:srcCompat="@drawable/add_students" />
                 </RelativeLayout>
@@ -144,15 +144,16 @@
                         android:layout_height="wrap_content"
                         android:textSize="12sp"
                         android:layout_centerHorizontal="true"
+                        android:layout_above="@id/remove_image"
                         android:gravity="center_horizontal"
                         android:text="Remove Sudents"
                         android:textColor="#fff" />
 
                     <ImageView
                         android:id="@+id/remove_image"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_below="@+id/remove_text"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:background="@color/trans"
                         android:layout_centerInParent="true"
                         android:scaleType="fitCenter"
                         app:srcCompat="@drawable/remove" />
@@ -179,5 +180,4 @@
         app:backgroundTint="@color/colorPrimary"
         app:elevation="6dp"
         app:fabSize="normal"/>
-
 </android.support.design.widget.CoordinatorLayout>

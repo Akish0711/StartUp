@@ -1,8 +1,7 @@
 package com.example.ashish.startup.Activities;
 
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -13,11 +12,8 @@ import android.widget.ProgressBar;
 import com.example.ashish.startup.Adapters.StatusListAdapter;
 import com.example.ashish.startup.Models.Status;
 import com.example.ashish.startup.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +39,7 @@ public class ViewAttendance extends AppCompatActivity {
             final String class_id = getIntent().getStringExtra("class_id");
             final String Institute = getIntent().getStringExtra("institute");
 
-            Toolbar toolbar = findViewById(R.id.my_toolbar);
+            Toolbar toolbar = findViewById(R.id.view_attendance_toolbar);
             setSupportActionBar(toolbar);
 
             if (getSupportActionBar() != null) {
@@ -52,37 +48,32 @@ public class ViewAttendance extends AppCompatActivity {
                 getSupportActionBar().setTitle("View Attendance");
             }
 
-            mMainList = findViewById(R.id.make_announcement);
-            progressBar = findViewById(R.id.progressBar);
+            progressBar = findViewById(R.id.progressBarUpdateAttendance);
             progressBar.setVisibility(View.VISIBLE);
             progressBar.setScaleY(2f);
 
+            mMainList = findViewById(R.id.attendance_details_list);
             mMainList.setHasFixedSize(true);
             mMainList.setLayoutManager(new LinearLayoutManager(this));
             mMainList.setAdapter(statusListAdapter);
+
             mFirestore = FirebaseFirestore.getInstance();
 
-            mFirestore.collection("Users").whereEqualTo("Institute_Admin", Institute+"_No").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        for (final DocumentSnapshot document : task.getResult()) {
-                            document.getReference().collection("Subjects").document(class_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull final Task<DocumentSnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        DocumentSnapshot doc = task.getResult();
-                                        if (doc != null && doc.exists()) {
-                                            progressBar.setVisibility(View.GONE);
-                                            Status status = doc.toObject(Status.class);
-                                            statusList.add(status);
-                                            Collections.sort(statusList, Status.BY_NAME_ALPHABETICAL);
-                                            statusListAdapter.notifyDataSetChanged();
-                                        }
-                                    }
+            mFirestore.collection("Users").whereEqualTo("Institute_Admin", Institute+"_No").get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    for (final DocumentSnapshot document : task.getResult()) {
+                        document.getReference().collection("Subjects").document(class_id).get().addOnCompleteListener(task1 -> {
+                            if (task1.isSuccessful()) {
+                                DocumentSnapshot doc = task1.getResult();
+                                if (doc != null && doc.exists()) {
+                                    progressBar.setVisibility(View.GONE);
+                                    Status status = doc.toObject(Status.class);
+                                    statusList.add(status);
+                                    Collections.sort(statusList, Status.BY_NAME_ALPHABETICAL);
+                                    statusListAdapter.notifyDataSetChanged();
                                 }
-                            });
-                        }
+                            }
+                        });
                     }
                 }
             });

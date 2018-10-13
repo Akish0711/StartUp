@@ -2,7 +2,6 @@ package com.example.ashish.startup.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,8 +17,6 @@ import android.widget.ProgressBar;
 import com.example.ashish.startup.Adapters.AdminViewMarksListAdapter;
 import com.example.ashish.startup.Models.Marks;
 import com.example.ashish.startup.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -51,7 +48,7 @@ public class ViewMarks extends AppCompatActivity {
     private Set<Float> mMarks = new HashSet<>();
     private AdminViewMarksListAdapter adminViewMarksListAdapter;
     private FirebaseAuth mAuth;
-    private String email_red,marksID,class_id,institute;
+    private String email_red, marksID, class_id, institute;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,12 +57,12 @@ public class ViewMarks extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        if(getIntent().hasExtra("class_id") && getIntent().hasExtra("email_red")
-                && getIntent().hasExtra("marksID") && getIntent().hasExtra("institute") ){
-           class_id = getIntent().getStringExtra("class_id");
-           marksID = getIntent().getStringExtra("marksID");
-           email_red = getIntent().getStringExtra("email_red");
-           institute = getIntent().getStringExtra("institute");
+        if (getIntent().hasExtra("class_id") && getIntent().hasExtra("email_red")
+                && getIntent().hasExtra("marksID") && getIntent().hasExtra("institute")) {
+            class_id = getIntent().getStringExtra("class_id");
+            marksID = getIntent().getStringExtra("marksID");
+            email_red = getIntent().getStringExtra("email_red");
+            institute = getIntent().getStringExtra("institute");
 
             android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar_view_marks);
             setSupportActionBar(toolbar);
@@ -76,7 +73,7 @@ public class ViewMarks extends AppCompatActivity {
                 getSupportActionBar().setTitle(marksID + " Marks");
             }
             marksList = new ArrayList<>();
-            adminViewMarksListAdapter = new AdminViewMarksListAdapter(marksList,marksID,class_id,email_red);
+            adminViewMarksListAdapter = new AdminViewMarksListAdapter(marksList, marksID, class_id, email_red);
 
             marksListView = findViewById(R.id.view_marks_recycler_view);
             progressBar = findViewById(R.id.progressBarViewMarks);
@@ -88,42 +85,42 @@ public class ViewMarks extends AppCompatActivity {
             marksListView.setAdapter(adminViewMarksListAdapter);
             FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
 
-            mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id).collection("Marks").document(marksID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if(task.isSuccessful()){
+            mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id)
+                    .collection("Marks").document(marksID).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
 
-                        DocumentSnapshot doc = task.getResult();
-                        if(doc != null && doc.exists()){
-                           Map<String,Object> hm = doc.getData();
-                           Set<String> a = hm.keySet();
-                           for(String b : a){
-                                      try{
-                                          progressBar.setVisibility(View.GONE);
-                                          Marks marks = new Marks() ;
-                                          marks.setName(b.replace("@gmail",""));
-                                          marks.setMax_marks((String)doc.get("Max_marks"));
+                    DocumentSnapshot doc = task.getResult();
+                    if (doc != null && doc.exists()) {
+                        Map<String, Object> hm = doc.getData();
+                        Set<String> a = hm.keySet();
+                        for (String b : a) {
+                            try {
+                                progressBar.setVisibility(View.GONE);
+                                Marks marks = new Marks();
+                                marks.setName(b.replace("@gmail", ""));
+                                marks.setMax_marks((String) doc.get("Max_marks"));
 
-                                          if(doc.get(b + ".com") == null || ((String)doc.get(b + ".com")).isEmpty()){
-                                              mMarks.add(Float.valueOf(0));
-                                          }
-                                          else {
-                                              mMarks.add(Float.parseFloat((String) doc.get(b + ".com")));
-                                          }
-                                          marks.setInputMarks((String)doc.get(b+".com"));
-                                          marks.setUsername(b.replace("@gmail",""));
+                                if (doc.get(b + ".com") == null || ((String) doc.get(b + ".com")).isEmpty()) {
+                                    if (b.equals("Max_marks")) {
+                                    } else {
+                                        mMarks.add(Float.valueOf(0));
+                                    }
+                                } else {
+                                    mMarks.add(Float.parseFloat((String) doc.get(b + ".com")));
+                                }
 
-                                          if(!b.equals("Max_marks")){
-                                              marksList.add(marks);
-                                          }
+                                marks.setInputMarks((String) doc.get(b + ".com"));
+                                marks.setUsername(b.replace("@gmail", ""));
 
-                                          Collections.sort(marksList,Marks.BY_NAME_ALPHABETICAL);
-                                          adminViewMarksListAdapter.notifyDataSetChanged();
-                                        }
-                                        catch (Exception e){
-                                      e.printStackTrace();
-                                            Log.e("error : ",e.getLocalizedMessage()+"" + e.getMessage()  );
-                                        }
+                                if (!b.equals("Max_marks")) {
+                                    marksList.add(marks);
+                                }
+
+                                Collections.sort(marksList, Marks.BY_NAME_ALPHABETICAL);
+                                adminViewMarksListAdapter.notifyDataSetChanged();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Log.e("error : ", e.getLocalizedMessage() + "" + e.getMessage());
                             }
                         }
                     }
@@ -143,26 +140,26 @@ public class ViewMarks extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == android.R.id.home){
+        if (id == android.R.id.home) {
             onBackPressed();
             return true;
         }
-        if ( id == R.id.enter_marks ){
-            Intent intent = new Intent(ViewMarks.this,GetMarks.class);
-            intent.putExtra("class_id",class_id);
-            intent.putExtra("marksID",marksID);
-            intent.putExtra("institute",institute);
+        if (id == R.id.enter_marks) {
+            Intent intent = new Intent(ViewMarks.this, GetMarks.class);
+            intent.putExtra("class_id", class_id);
+            intent.putExtra("marksID", marksID);
+            intent.putExtra("institute", institute);
             startActivity(intent);
         }
 
-        if(id == R.id.admin_graph){
+        if (id == R.id.admin_graph) {
 
             final LayoutInflater inflater = getLayoutInflater();
             final View alertLayout = inflater.inflate(R.layout.graph_plot, null);
 
             try {
                 //HICharts
-                HIChartView chartView =  alertLayout.findViewById(R.id.hc);
+                HIChartView chartView = alertLayout.findViewById(R.id.hc);
                 chartView.plugins = new ArrayList<>(Arrays.asList("histogram-bellcurve"));
 
                 HIOptions options = new HIOptions();
@@ -216,7 +213,7 @@ public class ViewMarks extends AppCompatActivity {
                 Number[] series2_data = new Number[mMarks.size()];
 
                 int i = 0;
-                for(float m : mMarks){
+                for (float m : mMarks) {
                     series2_data[i] = m;
                     i++;
                 }
@@ -233,19 +230,20 @@ public class ViewMarks extends AppCompatActivity {
 
                 chartView.setOptions(options);
 
-            AlertDialog.Builder alert = new AlertDialog.Builder(ViewMarks.this);
-            alert.setTitle("Graph");
+                AlertDialog.Builder alert = new AlertDialog.Builder(ViewMarks.this);
+                alert.setTitle("Graph");
 
-            alert.setView(alertLayout);
-            alert.setCancelable(false);
+                alert.setView(alertLayout);
+                alert.setCancelable(false);
 
-            alert.setPositiveButton("Done",(dialog, which) -> {});
+                alert.setPositiveButton("Done", (dialog, which) -> {
+                });
 
-            AlertDialog dialog = alert.create();
+                AlertDialog dialog = alert.create();
 
-            dialog.show();
-            }catch (NullPointerException e){
-                Log.e("",e.getLocalizedMessage());
+                dialog.show();
+            } catch (NullPointerException e) {
+                Log.e("", e.getLocalizedMessage());
             }
         }
         return super.onOptionsItemSelected(item);
