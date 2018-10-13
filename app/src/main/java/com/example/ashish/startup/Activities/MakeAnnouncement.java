@@ -29,7 +29,6 @@ import android.widget.EditText;
 import com.example.ashish.startup.Adapters.MakeAnnouncementAdapter;
 import com.example.ashish.startup.R;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -73,10 +72,9 @@ public class MakeAnnouncement extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_announcement);
 
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
         if (getIntent().hasExtra("class_id")) {
             class_id = getIntent().getStringExtra("class_id");
+            email_red = getIntent().getStringExtra("username");
 
             Toolbar toolbar = findViewById(R.id.my_toolbar);
             setSupportActionBar(toolbar);
@@ -101,10 +99,6 @@ public class MakeAnnouncement extends AppCompatActivity {
             mUploadList.setLayoutManager(new LinearLayoutManager(this));
             mUploadList.setHasFixedSize(true);
             mUploadList.setAdapter(makeAnnouncementAdapter);
-
-            String email = mAuth.getCurrentUser().getEmail();
-            email_red = email.substring(0, email.length() - 10);
-
             mRootRef = FirebaseDatabase.getInstance().getReference();
         }
     }

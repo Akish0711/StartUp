@@ -2,7 +2,6 @@ package com.example.ashish.startup.Authentication;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -11,11 +10,8 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.ashish.startup.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -48,7 +44,6 @@ public class ReAuthentication extends AppCompatActivity {
         }
     }
 
-
     public void next(View v) {
         String pass = current_pass.getText().toString();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -62,20 +57,17 @@ public class ReAuthentication extends AppCompatActivity {
             dialog.setMessage("Authenticating");
             dialog.show();
             user.reauthenticate(credential)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                dialog.dismiss();
-                                KToast.successToast(ReAuthentication.this, "Authenticated.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
-                                Intent i = new Intent(ReAuthentication.this, ChangePassword.class);
-                                startActivity(i);
-                            }
-                            else
-                            {
-                                dialog.dismiss();
-                                KToast.errorToast(ReAuthentication.this, "Invalid Credentials.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
-                            }
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            dialog.dismiss();
+                            KToast.successToast(ReAuthentication.this, "Authenticated.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
+                            Intent i = new Intent(ReAuthentication.this, ChangePassword.class);
+                            startActivity(i);
+                        }
+                        else
+                        {
+                            dialog.dismiss();
+                            KToast.errorToast(ReAuthentication.this, "Invalid Credentials.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
                         }
                     });
 

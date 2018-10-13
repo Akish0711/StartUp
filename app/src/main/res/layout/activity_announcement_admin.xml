@@ -141,19 +141,18 @@
                     <TextView
                         android:id="@+id/remove_text"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:textSize="12sp"
                         android:layout_centerHorizontal="true"
+                        android:gravity="center"
                         android:layout_above="@id/remove_image"
-                        android:gravity="center_horizontal"
-                        android:text="Remove Sudents"
+                        android:text="Remove"
                         android:textColor="#fff" />
 
                     <ImageView
                         android:id="@+id/remove_image"
                         android:layout_width="45dp"
                         android:layout_height="45dp"
-                        android:background="@color/trans"
                         android:layout_centerInParent="true"
                         android:scaleType="fitCenter"
                         app:srcCompat="@drawable/remove" />
@@ -180,4 +179,5 @@
         app:backgroundTint="@color/colorPrimary"
         app:elevation="6dp"
         app:fabSize="normal"/>
+
 </android.support.design.widget.CoordinatorLayout>

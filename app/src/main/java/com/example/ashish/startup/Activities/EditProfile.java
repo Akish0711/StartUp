@@ -84,7 +84,7 @@ public class EditProfile extends AppCompatActivity {
         rootRef = FirebaseFirestore.getInstance();
         user = mAuth.getCurrentUser();
         String email = user.getEmail();
-        email_red = email.substring(0, email.length() - 10);
+        email_red = email.substring(0, email.length() - 10).toUpperCase();
 
         changeImage.setOnClickListener(view -> verifyPermissions());
 

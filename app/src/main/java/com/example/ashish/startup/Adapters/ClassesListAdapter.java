@@ -20,8 +20,6 @@ import com.example.ashish.startup.Activities.AnnouncementAdmin;
 import com.example.ashish.startup.Activities.MainActivity;
 import com.example.ashish.startup.Models.Classes;
 import com.example.ashish.startup.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -36,13 +34,14 @@ public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.
 
     private List<Classes> classesList;
     private FirebaseFirestore mFirestore;
-    public  Context context;
-    private FirebaseAuth firebaseAuth;
+    public Context context;
     private DatabaseReference mRootRef;
+    private String email_red;
 
-    public ClassesListAdapter(Context context,List<Classes> classesList){
+    public ClassesListAdapter(Context context,List<Classes> classesList,String email_red){
         this.classesList = classesList;
         this.context = context;
+        this.email_red = email_red;
     }
 
     @NonNull
@@ -79,16 +78,13 @@ public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.
                 intent.putExtra("class_name",class_name);
                 intent.putExtra("section", section);
                 intent.putExtra("total_students", total_students);
+                intent.putExtra("email_red", email_red);
                 context.startActivity(intent);
             });
 
             holder.option_view.setOnClickListener(view -> {
                 mFirestore = FirebaseFirestore.getInstance();
                 mRootRef = FirebaseDatabase.getInstance().getReference();
-                firebaseAuth = FirebaseAuth.getInstance();
-                final FirebaseUser user = firebaseAuth.getCurrentUser();
-                final String email = user.getEmail();
-                final String email_red = email.substring(0, email.length() - 10);
                 final String[] Institute = new String[1];
                 //creating a popup menu
                 PopupMenu popup = new PopupMenu(context, holder.option_view);

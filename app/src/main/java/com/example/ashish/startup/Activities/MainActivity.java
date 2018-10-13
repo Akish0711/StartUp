@@ -47,7 +47,6 @@ import com.onurkaganaldemir.ktoastlib.KToast;
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE = 1;
-    private FirebaseAuth firebaseAuth;
     private NavigationView navigationView;
     private DrawerLayout drawer;
     private ImageView imgNavHeaderBg, imgProfile;
@@ -55,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     FloatingActionMenu floatingActionMenu;
     com.github.clans.fab.FloatingActionButton new_user, new_class;
+    String email_red;
+    FirebaseUser user;
 
     // urls to load navigation header background image
     private static final String urlNavHeaderBg = "https://firebasestorage.googleapis.com/v0/b/startup-ec618.appspot.com/o/Webp.net-compress-image%20(2).jpg?alt=media&token=582fb88d-ff5c-4609-b544-224a718bb67d";
@@ -80,13 +81,13 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         mHandler = new Handler();
 
-        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         Window window = getWindow();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(Color.TRANSPARENT);
         }
-        
+
         if(firebaseAuth.getCurrentUser()== null){
             finish();
             startActivity(new Intent(this, Login.class));
@@ -109,11 +110,17 @@ public class MainActivity extends AppCompatActivity {
         // load toolbar titles from string resources
         activityTitles = getResources().getStringArray(R.array.nav_item_activity_titles);
 
+        user = firebaseAuth.getCurrentUser();
+        String email = user.getEmail();
+        email_red = email.substring(0, email.length() - 10).toUpperCase();
+
         new_user.setOnClickListener(view -> verifyPermissions());
 
         new_class.setOnClickListener(view -> {
             floatingActionMenu.close(true);
-            startActivity(new Intent(MainActivity.this,NewClass.class));
+            Intent intent = new Intent(MainActivity.this,NewClass.class);
+            intent.putExtra("username", email_red);
+            startActivity(intent);
         });
 
         // load nav menu header data
@@ -148,9 +155,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
 
     private void loadNavHeader() {
-        final FirebaseUser user = firebaseAuth.getCurrentUser();
-        String email = user.getEmail();
-        String email_red = email.substring(0, email.length() - 10);
+
         // name, website
         rootRef.collection("Users").document(email_red).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()){

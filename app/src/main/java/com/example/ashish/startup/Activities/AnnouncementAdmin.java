@@ -9,13 +9,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.example.ashish.startup.Adapters.AdminMessageAdapter;
 import com.example.ashish.startup.Models.Message;
 import com.example.ashish.startup.R;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -45,6 +43,7 @@ public class AnnouncementAdmin extends AppCompatActivity {
             final String class_name = getIntent().getStringExtra("class_name");
             String section = getIntent().getStringExtra("section");
             String total_students = getIntent().getStringExtra("total_students");
+            String email_red = getIntent().getStringExtra("email_red");
 
             Toolbar toolbar = findViewById(R.id.my_toolbar);
             setSupportActionBar(toolbar);
@@ -59,10 +58,7 @@ public class AnnouncementAdmin extends AppCompatActivity {
             messageList = new ArrayList<>();
             keyList = new ArrayList<>();
             FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
-            FirebaseAuth mAuth = FirebaseAuth.getInstance();
             mRootRef = FirebaseDatabase.getInstance().getReference();
-            String email = mAuth.getCurrentUser().getEmail();
-            final String email_red = email.substring(0, email.length() - 10);
 
             RelativeLayout add_students = findViewById(R.id.add_students);
             RelativeLayout take_attendance = findViewById(R.id.take_attendance);
@@ -110,6 +106,7 @@ public class AnnouncementAdmin extends AppCompatActivity {
                 Intent intent = new Intent(AnnouncementAdmin.this,TakeAttendance.class);
                 intent.putExtra("class_id", class_id);
                 intent.putExtra("institute",Institute[0]);
+                intent.putExtra("username", email_red);
                 startActivity(intent);
             });
 
@@ -133,6 +130,7 @@ public class AnnouncementAdmin extends AppCompatActivity {
                 Intent intent = new Intent(AnnouncementAdmin.this,MakeAnnouncement.class);
                 intent.putExtra("class_id", class_id);
                 intent.putExtra("institute",Institute[0]);
+                intent.putExtra("username", email_red);
                 startActivity(intent);
             });
         }

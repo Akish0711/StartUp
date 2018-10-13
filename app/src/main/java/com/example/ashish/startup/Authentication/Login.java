@@ -20,9 +20,6 @@ import android.widget.ProgressBar;
 import com.example.ashish.startup.Activities.MainActivity;
 import com.example.ashish.startup.Activities.nonadmin;
 import com.example.ashish.startup.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
@@ -100,7 +97,7 @@ public class Login extends AppCompatActivity {
     }
 
     public void startSign(){
-        String email = mEmailField.getText().toString().toLowerCase();
+        String email = mEmailField.getText().toString().toUpperCase();
         String password = mPasswordField.getText().toString();
 
         regToken = FirebaseInstanceId.getInstance().getToken();
@@ -171,7 +168,7 @@ public class Login extends AppCompatActivity {
 
             String errorCode = ((FirebaseAuthInvalidUserException) e).getErrorCode();
 
-         //   if (errorCode.equals("ERROR_USER_NOT_FOUND")) {
+            //   if (errorCode.equals("ERROR_USER_NOT_FOUND")) {
             if ("ERROR_USER_NOT_FOUND".equals(errorCode)) {
                 notifyUser("No matching account found");
             } else if ("ERROR_USER_DISABLED".equals(errorCode)) {

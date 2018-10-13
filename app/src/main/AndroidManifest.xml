@@ -133,8 +133,10 @@
         <activity android:name=".Activities.FullScreenImage" />
         <activity android:name=".Activities.MakeAnnouncement" />
         <activity android:name=".Activities.EditAnnouncement" />
-        <activity android:name=".Activities.RemoveStudents"
-            android:theme="@style/AppTheme5"/>
+        <activity
+            android:name=".Activities.RemoveStudents"
+            android:theme="@style/AppTheme5" />
+        <activity android:name=".Activities.MainActivityStudent"></activity>
     </application>
 
 </manifest>

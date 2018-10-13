@@ -57,6 +57,7 @@ public class TakeAttendance extends AppCompatActivity {
         if (getIntent().hasExtra("class_id")&& getIntent().hasExtra("institute")) {
             final String class_id = getIntent().getStringExtra("class_id");
             final String Institute = getIntent().getStringExtra("institute");
+            String email_red = getIntent().getStringExtra("username");
 
             Toolbar toolbar = findViewById(R.id.my_toolbar);
             setSupportActionBar(toolbar);
@@ -111,8 +112,6 @@ public class TakeAttendance extends AppCompatActivity {
             });
 
             mark_present.setOnClickListener(view -> {
-                String email = mAuth.getCurrentUser().getEmail();
-                final String email_red1 = email.substring(0, email.length() - 10);
                 final int[] counter_total = new int[1];
                 final int[] counter_present = new int[1];
                 DateFormat df1 = new SimpleDateFormat("MMMM d, yyyy HH:mm:ss", Locale.ENGLISH);
@@ -129,7 +128,7 @@ public class TakeAttendance extends AppCompatActivity {
 
                 Map<String,String> d = new HashMap<>();
                 d.put("Date",date);
-                mFirestore.collection("Users").document(email_red1).collection("Subjects")
+                mFirestore.collection("Users").document(email_red).collection("Subjects")
                         .document(class_id).collection("Attendance").document(time).set(d);
 
                 for (int index2 = 0; index2 < presentList.size(); index2++) {
@@ -154,7 +153,7 @@ public class TakeAttendance extends AppCompatActivity {
                             data2.put(presentList.get(finalIndex), true );
 
 
-                            mFirestore.collection("Users").document(email_red1).collection("Subjects")
+                            mFirestore.collection("Users").document(email_red).collection("Subjects")
                                     .document(class_id).collection("Attendance").document(time).set(data2, SetOptions.merge());
                         }
                     });
@@ -178,7 +177,7 @@ public class TakeAttendance extends AppCompatActivity {
 
                             Map<String, Object> data2 = new HashMap<>();
                             data2.put(absentList.get(finalIndex), false );
-                            mFirestore.collection("Users").document(email_red1).collection("Subjects")
+                            mFirestore.collection("Users").document(email_red).collection("Subjects")
                                     .document(class_id).collection("Attendance").document(time).set(data2, SetOptions.merge());
                         }
                     });

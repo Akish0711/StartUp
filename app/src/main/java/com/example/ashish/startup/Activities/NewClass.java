@@ -12,8 +12,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.example.ashish.startup.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.onurkaganaldemir.ktoastlib.KToast;
 
@@ -23,7 +21,7 @@ import java.util.Map;
 public class NewClass extends AppCompatActivity {
 
     private EditText name_class;
-    private FirebaseAuth mAuth;
+    String email_red;
     Spinner spinner;
 
     @Override
@@ -31,28 +29,31 @@ public class NewClass extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_class);
 
-        name_class = findViewById(R.id.name_class);
-        Button new_class = findViewById(R.id.new_class);
-        mAuth = FirebaseAuth.getInstance();
+        if (getIntent().hasExtra("username")) {
+            email_red = getIntent().getStringExtra("username");
 
-        Toolbar toolbar = findViewById(R.id.my_toolbar);
-        setSupportActionBar(toolbar);
+            name_class = findViewById(R.id.name_class);
+            Button new_class = findViewById(R.id.new_class);
 
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setTitle("Create New Class");
+            Toolbar toolbar = findViewById(R.id.my_toolbar);
+            setSupportActionBar(toolbar);
+
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
+                getSupportActionBar().setTitle("Create New Class");
+            }
+
+            spinner = findViewById(R.id.spinner);
+
+            ArrayAdapter<String> myAdapter = new ArrayAdapter<>(NewClass.this,
+                    android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.classes));
+
+            myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(myAdapter);
+
+            new_class.setOnClickListener(view -> createNewClass());
         }
-
-        spinner = findViewById(R.id.spinner);
-
-        ArrayAdapter<String> myAdapter = new ArrayAdapter<>(NewClass.this,
-                android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.classes));
-
-        myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(myAdapter);
-
-        new_class.setOnClickListener(view -> createNewClass());
     }
 
     private void createNewClass() {
@@ -67,10 +68,7 @@ public class NewClass extends AppCompatActivity {
             KToast.warningToast(this,"Class Required",Gravity.BOTTOM,KToast.LENGTH_LONG);
             return;
         }else {
-            FirebaseUser user = mAuth.getCurrentUser();
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-            String email=user.getEmail();
-            String email_red = email.substring(0, email.length() - 10);
             final Map<String, Object> subject = new HashMap<>();
             subject.put("Name", className);
             subject.put("Section",section);

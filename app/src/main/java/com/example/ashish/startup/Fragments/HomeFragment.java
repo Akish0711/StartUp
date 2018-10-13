@@ -30,7 +30,7 @@ public class HomeFragment extends Fragment {
     private ClassesListAdapter classesListAdapter;
     private List<Classes> classesList;
     private List<String> keyList;
-    private FirebaseAuth firebaseAuth;
+    private String email_red;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -39,16 +39,17 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         keyList = new ArrayList<>();
+        final FirebaseUser user = firebaseAuth.getCurrentUser();
+        String email = user.getEmail();
+        email_red = email.substring(0, email.length() - 10).toUpperCase();
         loadClasses();
     }
     FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
 
     private void loadClasses() {
-        final FirebaseUser user = firebaseAuth.getCurrentUser();
-        String email = user.getEmail();
-        String email_red = email.substring(0, email.length() - 10);
+
         // name, website
         rootRef.collection("Users").document(email_red).collection("Subjects").addSnapshotListener((documentSnapshots, e) -> {
             for (DocumentChange doc: documentSnapshots.getDocumentChanges()){
@@ -82,7 +83,7 @@ public class HomeFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.main_list);
 
         classesList = new ArrayList<>();
-        classesListAdapter = new ClassesListAdapter(getContext(),classesList);
+        classesListAdapter = new ClassesListAdapter(getContext(),classesList,email_red);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(classesListAdapter);

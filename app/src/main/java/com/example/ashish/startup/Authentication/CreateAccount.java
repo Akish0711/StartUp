@@ -120,7 +120,7 @@ public class CreateAccount extends AppCompatActivity {
                 }
             }).addOnSuccessListener(documentSnapshot -> {
                 String email = mAuth1.getCurrentUser().getEmail();
-                String email_red = email.substring(0, email.length() - 10);
+                String email_red = email.substring(0, email.length() - 10).toUpperCase();
                 rootRef.collection("Users").document(email_red).get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         progressBar.setVisibility(View.VISIBLE);
@@ -128,14 +128,14 @@ public class CreateAccount extends AppCompatActivity {
 
                         final String Institute = document.getString("Institute");
                         String code = document.getString("Code");
-                        long total_students = document.getLong("Total Students");
+                        long total_students = document.getLong("Total_Students");
                         total_students++;
 
                         Map<String, Object> update_data = new HashMap<>();
-                        update_data.put("Total Students", total_students);
+                        update_data.put("Total_Students", total_students);
                         rootRef.collection("Users").document(email_red).update(update_data);
 
-                        String user = batch[0]+code+total_students;
+                        String user = (batch[0]+code+total_students);
                         genPswd = genRandomPswd();
 
                         mAuth2.createUserWithEmailAndPassword(user + "@gmail.com", genPswd).addOnCompleteListener(task1 -> {
