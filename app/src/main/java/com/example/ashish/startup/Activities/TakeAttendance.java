@@ -40,8 +40,9 @@ public class TakeAttendance extends AppCompatActivity {
     private List<String> presentList;
     private List<String> absentList;
     private FirebaseAuth mAuth;
-    private int mYear, mMonth, mDay, mHour, mMinute;
+    private int mYear, mMonth, mDay;
     private String datee = null;
+    private String datee2 = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,14 +116,21 @@ public class TakeAttendance extends AppCompatActivity {
                 final int[] counter_total = new int[1];
                 final int[] counter_present = new int[1];
                 DateFormat df1 = new SimpleDateFormat("MMMM d, yyyy HH:mm:ss", Locale.ENGLISH);
-
-                final String time;
+                DateFormat df2 = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
+                final String time,date;
                 if(datee == null){
+                    date = df2.format(Calendar.getInstance().getTime());
                     time = df1.format(Calendar.getInstance().getTime());
                 }
                 else{
+                    date = datee2;
                     time = datee;
                 }
+
+                Map<String,String> d = new HashMap<>();
+                d.put("Date",date);
+                mFirestore.collection("Users").document(email_red1).collection("Subjects")
+                        .document(class_id).collection("Attendance").document(time).set(d);
 
                 for (int index2 = 0; index2 < presentList.size(); index2++) {
                     int finalIndex = index2;
@@ -208,8 +216,10 @@ public class TakeAttendance extends AppCompatActivity {
                     (view, year, monthOfYear, dayOfMonth) ->
                     {
                         final SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy HH:mm:ss", Locale.ENGLISH);
+                        final SimpleDateFormat formatter2 = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
                         c.set(year,monthOfYear,dayOfMonth);
                         datee = formatter.format(c.getTime());
+                        datee2 = formatter2.format(c.getTime());
                     }, mYear, mMonth, mDay);
 
             datePickerDialog.show();

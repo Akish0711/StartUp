@@ -32,7 +32,9 @@ public class AddStudents extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_students);
 
-        if (getIntent().hasExtra("class_id") && getIntent().hasExtra("institute") && getIntent().hasExtra("username")) {
+        if (getIntent().hasExtra("class_id") && getIntent().hasExtra("institute") && getIntent().hasExtra("username")
+                && getIntent().hasExtra("batch") && getIntent().hasExtra("class_name") && getIntent().hasExtra("total_students")
+                ) {
             final String class_id = getIntent().getStringExtra("class_id");
             String Institute = getIntent().getStringExtra("institute");
             String email_red = getIntent().getStringExtra("username");
