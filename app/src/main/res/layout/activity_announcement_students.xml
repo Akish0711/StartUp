@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar_user_new_class"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar_activity_user_new_class"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:contentScrim="?attr/colorPrimary"
+            app:expandedTitleMarginStart="@dimen/activity_margin_content"
+            app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Title"
+            app:expandedTitleGravity="bottom|left"
+            app:layout_scrollFlags="scroll|enterAlways|exitUntilCollapsed">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimaryDark"
+                android:scaleType="centerCrop"
+                android:transitionName="classNewName"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.75" />
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/user_new_class_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?android:attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/view_attendance_image"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginTop="52dp"
+                    android:background="@color/trans"
+                    android:scaleType="fitCenter"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:srcCompat="@drawable/user_attendance" />
+
+                <TextView
+                    android:id="@+id/string_view_attendance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/view_attendance_image"
+                    android:layout_marginStart="38dp"
+                    android:text="Attendance"
+                    android:textColor="#fff" />
+
+                <ImageView
+                    android:id="@+id/view_marks_image"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="70dp"
+                    android:layout_toEndOf="@+id/view_attendance_image"
+                    android:layout_alignTop="@+id/view_attendance_image"
+                    android:background="@color/trans"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/marks" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/view_marks_image"
+                    android:layout_alignTop="@+id/string_view_attendance"
+                    android:layout_marginStart="176dp"
+                    android:gravity="center"
+                    android:text="Marks"
+                    android:textColor="#fff" />
+
+
+                <ImageView
+                    android:id="@+id/contact_image"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="60dp"
+                    android:layout_alignTop="@+id/view_marks_image"
+                    android:layout_toEndOf="@+id/view_marks_image"
+                    android:background="@color/trans"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/contact2"
+                    android:clickable="true"
+                    android:focusable="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/contact_image"
+                    android:layout_alignTop="@+id/string_view_attendance"
+                    android:layout_marginStart="275dp"
+                    android:gravity="center"
+                    android:text="Contact"
+                    android:textColor="#fff" />
+
+            </RelativeLayout>
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/messages_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+</android.support.design.widget.CoordinatorLayout>

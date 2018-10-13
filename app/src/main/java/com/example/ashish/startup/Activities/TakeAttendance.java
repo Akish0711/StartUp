@@ -48,10 +48,9 @@ public class TakeAttendance extends AppCompatActivity {
         absentList = new ArrayList<>();
         attendanceListAdapter = new AttendanceListAdapter(this,attendanceList, presentList, absentList);
 
-        if (getIntent().hasExtra("class_id")&& getIntent().hasExtra("institute")&& getIntent().hasExtra("username")) {
+        if (getIntent().hasExtra("class_id")&& getIntent().hasExtra("institute")) {
             final String class_id = getIntent().getStringExtra("class_id");
             final String Institute = getIntent().getStringExtra("institute");
-            final String email_red = getIntent().getStringExtra("username");
 
             Toolbar toolbar = findViewById(R.id.my_toolbar);
             setSupportActionBar(toolbar);
@@ -73,8 +72,7 @@ public class TakeAttendance extends AppCompatActivity {
 
             mFirestore = FirebaseFirestore.getInstance();
 
-            mFirestore.collection("Users").document(email_red).collection("Subjects").document(class_id)
-                    .collection("Students").addSnapshotListener((documentSnapshots, e) -> {
+            mFirestore.collection("Users").whereEqualTo(class_id,"Added").addSnapshotListener((documentSnapshots, e) -> {
                 for (DocumentChange doc: documentSnapshots.getDocumentChanges()){
                     switch (doc.getType()) {
                         case ADDED:

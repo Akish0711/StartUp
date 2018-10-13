@@ -42,7 +42,6 @@ public class HomeFragment extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         keyList = new ArrayList<>();
         loadClasses();
-
     }
     FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
 

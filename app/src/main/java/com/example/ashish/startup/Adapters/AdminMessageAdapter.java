@@ -3,6 +3,7 @@ package com.example.ashish.startup.Adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,41 +74,28 @@ public class AdminMessageAdapter extends RecyclerView.Adapter<AdminMessageAdapte
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         });
-        holder.delete_option.setOnClickListener(view -> {
+
+        holder.edit.setOnClickListener(v -> {
             mRootRef = FirebaseDatabase.getInstance().getReference();
-            firebaseAuth = FirebaseAuth.getInstance();
-            final FirebaseUser user = firebaseAuth.getCurrentUser();
-            final String email = user.getEmail();
-            final String email_red = email.substring(0, email.length() - 10);
-            //creating a popup menu
-            PopupMenu popup = new PopupMenu(context, holder.delete_option);
-            //inflating menu from xml resource
-            popup.inflate(R.menu.classes_menu);
-            //adding click listener
-            popup.setOnMenuItemClickListener(item -> {
-                switch (item.getItemId()) {
-                    case R.id.edit_option:
-                        Intent intent = new Intent(context, EditAnnouncement.class);
-                        intent.putExtra("email_red", email_red);
-                        intent.putExtra("class_id",class_id);
-                        intent.putExtra("message_id", message_id);
-                        intent.putExtra("text_message",text_message);
-                        intent.putExtra("text_time",text_time);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(intent);
-                        break;
-                    case R.id.delete_option:
-                        new AlertDialog.Builder(context)
-                                .setTitle("Delete this Announcement?")
-                                .setMessage("Warning : You cannot undo this.")
-                                .setPositiveButton("DELETE", (dialog, which) -> mRootRef.child("Announcement").child(email_red).child(class_id).child(message_id).removeValue().addOnCompleteListener(task -> Toast.makeText(context, "Announcement Deleted", Toast.LENGTH_LONG).show())).setNegativeButton("Cancel", null)
-                                .show();
-                        break;
-                }
-                return false;
-            });
-            //displaying the popup
-            popup.show();
+            Intent intent = new Intent(context, EditAnnouncement.class);
+            intent.putExtra("email_red", email_red);
+            intent.putExtra("class_id",class_id);
+            intent.putExtra("message_id", message_id);
+            intent.putExtra("text_message",text_message);
+            intent.putExtra("text_time",text_time);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        });
+
+        holder.delete.setOnClickListener(v -> {
+            mRootRef = FirebaseDatabase.getInstance().getReference();
+            new AlertDialog.Builder(context)
+                    .setTitle("Delete this Announcement?")
+                    .setMessage("Warning : You cannot undo this.")
+                    .setPositiveButton("DELETE", (dialog, which) -> mRootRef.child("Announcement").child(email_red).child(class_id).child(message_id).removeValue()
+                            .addOnCompleteListener(task ->  Toast.makeText(context,"Announcement Deleted",Toast.LENGTH_SHORT ).show()))
+                    .setNegativeButton("Cancel", null)
+                    .show();
         });
     }
 
@@ -118,15 +107,17 @@ public class AdminMessageAdapter extends RecyclerView.Adapter<AdminMessageAdapte
     public class ViewHolder extends RecyclerView.ViewHolder {
         View mView;
         TextView Text, Time, Edited_time;
-        public Button delete_option;
+        ImageButton edit, delete;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
             Text = mView.findViewById(R.id.textView_message_text);
             Time = mView.findViewById(R.id.textView_message_time);
-            delete_option = mView.findViewById(R.id.option_view);
             Edited_time = mView.findViewById(R.id.edited_time);
+            edit = mView.findViewById(R.id.edit);
+            delete = mView.findViewById(R.id.delete);
+
         }
     }
 }

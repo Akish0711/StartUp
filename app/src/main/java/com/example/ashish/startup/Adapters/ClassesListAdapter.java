@@ -64,13 +64,21 @@ public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.
         int viewType = getItemViewType(position);
         if(viewType == 2){
 
-            holder.nameText.setText(classesList.get(position).getName());
-            final String class_id = classesList.get(position).classID;
-            final String class_name = classesList.get(position).getName();
+            String class_name = classesList.get(position).getName();
+            String section = classesList.get(position).getSection();
+            String total_students = classesList.get(position).getTotal_Students();
+            String class_id = classesList.get(position).classID;
+
+            holder.nameText.setText(class_name);
+            holder.sectionText.setText(section);
+            holder.total_students_Text.setText(total_students);
+
             holder.mView.setOnClickListener(view -> {
                 Intent intent = new Intent(context,AnnouncementAdmin.class);
                 intent.putExtra("class_id", class_id);
                 intent.putExtra("class_name",class_name);
+                intent.putExtra("section", section);
+                intent.putExtra("total_students", total_students);
                 context.startActivity(intent);
             });
 
@@ -200,13 +208,15 @@ public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         View mView;
-        TextView nameText;
+        TextView nameText, sectionText, total_students_Text;
         public Button option_view;
         public ViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
             nameText = mView.findViewById(R.id.name_text);
             option_view = mView.findViewById(R.id.option_view);
+            sectionText = mView.findViewById(R.id.section_text);
+            total_students_Text = mView.findViewById(R.id.total_students_number);
         }
     }
 }

@@ -35,7 +35,6 @@ public class Login extends AppCompatActivity {
 
     private EditText mEmailField;
     private EditText mPasswordField;
-    private Button mLoginBtn;
     ProgressBar mProgressBar;
     private FirebaseAuth mAuth;
     public static final String PREFS_NAME = "MyPrefsFile";
@@ -56,7 +55,7 @@ public class Login extends AppCompatActivity {
 
         mEmailField = findViewById(R.id.username);
         mPasswordField = findViewById(R.id.password);
-        mLoginBtn = findViewById(R.id.login);
+        Button mLoginBtn = findViewById(R.id.login);
         mProgressBar =  findViewById(R.id.progressBar2);
         mProgressBar.setVisibility(View.GONE);
 

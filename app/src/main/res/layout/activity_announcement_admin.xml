@@ -3,144 +3,181 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:fitsSystemWindows="true">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar_new_class2"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:layout_height="210dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-    <android.support.design.widget.CollapsingToolbarLayout
-        android:id="@+id/collapsing_toolbar_activity_new_class2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        app:contentScrim="?attr/colorPrimary"
-        app:expandedTitleMarginStart="@dimen/activity_margin_content"
-        app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Title"
-        app:expandedTitleGravity="bottom|left"
-        app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorPrimaryDark"
-        android:fitsSystemWindows="true"
-        android:scaleType="centerCrop"
-        android:transitionName="className"
-        app:layout_collapseMode="parallax" />
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/new_class2_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
-        app:layout_collapseMode="pin"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
-        <RelativeLayout
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar_activity_new_class2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways|exitUntilCollapsed">
 
-                <ImageView
-                    android:id="@+id/add_students_image"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimaryDark"
+                android:scaleType="centerCrop"
+                android:transitionName="className"
+                app:layout_collapseMode="parallax" />
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/my_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?android:attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"/>
+
+            <RelativeLayout
+                android:id="@+id/top_bar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center">
+
+                <RelativeLayout
+                    android:id="@+id/add_students"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
                     android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginStart="50dp"
-                    android:layout_marginTop="52dp"
-                    android:background="@color/trans"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/add_students"
                     android:clickable="true"
-                    android:focusable="true"/>
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground">
 
-                <TextView
-                    android:id="@+id/string_add_students"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/add_students_image"
-                    android:layout_marginStart="37dp"
-                    android:text="Add Students"
-                    android:textColor="#fff" />
+                    <TextView
+                        android:id="@+id/add_students_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_above="@id/add_students_image"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center"
+                        android:text="Add Students"
+                        android:textColor="#fff"
+                        android:textSize="12sp" />
 
+                    <ImageView
+                        android:id="@+id/add_students_image"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerInParent="true"
+                        app:srcCompat="@drawable/add_students" />
+                </RelativeLayout>
 
-                <ImageView
-                    android:id="@+id/take_attendance_image"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="70dp"
-                    android:layout_alignTop="@+id/add_students_image"
-                    android:layout_toRightOf="@+id/add_students_image"
-                    android:background="@color/trans"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/take_attendance"
+                <RelativeLayout
+                    android:id="@+id/take_attendance"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_toEndOf="@id/add_students"
                     android:clickable="true"
-                    android:focusable="true"/>
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/take_attendance_image"
-                    android:layout_alignTop="@+id/string_add_students"
-                    android:layout_marginStart="156dp"
-                    android:gravity="center"
-                    android:text="Attendance"
-                    android:textColor="#fff" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:textSize="12sp"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center"
+                        android:layout_above="@id/take_attendance_image"
+                        android:text="Attendance"
+                        android:textColor="#fff" />
 
-                <ImageView
-                    android:id="@+id/marks_image"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="50dp"
-                    android:layout_alignTop="@+id/take_attendance_image"
-                    android:layout_toRightOf="@+id/take_attendance_image"
-                    android:background="@color/trans"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/marks"
+                    <ImageView
+                        android:id="@+id/take_attendance_image"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_centerInParent="true"
+                        android:background="@color/trans"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/attendance" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/marks"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_toEndOf="@id/take_attendance"
                     android:clickable="true"
-                    android:focusable="true" />
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/marks_image"
-                    android:layout_alignTop="@+id/string_add_students"
-                    android:gravity="center"
-                    android:layout_marginStart="275dp"
-                    android:text="Marks"
-                    android:textColor="#fff" />
+                    <TextView
+                        android:id="@+id/marks_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerHorizontal="true"
+                        android:layout_above="@+id/marks_image"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:text="Marks"
+                        android:textColor="#fff" />
+
+                    <ImageView
+                        android:id="@+id/marks_image"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_centerInParent="true"
+                        android:background="@color/trans"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/marks" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/remove"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_toEndOf="@+id/marks"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground">
+
+                    <TextView
+                        android:id="@+id/remove_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center_horizontal"
+                        android:text="Remove Sudents"
+                        android:textColor="#fff" />
+
+                    <ImageView
+                        android:id="@+id/remove_image"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_below="@+id/remove_text"
+                        android:layout_centerInParent="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/remove" />
+                </RelativeLayout>
             </RelativeLayout>
 
-    </android.support.design.widget.CollapsingToolbarLayout>
+        </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/message_swipe_layout"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/messages_list"
         android:layout_width="match_parent"
-        android:layout_height="505dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/messages_list"
-            android:layout_width="match_parent"
-            android:layout_height="505dp" />
-    </android.support.v4.widget.SwipeRefreshLayout>
-
-    <com.github.clans.fab.FloatingActionButton
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/announcement"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="284dp"
-        android:layout_marginTop="490dp"
+        android:layout_marginEnd="16dp"
         android:src="@drawable/announcement"
-        app:fab_colorNormal="@color/colorPrimary"
-        app:fab_colorPressed="@color/colorPrimary"
-        app:fab_shadowXOffset="0dp"
-        app:fab_shadowYOffset="0.5dp"
-        />
+        app:layout_anchor="@id/appbar_new_class2"
+        app:layout_anchorGravity="bottom|right|end"
+        app:backgroundTint="@color/colorPrimary"
+        app:elevation="6dp"
+        app:fabSize="normal"/>
 
 </android.support.design.widget.CoordinatorLayout>

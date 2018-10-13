@@ -124,8 +124,6 @@ public class EditAnnouncement extends AppCompatActivity {
 
     private void loadmessage(String class_id, String email_red, String message_id) {
         DatabaseReference messageRef = mRootRef.child("Announcement").child(email_red).child(class_id).child(message_id);
-        messageRef.keepSynced(true);
-
         messageRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {

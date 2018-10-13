@@ -14,9 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.Toast;
 
-import com.example.ashish.startup.Activities.TakeAttendance;
 import com.example.ashish.startup.R;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -98,7 +96,7 @@ public class CreateAccount extends AppCompatActivity {
     public void registerUser() {
         final FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
 
-        String classes = spinner.getSelectedItem().toString();
+        String section = spinner.getSelectedItem().toString();
         final String display_name = name.getText().toString();
         final String phoneNo = phoneNumber.getText().toString();
         final String[] batch = new String[1];
@@ -106,59 +104,54 @@ public class CreateAccount extends AppCompatActivity {
         if (display_name.isEmpty()) {
             name.setError("Name is required");
             name.requestFocus();
-            return;
-        }else if (spinner == null || spinner.getSelectedItem() ==null || classes.equals("Class")) {
+        }else if (spinner == null || spinner.getSelectedItem() ==null || section.equals("Class")) {
             KToast.warningToast(this,"Class Required",Gravity.BOTTOM,KToast.LENGTH_LONG);
-            return;
         }else if(phoneNo.isEmpty()){
             phoneNumber.setError("Contact Number required");
             phoneNumber.requestFocus();
-            return;
         }else if(phoneNo.length()!=10){
             phoneNumber.setError("Enter Correct Contact Number");
             phoneNumber.requestFocus();
-            return;
         }else{
             rootRef.collection("Important").document("Batch").get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()){
                     DocumentSnapshot document = task.getResult();
-                    batch[0] = document.getString(classes);
+                    batch[0] = document.getString(section);
                 }
-            });
-        }
+            }).addOnSuccessListener(documentSnapshot -> {
+                String email = mAuth1.getCurrentUser().getEmail();
+                String email_red = email.substring(0, email.length() - 10);
+                rootRef.collection("Users").document(email_red).get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        progressBar.setVisibility(View.VISIBLE);
+                        DocumentSnapshot document = task.getResult();
 
-        String email = mAuth1.getCurrentUser().getEmail();
-        String email_red = email.substring(0, email.length() - 10);
-        rootRef.collection("Users").document(email_red).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                progressBar.setVisibility(View.VISIBLE);
-                DocumentSnapshot document = task.getResult();
+                        final String Institute = document.getString("Institute");
+                        String code = document.getString("Code");
+                        long total_students = document.getLong("Total Students");
+                        total_students++;
 
-                final String Institute = document.getString("Institute");
-                String code = document.getString("Code");
-                long total_students = document.getLong("Total Students");
-                total_students++;
+                        Map<String, Object> update_data = new HashMap<>();
+                        update_data.put("Total Students", total_students);
+                        rootRef.collection("Users").document(email_red).update(update_data);
 
-                Map<String, Object> update_data = new HashMap<>();
-                update_data.put("Total Students", total_students);
-                rootRef.collection("Users").document(email_red).update(update_data);
+                        String user = batch[0]+code+total_students;
+                        genPswd = genRandomPswd();
 
-                String user = batch[0]+code+total_students;
-                genPswd = genRandomPswd();
+                        mAuth2.createUserWithEmailAndPassword(user + "@gmail.com", genPswd).addOnCompleteListener(task1 -> {
+                            progressBar.setVisibility(View.GONE);
+                            if (task1.isSuccessful()) {
+                                KToast.successToast(CreateAccount.this, "User Registered Successfully.", Gravity.BOTTOM, KToast.LENGTH_SHORT);
 
-                mAuth2.createUserWithEmailAndPassword(user + "@gmail.com", genPswd).addOnCompleteListener(task1 -> {
-                    progressBar.setVisibility(View.GONE);
-                    if (task1.isSuccessful()) {
-                        KToast.successToast(CreateAccount.this, "User Registered Successfully.", Gravity.BOTTOM, KToast.LENGTH_SHORT);
-
-                        Map<String, Object> data = new HashMap<>();
-                        data.put("Name", display_name);
-                        data.put("Username", user);
-                        data.put("Institute_Admin", Institute + "_No");
-                        data.put("Admin","No");
-                        data.put("Phone",phoneNo);
-                        rootRef.collection("Users").document(user).set(data);
-                        Log.e("Password : ",genPswd + "");
+                                Map<String, Object> data = new HashMap<>();
+                                data.put("Name", display_name);
+                                data.put("Username", user);
+                                data.put("Institute_Admin", Institute + "_No");
+                                data.put("Admin","No");
+                                data.put("Phone",phoneNo);
+                                data.put("Batch", batch[0]);
+                                rootRef.collection("Users").document(user).set(data);
+                                Log.e("Password : ",genPswd + "");
 
 //                                Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("sms:" + phoneNo));
 //                                intent.putExtra("sms_body","Login Details \n\nUsername : "+user+"\nPassword : " + genPswd);
@@ -185,22 +178,24 @@ public class CreateAccount extends AppCompatActivity {
 //                                   Log.e("response status",response.getStatusText());
 //                               }
 
-                            SmsManager smsManager = SmsManager.getDefault();
-                            smsManager.sendTextMessage(phoneNo, null, "Welcome OnBoard !!\n\nHere are your Login Details \n\nUsername : " + user + "\nPassword : " + genPswd, null, null);
+                                SmsManager smsManager = SmsManager.getDefault();
+                                smsManager.sendTextMessage(phoneNo, null, "Welcome OnBoard !!\n\nHere are your Login Details \n\nUsername : " + user + "\nPassword : " + genPswd, null, null);
 
-                        mAuth2.signOut();
-                        finish();
-                        startActivity(new Intent(CreateAccount.this, CreateAccount.class));
-                    } else {
-                        if (task1.getException() instanceof FirebaseAuthUserCollisionException) {
-                            KToast.errorToast(CreateAccount.this, "This User is already registered.", Gravity.BOTTOM, KToast.LENGTH_SHORT);
-                        } else {
-                            KToast.errorToast(CreateAccount.this, task1.getException().getMessage(), Gravity.BOTTOM, KToast.LENGTH_SHORT);
-                        }
+                                mAuth2.signOut();
+                                finish();
+                                startActivity(new Intent(CreateAccount.this, CreateAccount.class));
+                            } else {
+                                if (task1.getException() instanceof FirebaseAuthUserCollisionException) {
+                                    KToast.errorToast(CreateAccount.this, "This User is already registered.", Gravity.BOTTOM, KToast.LENGTH_SHORT);
+                                } else {
+                                    KToast.errorToast(CreateAccount.this, task1.getException().getMessage(), Gravity.BOTTOM, KToast.LENGTH_SHORT);
+                                }
+                            }
+                        });
                     }
                 });
-            }
-        });
+            });
+        }
     }
 
     @Override

@@ -106,7 +106,6 @@ public class MakeAnnouncement extends AppCompatActivity {
             email_red = email.substring(0, email.length() - 10);
 
             mRootRef = FirebaseDatabase.getInstance().getReference();
-            mRootRef.child("Chat").child(email_red).child(class_id).child("seen").setValue(true);
         }
     }
 
