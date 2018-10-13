@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.example.ashish.startup.Adapters.AdminMessageAdapter;
@@ -66,6 +67,7 @@ public class AnnouncementAdmin extends AppCompatActivity {
             RelativeLayout add_students = findViewById(R.id.add_students);
             RelativeLayout take_attendance = findViewById(R.id.take_attendance);
             RelativeLayout marks = findViewById(R.id.marks);
+            RelativeLayout remove = findViewById(R.id.remove);
             android.support.design.widget.FloatingActionButton announcement = findViewById(R.id.announcement);
             mAdapter = new AdminMessageAdapter(this,messageList,class_id,email_red);
             mMessagesList = findViewById(R.id.messages_list);
@@ -115,6 +117,15 @@ public class AnnouncementAdmin extends AppCompatActivity {
                 Intent intent = new Intent(AnnouncementAdmin.this,UploadMarks.class);
                 intent.putExtra("class_id", class_id);
                 intent.putExtra("institute",Institute[0]);
+                startActivity(intent);
+            });
+
+            remove.setOnClickListener(v -> {
+                Intent intent = new Intent(AnnouncementAdmin.this,RemoveStudents.class);
+                intent.putExtra("class_id", class_id);
+                intent.putExtra("username", email_red);
+                intent.putExtra("institute",Institute[0]);
+                intent.putExtra("total_students",total_students);
                 startActivity(intent);
             });
 

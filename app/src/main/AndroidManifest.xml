@@ -110,23 +110,29 @@
             android:name=".Activities.EditProfile"
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity android:name=".Activities.NewClass" />
-        <activity android:name=".Activities.TakeAttendance"
-            android:theme="@style/AppTheme3"/>
-        <activity android:name=".Activities.ViewAttendance"
-            android:theme="@style/AppTheme3"/>
-        <activity android:name=".Activities.UpdateAttendance"
-            android:theme="@style/AppTheme3"/>
+        <activity
+            android:name=".Activities.TakeAttendance"
+            android:theme="@style/AppTheme3" />
+        <activity
+            android:name=".Activities.ViewAttendance"
+            android:theme="@style/AppTheme3" />
+        <activity
+            android:name=".Activities.UpdateAttendance"
+            android:theme="@style/AppTheme3" />
         <activity android:name=".Activities.ViewMarks" />
         <activity
             android:name=".Activities.UploadMarks"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme2"/>
+            android:theme="@style/AppTheme2" />
         <activity android:name=".Activities.AnnouncementStudents" />
-        <activity android:name=".Activities.AddStudents"
-            android:theme="@style/AppTheme4"/>
+        <activity
+            android:name=".Activities.AddStudents"
+            android:theme="@style/AppTheme4" />
         <activity android:name=".Activities.FullScreenImage" />
         <activity android:name=".Activities.MakeAnnouncement" />
-        <activity android:name=".Activities.EditAnnouncement"></activity>
+        <activity android:name=".Activities.EditAnnouncement" />
+        <activity android:name=".Activities.RemoveStudents"
+            android:theme="@style/AppTheme5"/>
     </application>
 
 </manifest>

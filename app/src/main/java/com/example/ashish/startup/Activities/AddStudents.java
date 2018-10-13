@@ -57,7 +57,6 @@ public class AddStudents extends AppCompatActivity {
             ProgressBar progressBar = findViewById(R.id.progressBar);
             progressBar.setVisibility(View.VISIBLE);
 
-
             FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
             AddStudentsAdapter mAdapter = new AddStudentsAdapter(this, usersList, selectedUsername, selectedName);
             RecyclerView mMessagesList = findViewById(R.id.student_list);
