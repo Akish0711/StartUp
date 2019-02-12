@@ -1,4 +1,4 @@
-package com.example.ashish.startup.Authentication;
+package com.example.ashish.startup.authentication;
 
 import android.app.ProgressDialog;
 import android.content.Intent;

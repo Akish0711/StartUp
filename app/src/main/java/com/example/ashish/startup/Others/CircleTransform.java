@@ -1,4 +1,4 @@
-package com.example.ashish.startup.Others;
+package com.example.ashish.startup.others;
 
 import android.content.Context;
 import android.graphics.Bitmap;

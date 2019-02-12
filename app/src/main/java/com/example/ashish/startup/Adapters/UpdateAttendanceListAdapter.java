@@ -75,20 +75,20 @@ public class UpdateAttendanceListAdapter extends RecyclerView.Adapter<UpdateAtte
 
             holder.userName.setText(names.get(position));
             if(status.get(position).equals("true")){
-                holder.checkBox.setImageResource(R.drawable.present);
+                holder.checkBox.setImageResource(R.drawable.present_check);
             }
             else{
-                holder.checkBox.setImageResource(R.drawable.checked);
+                holder.checkBox.setImageResource(R.drawable.checked_remove);
             }
             final boolean[] showingFirst = {true};
 
             holder.checkBox.setOnClickListener(v -> {
                 if (showingFirst[0]){
-                    holder.checkBox.setImageResource(R.drawable.checked);
+                    holder.checkBox.setImageResource(R.drawable.checked_remove);
                     showingFirst[0] = false;
                     status.set(position,"false");
                 }else{
-                    holder.checkBox.setImageResource(R.drawable.present);
+                    holder.checkBox.setImageResource(R.drawable.present_check);
                     showingFirst[0] = true;
                     status.set(position,"true");
                 }

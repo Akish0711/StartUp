@@ -1,11 +1,15 @@
-package com.example.ashish.startup.Authentication;
+package com.example.ashish.startup.authentication;
 
-import android.content.Intent;
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,182 +24,230 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.onurkaganaldemir.ktoastlib.KToast;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
 public class CreateAccount extends AppCompatActivity {
 
-    EditText name,phoneNumber;
+    EditText name,phoneNumber, email;
     Button createAccount;
     ProgressBar progressBar;
     Spinner spinner;
-
+    String uid;
     private static final String DATA = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     private String genPswd;
     private Random random;
-
-    private FirebaseAuth mAuth1;
     private FirebaseAuth mAuth2;
+    private long total_batch_students;
+    View parentLayout;
+    private static final int REQUEST_CODE = 1;
 
-    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
 
-        Toolbar myToolbar = findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
+        if (getIntent().hasExtra("uid")) {
+            uid = getIntent().getStringExtra("uid");
 
-        name = findViewById(R.id.name);
-        phoneNumber = findViewById(R.id.phoneNumber);
-        createAccount = findViewById(R.id.createAccount);
-        progressBar = findViewById(R.id.progressBar3);
-        spinner = findViewById(R.id.spinner);
+            Toolbar myToolbar = findViewById(R.id.my_toolbar);
+            setSupportActionBar(myToolbar);
 
-        ArrayAdapter<String> myAdapter = new ArrayAdapter<>(CreateAccount.this,
-                android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.classes));
+            name = findViewById(R.id.name);
+            parentLayout = findViewById(R.id.create_account_parent);
+            phoneNumber = findViewById(R.id.phoneNumber);
+            email = findViewById(R.id.email);
+            createAccount = findViewById(R.id.createAccount);
+            progressBar = findViewById(R.id.progressBar3);
+            progressBar.setVisibility(View.INVISIBLE);
+            spinner = findViewById(R.id.spinner);
 
-        myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(myAdapter);
+            ArrayAdapter<String> myAdapter = new ArrayAdapter<>(CreateAccount.this,
+                    android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.classes));
 
-        mAuth1 = FirebaseAuth.getInstance();
-        FirebaseOptions firebaseOptions = new FirebaseOptions.Builder()
-                .setDatabaseUrl("https://startup-ec618.firebaseio.com")
-                .setApiKey("AIzaSyCRS7dY1FKZdfFmfLLTeRtQm_hyTbsERn8")
-                .setApplicationId("startup-ec618").build();
+            myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(myAdapter);
 
-        try { FirebaseApp app = FirebaseApp.initializeApp(getApplicationContext(), firebaseOptions, "app");
-            mAuth2 = FirebaseAuth.getInstance(app);
-        } catch (IllegalStateException e){
-            mAuth2 = FirebaseAuth.getInstance(FirebaseApp.getInstance("app"));
+            FirebaseOptions firebaseOptions = new FirebaseOptions.Builder()
+                    .setDatabaseUrl("https://startup-ec618.firebaseio.com")
+                    .setApiKey("AIzaSyCRS7dY1FKZdfFmfLLTeRtQm_hyTbsERn8")
+                    .setApplicationId("startup-ec618").build();
+
+            try {
+                FirebaseApp app = FirebaseApp.initializeApp(getApplicationContext(), firebaseOptions, "app");
+                mAuth2 = FirebaseAuth.getInstance(app);
+            } catch (IllegalStateException e) {
+                mAuth2 = FirebaseAuth.getInstance(FirebaseApp.getInstance("app"));
+            }
+
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setTitle("Register Students");
+            }
+
+            createAccount.setOnClickListener(v -> verifyPermissions());
+            random = new Random();
         }
+    }
 
-        if (getSupportActionBar()!=null){
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Create New Account");
+    private void verifyPermissions() {
+        String[] permissions = {Manifest.permission.SEND_SMS};
+        if(ContextCompat.checkSelfPermission(this, permissions[0]) == PackageManager.PERMISSION_GRANTED){
+            if (isInternetAvailable()){
+                registerUser();
+            }else {
+                Snackbar.make(parentLayout, "This action requires Internet Connection", Snackbar.LENGTH_LONG).show();
+            }
+        }else{
+            ActivityCompat.requestPermissions(this, permissions, REQUEST_CODE);
         }
+    }
 
-        createAccount.setOnClickListener(view -> registerUser());
-        random = new Random();
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        verifyPermissions();
     }
 
     public String genRandomPswd(){
-      StringBuilder sb = new StringBuilder(8);
-      for(int i = 0; i < 8; i++){
-          sb.append(DATA.charAt(random.nextInt(DATA.length())));
-      }
-      return sb.toString();
+        StringBuilder sb = new StringBuilder(8);
+        for(int i = 0; i < 8; i++){
+            sb.append(DATA.charAt(random.nextInt(DATA.length())));
+        }
+        return sb.toString();
+    }
+
+    boolean isEmailValid(CharSequence email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    public boolean isInternetAvailable() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process process = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int exitValue = process.waitFor();
+            return (exitValue == 0);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public void registerUser() {
         final FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-
         String section = spinner.getSelectedItem().toString();
-        final String display_name = name.getText().toString();
-        final String phoneNo = phoneNumber.getText().toString();
+        final String user_name = name.getText().toString();
+        final String user_number = phoneNumber.getText().toString();
+        final String user_email = email.getText().toString();
+
         final String[] batch = new String[1];
 
-        if (display_name.isEmpty()) {
+        if (user_name.isEmpty()) {
             name.setError("Name is required");
             name.requestFocus();
         }else if (spinner == null || spinner.getSelectedItem() ==null || section.equals("Class")) {
             KToast.warningToast(this,"Class Required",Gravity.BOTTOM,KToast.LENGTH_LONG);
-        }else if(phoneNo.isEmpty()){
+        }else if(user_number.isEmpty()){
             phoneNumber.setError("Contact Number required");
             phoneNumber.requestFocus();
-        }else if(phoneNo.length()!=10){
+        }else if(user_number.length()!=10){
             phoneNumber.setError("Enter Correct Contact Number");
             phoneNumber.requestFocus();
+        }else if (user_email.isEmpty()){
+            email.setError("Email is required");
+            email.requestFocus();
+        }else if (!isEmailValid(user_email)){
+            email.setError("Email not properly formatted");
+            email.requestFocus();
         }else{
+            progressBar.setVisibility(View.VISIBLE);
             rootRef.collection("Important").document("Batch").get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()){
                     DocumentSnapshot document = task.getResult();
                     batch[0] = document.getString(section);
                 }
             }).addOnSuccessListener(documentSnapshot -> {
-                String email = mAuth1.getCurrentUser().getEmail();
-                String email_red = email.substring(0, email.length() - 10).toUpperCase();
-                rootRef.collection("Users").document(email_red).get().addOnCompleteListener(task -> {
+                rootRef.collection("Users").document(uid).get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        progressBar.setVisibility(View.VISIBLE);
                         DocumentSnapshot document = task.getResult();
 
                         final String Institute = document.getString("Institute");
                         String code = document.getString("Code");
                         long total_students = document.getLong("Total_Students");
                         total_students++;
-
                         Map<String, Object> update_data = new HashMap<>();
                         update_data.put("Total_Students", total_students);
-                        rootRef.collection("Users").document(email_red).update(update_data);
+                        Map<String, Object> update_data_institute = new HashMap<>();
 
-                        String user = (batch[0]+code+total_students);
-                        genPswd = genRandomPswd();
-
-                        mAuth2.createUserWithEmailAndPassword(user + "@gmail.com", genPswd).addOnCompleteListener(task1 -> {
-                            progressBar.setVisibility(View.GONE);
+                        document.getReference().collection("Institute").document(batch[0]).get().addOnCompleteListener(task1 -> {
                             if (task1.isSuccessful()) {
-                                KToast.successToast(CreateAccount.this, "User Registered Successfully.", Gravity.BOTTOM, KToast.LENGTH_SHORT);
-
-                                Map<String, Object> data = new HashMap<>();
-                                data.put("Name", display_name);
-                                data.put("Username", user);
-                                data.put("Institute_Admin", Institute + "_No");
-                                data.put("Admin","No");
-                                data.put("Phone",phoneNo);
-                                data.put("Batch", batch[0]);
-                                rootRef.collection("Users").document(user).set(data);
-                                Log.e("Password : ",genPswd + "");
-
-//                                Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("sms:" + phoneNo));
-//                                intent.putExtra("sms_body","Login Details \n\nUsername : "+user+"\nPassword : " + genPswd);
-//                                startActivity(intent);
-
-//                               try {
-//                                   response = Unirest.post("https://control.msg91.com/api/postsms.php")
-//                                           .header("content-type", "application/xml")
-//                                           .body("<MESSAGE> <AUTHKEY>232129AdMpIvsHwvv15b759ec4</AUTHKEY>" +
-//                                                   " <SENDER>VISION</SENDER> " +
-//                                                   "<ROUTE>4</ROUTE> " +
-//                                                   "<CAMPAIGN>XML API</CAMPAIGN> " +
-//                                                   "<COUNTRY>91</COUNTRY> " +
-//                                                   "<SMS TEXT=\"Welcome On-Board\nHere are your login details.\nUsername : " +user + "\" \nPassword : " + genPswd+ "> " +
-//                                                   "<ADDRESS TO=\"91"+phoneNo+"\">" +
-//                                                   "</ADDRESS>" +
-//                                                   "</SMS>" +
-//                                                   "</MESSAGE>")
-//                                           .asString();
-//                                   Log.e("response status",response.getStatusText());
-//                               }
-//                               catch (Exception e){
-//                                   Log.e("Exception in sms",e.getLocalizedMessage());
-//                                   Log.e("response status",response.getStatusText());
-//                               }
-
-                                SmsManager smsManager = SmsManager.getDefault();
-                                smsManager.sendTextMessage(phoneNo, null, "Welcome OnBoard !!\n\nHere are your Login Details \n\nUsername : " + user + "\nPassword : " + genPswd, null, null);
-
-                                mAuth2.signOut();
-                                finish();
-                                startActivity(new Intent(CreateAccount.this, CreateAccount.class));
-                            } else {
-                                if (task1.getException() instanceof FirebaseAuthUserCollisionException) {
-                                    KToast.errorToast(CreateAccount.this, "This User is already registered.", Gravity.BOTTOM, KToast.LENGTH_SHORT);
-                                } else {
-                                    KToast.errorToast(CreateAccount.this, task1.getException().getMessage(), Gravity.BOTTOM, KToast.LENGTH_SHORT);
+                                DocumentSnapshot doc = task1.getResult();
+                                if (doc == null || !doc.exists()) {
+                                    total_batch_students = 1;
+                                    update_data_institute.put("Total_Batch_Students", total_batch_students);
+                                }else{
+                                    total_batch_students = doc.getLong("Total_Batch_Students");
+                                    total_batch_students++;
+                                    update_data_institute.put("Total_Batch_Students", total_batch_students);
                                 }
                             }
+                        }).addOnCompleteListener(task12 -> {
+                            String new_username = (batch[0]+code+total_batch_students);
+                            genPswd = genRandomPswd();
+
+                            mAuth2.createUserWithEmailAndPassword(user_email,genPswd).addOnCompleteListener(task1 -> {
+                                progressBar.setVisibility(View.GONE);
+                                if (task1.isSuccessful()) {
+                                    FirebaseUser user2 = mAuth2.getCurrentUser();
+                                    String user2Uid = user2.getUid();
+
+                                    Map<String, Object> data = new HashMap<>();
+                                    data.put("Name", user_name);
+                                    data.put("Username",new_username);
+                                    data.put("Institute_Batch", Institute +"_"+ batch[0]);
+                                    data.put("Institute_Admin", Institute+"_No");
+                                    data.put("Admin","No");
+                                    data.put("Teacher","No");
+                                    data.put("Phone",user_number);
+                                    data.put("Batch", batch[0]);
+                                    data.put("Email",user_email.toLowerCase());
+                                    data.put("Uid",user2Uid);
+                                    data.put("Admin_Uid", uid);
+
+                                    rootRef.collection("Users").document(user2Uid).set(data);
+                                    rootRef.collection("Users").document(uid).update(update_data);
+                                    rootRef.collection("Users").document(uid).collection("Institute").document(batch[0]).set(update_data_institute);
+
+                                    SmsManager smsManager = SmsManager.getDefault();
+                                    smsManager.sendTextMessage(user_number, null, "Welcome OnBoard "+user_name+"!!\n\nHere are your Login Details \n\nUsername : " + new_username + "\nPassword : " + genPswd, null, null);
+                                    mAuth2.signOut();
+                                    finishAffinity();
+                                    KToast.successToast(CreateAccount.this, "Student Registered", Gravity.BOTTOM, KToast.LENGTH_SHORT);
+
+                                } else {
+                                    if (task1.getException() instanceof FirebaseAuthUserCollisionException) {
+                                        KToast.errorToast(CreateAccount.this, "This User is already registered.", Gravity.BOTTOM, KToast.LENGTH_SHORT);
+                                    } else {
+                                        KToast.errorToast(CreateAccount.this, task1.getException().getMessage(), Gravity.BOTTOM, KToast.LENGTH_SHORT);
+                                    }
+                                }
+                            });
                         });
                     }
                 });
             });
         }
+    }
+
+    public void onBackPressed(){
+        finish();
     }
 
     @Override
@@ -204,8 +256,7 @@ public class CreateAccount extends AppCompatActivity {
 
         if (id == android.R.id.home) {
             // finish the activity
-            onBackPressed();
-            return true;
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }

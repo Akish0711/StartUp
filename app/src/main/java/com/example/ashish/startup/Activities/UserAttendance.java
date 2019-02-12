@@ -1,4 +1,4 @@
-package com.example.ashish.startup.Activities;
+package com.example.ashish.startup.activities;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;

@@ -7,15 +7,11 @@
     tools:background="?android:attr/floatingToolbarDividerColor">
 
     <TextView
-        android:id="@+id/no_record_error_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
         android:layout_marginTop="30dp"
         android:fontFamily="@font/roboto_regular"
-        android:gravity="center_horizontal"
-        android:text="@string/no_attendance_records_for_selected_date"
+        android:layout_centerHorizontal="true"
+        android:text="No Date Selected"
         android:textSize="20sp" />
-
 </RelativeLayout>

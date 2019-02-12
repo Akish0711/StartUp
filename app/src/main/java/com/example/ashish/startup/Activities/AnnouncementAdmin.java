@@ -1,4 +1,4 @@
-package com.example.ashish.startup.Activities;
+package com.example.ashish.startup.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,8 +19,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +36,18 @@ public class AnnouncementAdmin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_announcement_admin);
 
-        if (getIntent().hasExtra("class_id")){
+        if (getIntent().hasExtra("class_id")
+                &&getIntent().hasExtra("class_name")
+                &&getIntent().hasExtra("uid")
+                &&getIntent().hasExtra("institute")
+                &&getIntent().hasExtra("batch")
+                &&getIntent().hasExtra("Student_Count")){
             final String class_id = getIntent().getStringExtra("class_id");
             final String class_name = getIntent().getStringExtra("class_name");
-            String section = getIntent().getStringExtra("section");
-            String total_students = getIntent().getStringExtra("total_students");
-            String email_red = getIntent().getStringExtra("email_red");
+            String uid = getIntent().getStringExtra("uid");
+            String batch = getIntent().getStringExtra("batch");
+            String institute = getIntent().getStringExtra("institute");
+            String total_students = getIntent().getStringExtra("Student_Count");
 
             Toolbar toolbar = findViewById(R.id.my_toolbar);
             setSupportActionBar(toolbar);
@@ -57,7 +61,6 @@ public class AnnouncementAdmin extends AppCompatActivity {
 
             messageList = new ArrayList<>();
             keyList = new ArrayList<>();
-            FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
             mRootRef = FirebaseDatabase.getInstance().getReference();
 
             RelativeLayout add_students = findViewById(R.id.add_students);
@@ -65,79 +68,61 @@ public class AnnouncementAdmin extends AppCompatActivity {
             RelativeLayout marks = findViewById(R.id.marks);
             RelativeLayout remove = findViewById(R.id.remove);
             android.support.design.widget.FloatingActionButton announcement = findViewById(R.id.announcement);
-            mAdapter = new AdminMessageAdapter(this,messageList,class_id,email_red);
+            mAdapter = new AdminMessageAdapter(this,messageList,class_id,uid);
             mMessagesList = findViewById(R.id.messages_list);
             LinearLayoutManager mLinearLayout = new LinearLayoutManager(this);
             mLinearLayout.setReverseLayout(true);
             mMessagesList.setHasFixedSize(true);
             mMessagesList.setLayoutManager(mLinearLayout);
             mMessagesList.setAdapter(mAdapter);
-            final String[] batch = new String[1];
-            final String[] Institute = new String[1];
 
-            loadmessage(class_id,email_red);
-
-            mFirestore.collection("Users").document(email_red).get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    Institute[0] = document.getString("Institute");
-                }
-            });
-
-            mFirestore.collection("Important").document("Batch").get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    batch[0] = document.getString(section);
-                }
-            });
+            loadmessage(class_id,uid);
 
             add_students.setOnClickListener(view -> {
                 Intent intent = new Intent(AnnouncementAdmin.this,AddStudents.class);
                 intent.putExtra("class_id", class_id);
-                intent.putExtra("institute",Institute[0]);
-                intent.putExtra("username", email_red);
-                intent.putExtra("batch", batch[0]);
+                intent.putExtra("institute",institute);
+                intent.putExtra("uid", uid);
+                intent.putExtra("batch", batch);
                 intent.putExtra("class_name",class_name);
-                intent.putExtra("total_students",total_students);
+                intent.putExtra("Student_Count", total_students);
                 startActivity(intent);
             });
 
             take_attendance.setOnClickListener(view -> {
                 Intent intent = new Intent(AnnouncementAdmin.this,TakeAttendance.class);
                 intent.putExtra("class_id", class_id);
-                intent.putExtra("institute",Institute[0]);
-                intent.putExtra("username", email_red);
+                intent.putExtra("uid", uid);
                 startActivity(intent);
             });
 
             marks.setOnClickListener(v -> {
-                Intent intent = new Intent(AnnouncementAdmin.this,UploadMarks.class);
+                Intent intent = new Intent(AnnouncementAdmin.this, ExamsAdmin.class);
                 intent.putExtra("class_id", class_id);
-                intent.putExtra("institute",Institute[0]);
+                intent.putExtra("institute",institute);
+                intent.putExtra("uid", uid);
                 startActivity(intent);
             });
 
             remove.setOnClickListener(v -> {
                 Intent intent = new Intent(AnnouncementAdmin.this,RemoveStudents.class);
                 intent.putExtra("class_id", class_id);
-                intent.putExtra("username", email_red);
-                intent.putExtra("institute",Institute[0]);
-                intent.putExtra("total_students",total_students);
+                intent.putExtra("uid", uid);
+                intent.putExtra("institute",institute);
                 startActivity(intent);
             });
 
             announcement.setOnClickListener(v -> {
                 Intent intent = new Intent(AnnouncementAdmin.this,MakeAnnouncement.class);
                 intent.putExtra("class_id", class_id);
-                intent.putExtra("institute",Institute[0]);
-                intent.putExtra("username", email_red);
+                intent.putExtra("uid", uid);
                 startActivity(intent);
             });
         }
     }
 
-    private void loadmessage(String class_id, String email_red) {
-        DatabaseReference messageRef = mRootRef.child("Announcement").child(email_red).child(class_id);
+    private void loadmessage(String class_id, String username) {
+        DatabaseReference messageRef = mRootRef.child(username).child(class_id);
         messageRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {

@@ -1,4 +1,4 @@
-package com.example.ashish.startup.Activities;
+package com.example.ashish.startup.activities;
 
 import android.Manifest;
 import android.app.Activity;
@@ -27,7 +27,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.ashish.startup.R;
-import com.example.ashish.startup.Others.CircleTransform;
+import com.example.ashish.startup.others.CircleTransform;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -42,6 +42,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EditProfile extends AppCompatActivity {
 
@@ -52,124 +54,128 @@ public class EditProfile extends AppCompatActivity {
     private ImageView changeImage;
     private EditText editText, editEmail, editPhone;
     private Uri uriProfileImage;
-    private ProgressBar progressBar;
+    ProgressBar progressbar;
     private FirebaseFirestore rootRef;
-    private String profileImageUrl, email_red;
     private FirebaseUser user;
-    private FirebaseAuth mAuth;
+    String uid;
+    private String profileImageUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-        Toolbar myToolbar = findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
+        if (getIntent().hasExtra("uid")) {
+            uid = getIntent().getStringExtra("uid");
 
-        editEmail = findViewById(R.id.editEmail);
-        editPhone = findViewById(R.id.contact_number);
-        editText = findViewById(R.id.editTextDisplayName);
-        changeImage = findViewById(R.id.changeImage);
-        progressBar = findViewById(R.id.progressbar);
-        txtName = findViewById(R.id.edit_name);
-        txtEmail = findViewById(R.id.edit_email);
-        mAuth = FirebaseAuth.getInstance();
+            Toolbar myToolbar = findViewById(R.id.my_toolbar);
+            setSupportActionBar(myToolbar);
 
-        if (getSupportActionBar()!=null){
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Edit Profile");
+            editEmail = findViewById(R.id.editEmail);
+            editPhone = findViewById(R.id.contact_number);
+            editText = findViewById(R.id.editTextDisplayName);
+            progressbar = findViewById(R.id.progressbar);
+            changeImage = findViewById(R.id.changeImage);
+            txtName = findViewById(R.id.edit_name);
+            txtEmail = findViewById(R.id.edit_email);
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+            progressbar.setVisibility(View.INVISIBLE);
+
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setTitle("Edit Profile");
+            }
+
+            rootRef = FirebaseFirestore.getInstance();
+            user = mAuth.getCurrentUser();
+
+            changeImage.setOnClickListener(view -> verifyPermissions());
+
+            loadUserInformation();
+
+            findViewById(R.id.buttonSave).setOnClickListener(view -> saveUserInformation());
         }
-
-        rootRef = FirebaseFirestore.getInstance();
-        user = mAuth.getCurrentUser();
-        String email = user.getEmail();
-        email_red = email.substring(0, email.length() - 10).toUpperCase();
-
-        changeImage.setOnClickListener(view -> verifyPermissions());
-
-        loadUserInformation();
-
-        findViewById(R.id.buttonSave).setOnClickListener(view -> saveUserInformation());
     }
 
     private void loadUserInformation() {
-
-        rootRef.collection("Users").document(email_red).get().addOnCompleteListener(task -> {
+        rootRef.collection("Users").document(uid).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()){
                 DocumentSnapshot document = task.getResult();
-                    txtName.setText(user.getDisplayName());
-                    txtEmail.setText(document.getString("Email"));
-                    editPhone.setText(document.getString("Phone"));
-                    editEmail.setText(document.getString("Email"));
+                txtName.setText(document.getString("Name"));
+                txtEmail.setText(document.getString("Username").toLowerCase());
+                editPhone.setText(document.getString("Phone"));
+                editEmail.setText(document.getString("Email"));
+                editText.setText(document.getString("Name"));
+
+                if (user.getPhotoUrl()!=null) {
+                    Glide.with(getApplicationContext())
+                            .load(user.getPhotoUrl())
+                            .error(R.drawable.teacher_icon_male)
+                            .crossFade()
+                            .thumbnail(0.5f)
+                            .bitmapTransform(new CircleTransform(EditProfile.this))
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(changeImage);
+                }else if (document.getString("Gender").equals("Male")){
+                    Glide.with(getApplicationContext())
+                            .load(R.drawable.teacher_icon_male)
+                            .crossFade()
+                            .thumbnail(0.5f)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(changeImage);
+                }else {
+                    Glide.with(getApplicationContext())
+                            .load(R.drawable.teacher_icon_female)
+                            .crossFade()
+                            .thumbnail(0.5f)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(changeImage);
+                }
             }
         });
-
-        if (user!=null) {
-            if (user.getPhotoUrl() != null) {
-                Glide.with(this)
-                        .load(user.getPhotoUrl().toString())
-                        .crossFade()
-                        .bitmapTransform(new CircleTransform(EditProfile.this))
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(changeImage);
-            }
-            if (user.getDisplayName() != null) {
-                editText.setText(user.getDisplayName());
-            }
-        }
     }
 
     private void saveUserInformation() {
-        user = mAuth.getCurrentUser();
         String displayName = editText.getText().toString();
         final String contact = editPhone.getText().toString();
         final String real_email = editEmail.getText().toString();
         if (displayName.isEmpty()){
             editText.setError("Name required");
             editText.requestFocus();
-            return;
-        }else {
-            if (user != null && profileImageUrl==null) {
-                UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
-                        .setDisplayName(displayName)
-                        .build();
-                user.updateProfile(profile)
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                KToast.successToast(EditProfile.this, "Profile Updated", Gravity.BOTTOM,KToast.LENGTH_SHORT);
-                                finish();
-                                startActivity(new Intent(EditProfile.this,MainActivity.class));
-                            }
-                        });
-                rootRef.collection("Users").document(email_red).get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()){
-                        DocumentSnapshot document = task.getResult();
-                            document.getReference().update("Phone",contact);
-                            document.getReference().update("Email",real_email);
-                    }
-                });
-            }
-        }
-
-        if(user!=null && profileImageUrl!=null){
-            UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
-                    .setDisplayName(displayName)
-                    .setPhotoUri(Uri.parse(profileImageUrl))
-                    .build();
-            user.updateProfile(profile)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()){
-                            KToast.successToast(EditProfile.this,"Profile Updated",Gravity.BOTTOM,KToast.LENGTH_SHORT);
+        }else if(user != null && uriProfileImage==null){
+            rootRef.collection("Users").document(uid).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()){
+                    DocumentSnapshot document = task.getResult();
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("Name", displayName);
+                    data.put("Phone",contact);
+                    data.put("Email",real_email);
+                    document.getReference().update(data).addOnCompleteListener(task2 -> {
+                        if (task2.isSuccessful()) {
+                            KToast.successToast(EditProfile.this, "Profile Updated", Gravity.BOTTOM,KToast.LENGTH_SHORT);
                             finish();
                             startActivity(new Intent(EditProfile.this,MainActivity.class));
                         }
                     });
-            rootRef.collection("Users").document(email_red).get().addOnCompleteListener(task -> {
+                }
+            });
+        }else{
+            rootRef.collection("Users").document(uid).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()){
                     DocumentSnapshot document = task.getResult();
-                        document.getReference().update("Phone",contact);
-                        document.getReference().update("Email",real_email);
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("Name", displayName);
+                    data.put("Phone",contact);
+                    data.put("Email",real_email);
+                    document.getReference().update(data);
+                }
+            }).addOnCompleteListener(task -> {
+                if (task.isSuccessful()){
+                    KToast.successToast(EditProfile.this,"Profile Updated",Gravity.BOTTOM,KToast.LENGTH_SHORT);
+                    finish();
+                    startActivity(new Intent(EditProfile.this,MainActivity.class));
                 }
             });
         }
@@ -227,6 +233,27 @@ public class EditProfile extends AppCompatActivity {
         }
     }
 
+    private void uploadImageToFirebaseStorage() {
+        progressbar.setVisibility(View.VISIBLE);
+        final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("profilepics/"+uid+"/profile.jpg");
+        if (uriProfileImage!=null){
+            profileImageRef.putFile(uriProfileImage).addOnSuccessListener(taskSnapshot -> {
+                profileImageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    Uri downloadUrl = uri;
+                    profileImageUrl = downloadUrl.toString();
+                }).addOnCompleteListener(task -> {
+                    UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
+                            .setPhotoUri(Uri.parse(profileImageUrl))
+                            .build();
+                    user.updateProfile(profile);
+                    progressbar.setVisibility(View.GONE);
+                });
+            }).addOnFailureListener(e -> {
+                        KToast.errorToast(EditProfile.this,e.getMessage(),Gravity.BOTTOM,KToast.LENGTH_SHORT);
+                    });
+        }
+    }
+
     public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
         int width = image.getWidth();
         int height = image.getHeight();
@@ -245,24 +272,6 @@ public class EditProfile extends AppCompatActivity {
     public Uri getImageUri(Context inContext, Bitmap inImage) {
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
-    }
-
-    private void uploadImageToFirebaseStorage() {
-        final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("profilepics/"+email_red+"/"+System.currentTimeMillis()+"jpg");
-        if (uriProfileImage!=null){
-            progressBar.setVisibility(View.VISIBLE);
-            profileImageRef.putFile(uriProfileImage).addOnSuccessListener(taskSnapshot -> {
-                progressBar.setVisibility(View.GONE);
-                profileImageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                    Uri downloadUrl = uri;
-                    profileImageUrl = downloadUrl.toString();
-                });
-            })
-            .addOnFailureListener(e -> {
-                progressBar.setVisibility(View.GONE);
-                KToast.errorToast(EditProfile.this,e.getMessage(),Gravity.BOTTOM,KToast.LENGTH_SHORT);
-            });
-        }
     }
 
     private void showImageChooser() {

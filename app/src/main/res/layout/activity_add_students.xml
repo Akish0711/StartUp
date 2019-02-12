@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.AddStudents">
+    tools:context=".activities.AddStudents"
+    android:id="@+id/add_students_parent">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
@@ -17,10 +18,10 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/student_list"
         android:layout_width="match_parent"
-        android:layout_height="455dp"
+        android:layout_height="match_parent"
         android:layout_above="@+id/selected"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="?android:attr/actionBarSize"
         />
 
     <Button
@@ -32,9 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <FrameLayout
-        android:id="@+id/clippedProgressBar"
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="4dp"
@@ -52,33 +51,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:indeterminate="true"/>
-
         </FrameLayout>
-
     </FrameLayout>
-
-    <ImageView
-        android:id="@+id/no_record_image"
-        android:layout_width="220dp"
-        android:layout_height="220dp"
-        app:srcCompat="@drawable/empty"
-        android:contentDescription="No records"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:visibility="invisible"
-        />
-
-    <TextView
-        android:id="@+id/no_record_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="159dp"
-        android:text="@string/no_students"
-        android:textAlignment="center"
-        android:textSize="18sp"
-        android:visibility="invisible" />
-
-
 </RelativeLayout>

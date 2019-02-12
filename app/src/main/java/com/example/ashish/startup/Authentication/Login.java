@@ -1,176 +1,165 @@
-package com.example.ashish.startup.Authentication;
+package com.example.ashish.startup.authentication;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
-import com.example.ashish.startup.Activities.MainActivity;
-import com.example.ashish.startup.Activities.nonadmin;
+import com.example.ashish.startup.activities.MainActivity;
+import com.example.ashish.startup.activities.MainActivityStudent;
+import com.example.ashish.startup.activities.MainActivityTeacher;
 import com.example.ashish.startup.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.iid.FirebaseInstanceId;
+
 import com.onurkaganaldemir.ktoastlib.KToast;
 
-public class Login extends AppCompatActivity {
+import java.io.IOException;
 
+public class Login extends AppCompatActivity {
     private EditText mEmailField;
     private EditText mPasswordField;
     ProgressBar mProgressBar;
-    private FirebaseAuth mAuth;
-    public static final String PREFS_NAME = "MyPrefsFile";
-    public String regToken;
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
-        mAuth = FirebaseAuth.getInstance();
+        FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if(user!=null) {
+            rootRef.collection("Users").document(user.getUid()).addSnapshotListener((documentSnapshot, e) -> {
+                if (documentSnapshot.getString("Admin").equals("Yes")){
+                    startActivity(new Intent(Login.this, MainActivity.class));
+                    finish();
+                }else if (documentSnapshot.getString("Teacher").equals("Yes")) {
+                    startActivity(new Intent(Login.this, MainActivityTeacher.class));
+                    finish();
+                }else {
+                    startActivity(new Intent(Login.this, MainActivityStudent.class));
+                    finish();
+                }
+            });
+        }else {
+            setContentView(R.layout.activity_login);
+            mEmailField = findViewById(R.id.username);
+            mPasswordField = findViewById(R.id.password);
+            Button mLoginBtn = findViewById(R.id.login);
+            Button forgot = findViewById(R.id.forgot);
+            mProgressBar =  findViewById(R.id.progressBar2);
+            mProgressBar.setVisibility(View.INVISIBLE);
 
-        if (Build.VERSION.SDK_INT >= 21) {
-            // Set the status bar to dark-semi-transparentish
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
+            mLoginBtn.setOnClickListener(view -> startSign());
 
-        setContentView(R.layout.activity_login);
-
-        mEmailField = findViewById(R.id.username);
-        mPasswordField = findViewById(R.id.password);
-        Button mLoginBtn = findViewById(R.id.login);
-        mProgressBar =  findViewById(R.id.progressBar2);
-        mProgressBar.setVisibility(View.GONE);
-
-        mLoginBtn.setOnClickListener(view -> startSign());
-    }
-
-    FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-
-    @Override
-    protected void onStart(){
-        super.onStart();
-        if(mAuth.getCurrentUser()!=null){
-            mProgressBar.setVisibility(View.VISIBLE);
-
-            SharedPreferences settings = getSharedPreferences(Login.PREFS_NAME, 0);
-
-            //Get "hasLoggedIn" value. If the value doesn't exist yet false is returned
-            int hasLoggedIn = settings.getInt("hasLoggedIn", 0);
-
-            if(hasLoggedIn == 1)
-            {
-                //Go directly to main activity.
-                KToast.successToast(Login.this, "Logged in as admin.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
-                finish();
-                startActivity(new Intent(Login.this, MainActivity.class));
-            }
-            else if (hasLoggedIn == 2){
-                KToast.successToast(Login.this, "Logged in as user.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
-                finish();
-                startActivity(new Intent(Login.this, nonadmin.class));
-            }
+            forgot.setOnClickListener(v -> {
+                startActivity(new Intent(Login.this, ForgotPassword.class));
+            });
         }
     }
 
-    public static boolean CheckInternet(Context context)
-    {
-        ConnectivityManager connec = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        android.net.NetworkInfo wifi = connec.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        android.net.NetworkInfo mobile = connec.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-
-        return wifi.isConnected() || mobile.isConnected();
+    public boolean isInternetAvailable() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process process = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int exitValue = process.waitFor();
+            return (exitValue == 0);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public void startSign(){
         String email = mEmailField.getText().toString().toUpperCase();
         String password = mPasswordField.getText().toString();
 
-        regToken = FirebaseInstanceId.getInstance().getToken();
-        Log.e("token in login","token" + regToken);
-
         if(TextUtils.isEmpty(email)|| TextUtils.isEmpty(password)){
             KToast.warningToast(Login.this, "Fields are Empty.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
-
-        }else {
+        }else if (isEmailValid(email)){
             mProgressBar.setVisibility(View.VISIBLE);
-            mAuth.signInWithEmailAndPassword(email+"@gmail.com", password).addOnCompleteListener(task -> {
-                if (task.isSuccessful()){
-                    rootRef.collection("Users").document(email).get().addOnCompleteListener(task1 -> {
-                        if (task1.isSuccessful()) {
-                            DocumentSnapshot document = task1.getResult();
-
-                            //User has successfully logged in, save this information
-                            // We need an Editor object to make preference changes.
-                            SharedPreferences settings = getSharedPreferences(Login.PREFS_NAME, 0); // 0 - for private mode
-                            SharedPreferences.Editor editor = settings.edit();
-                            editor.putString("regId",regToken);
-                            editor.apply();
-
-                            if (document.getString("Admin").equals("Yes")) {
-                                KToast.successToast(Login.this, "Logged in as admin.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
-
-                                //Set "hasLoggedIn" to true
-                                editor.putInt("hasLoggedIn", 1);
-
-                                // Commit the edits!
-                                editor.apply();
-
-                                finish();
-                                startActivity(new Intent(Login.this, MainActivity.class));
+            loginUser(email,password);
+        }else if (!isEmailValid(email)){
+            mProgressBar.setVisibility(View.VISIBLE);
+            FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+            rootRef.collection("Users").whereEqualTo("Username",email.toUpperCase()).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    if (!task.getResult().isEmpty()) {
+                        for (final DocumentSnapshot document : task.getResult()) {
+                            if (document != null && document.exists()) {
+                                String Email = document.getString("Email");
+                                loginUser(Email, password);
                             } else {
-                                KToast.successToast(Login.this, "Logged in as user.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
-
-                                //Set "hasLoggedIn" to true
-                                editor.putInt("hasLoggedIn", 2);
-
-                                // Commit the edits!
-                                editor.apply();
-
-                                finish();
-                                startActivity(new Intent(Login.this, nonadmin.class));
+                                mProgressBar.setVisibility(View.INVISIBLE);
+                                KToast.errorToast(Login.this, "Oops!Please try again", Gravity.BOTTOM, KToast.LENGTH_AUTO);
                             }
-
-                        }else {
-                            mProgressBar.setVisibility(View.GONE);
-                            notifyUser( "Sign in problem.");
                         }
-                    });
-                }else{
-                    onFailure(task.getException());
+                    }else if (!isInternetAvailable()){
+                        notifyUser("No internet connection");
+                    }else {
+                        mProgressBar.setVisibility(View.INVISIBLE);
+                        KToast.errorToast(Login.this, "No Matching Account Found", Gravity.BOTTOM, KToast.LENGTH_AUTO);
+                    }
                 }
-            });
+            }).addOnFailureListener(this::onFailure);
         }
+    }
+
+    boolean isEmailValid(CharSequence email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    private void loginUser(String email, String password) {
+        FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+        mProgressBar.setVisibility(View.VISIBLE);
+        mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                FirebaseUser user = mAuth.getCurrentUser();
+                rootRef.collection("Users").document(user.getUid()).get().addOnCompleteListener(task1 -> {
+                    if (task1.isSuccessful()) {
+                        DocumentSnapshot document = task1.getResult();
+                        if (document.getString("Admin").equals("Yes")){
+                            KToast.successToast(Login.this, "Logged in as Admin.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
+                            finish();
+                            startActivity(new Intent(Login.this, MainActivity.class));
+                        }
+                        else if (document.getString("Teacher").equals("Yes")) {
+                            KToast.successToast(Login.this, "Logged in as Teacher.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
+                            finish();
+                            startActivity(new Intent(Login.this, MainActivityTeacher.class));
+                        } else {
+                            KToast.successToast(Login.this, "Logged in as Student.", Gravity.BOTTOM, KToast.LENGTH_AUTO);
+                            finish();
+                            startActivity(new Intent(Login.this, MainActivityStudent.class));
+                        }
+                    }
+                });
+            }
+        }).addOnFailureListener(this::onFailure);
     }
 
     public void onFailure(@NonNull Exception e) {
         if (e instanceof FirebaseAuthInvalidCredentialsException) {
             notifyUser("Invalid password");
         }
-        else if (!CheckInternet(Login.this)){
+        else if (!isInternetAvailable()){
             notifyUser("No internet connection.");
         }
         else if (e instanceof FirebaseAuthInvalidUserException) {
-
             String errorCode = ((FirebaseAuthInvalidUserException) e).getErrorCode();
-
             //   if (errorCode.equals("ERROR_USER_NOT_FOUND")) {
             if ("ERROR_USER_NOT_FOUND".equals(errorCode)) {
-                notifyUser("No matching account found");
+                notifyUser("No matching Account found");
             } else if ("ERROR_USER_DISABLED".equals(errorCode)) {
                 notifyUser("User account has been disabled");
             } else {
@@ -183,7 +172,7 @@ public class Login extends AppCompatActivity {
     }
 
     private void notifyUser(String error) {
-        mProgressBar.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.INVISIBLE);
         KToast.errorToast(Login.this,error,Gravity.BOTTOM,KToast.LENGTH_AUTO);
     }
 }

@@ -30,35 +30,54 @@ public class RemoveStudentsAdapter extends RecyclerView.Adapter<RemoveStudentsAd
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_users,parent,false);
-        return new ViewHolder(view);
+        View view;
+        if(viewType == 1){
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_class, parent, false);
+            return new ViewHolder(view);
+        }
+        else{
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_users,parent,false);
+            return new ViewHolder(view);
+        }
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.user_name.setText(usersList.get(position).getUsername());
-        holder.display_name.setText(usersList.get(position).getName());
+        int viewType = getItemViewType(position);
+        if(viewType == 2) {
+            holder.user_name.setText(usersList.get(position).getUsername());
+            holder.display_name.setText(usersList.get(position).getName());
 
-        final boolean[] showingFirst = {true};
+            final boolean[] showingFirst = {true};
 
-        holder.check.setOnClickListener(v -> {
-            if (showingFirst[0]){
-                holder.check.setImageResource(R.drawable.checked_remove);
-                showingFirst[0] = false;
-                selectedUsername.add(usersList.get(position).getUsername());
-                selectedName.add(usersList.get(position).getName());
-            }else{
-                holder.check.setImageResource(R.drawable.checkbox_outline);
-                showingFirst[0] = true;
-                selectedUsername.remove(usersList.get(position).getUsername());
-                selectedName.remove(usersList.get(position).getName());
-            }
-        });
+            holder.check.setOnClickListener(v -> {
+                if (showingFirst[0]) {
+                    holder.check.setImageResource(R.drawable.checked_remove);
+                    showingFirst[0] = false;
+                    selectedUsername.add(usersList.get(position).getUsername());
+                    selectedName.add(usersList.get(position).getName());
+                } else {
+                    holder.check.setImageResource(R.drawable.checkbox_outline);
+                    showingFirst[0] = true;
+                    selectedUsername.remove(usersList.get(position).getUsername());
+                    selectedName.remove(usersList.get(position).getName());
+                }
+            });
+        }
     }
 
     @Override
     public int getItemCount() {
+        if(usersList.size() == 0){return 1;}
         return usersList.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (getItemCount() == 1 && usersList.size() == 0) {
+            return 1;
+        }
+        return 2;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

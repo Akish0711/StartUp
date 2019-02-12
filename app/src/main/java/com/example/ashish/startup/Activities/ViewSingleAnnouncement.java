@@ -1,4 +1,4 @@
-package com.example.ashish.startup.Activities;
+package com.example.ashish.startup.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,9 +32,9 @@ public class ViewSingleAnnouncement extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_single_announcement);
 
-        if (getIntent().hasExtra("class_id")&& getIntent().hasExtra("Teacher_Name")&& getIntent().hasExtra("message_id")&& getIntent().hasExtra("text_message")) {
+        if (getIntent().hasExtra("class_id")&& getIntent().hasExtra("uid")&& getIntent().hasExtra("message_id")&& getIntent().hasExtra("text_message")) {
             String class_id = getIntent().getStringExtra("class_id");
-            String email_red = getIntent().getStringExtra("Teacher_Name");
+            String uid = getIntent().getStringExtra("uid");
             String message_id = getIntent().getStringExtra("message_id");
             String text_message = getIntent().getStringExtra("text_message");
 
@@ -58,12 +58,12 @@ public class ViewSingleAnnouncement extends AppCompatActivity {
             mMessagesList.setAdapter(mAdapter);
 
             message.setText(text_message);
-            loadmessage(class_id, email_red, message_id);
+            loadmessage(class_id, uid, message_id);
         }
     }
 
-    private void loadmessage(String class_id, String email_red, String message_id) {
-        DatabaseReference messageRef = mRootRef.child("Announcement").child(email_red).child(class_id).child(message_id);
+    private void loadmessage(String class_id, String uid, String message_id) {
+        DatabaseReference messageRef = mRootRef.child(uid).child(class_id).child(message_id);
         messageRef.keepSynced(true);
 
         messageRef.addChildEventListener(new ChildEventListener() {

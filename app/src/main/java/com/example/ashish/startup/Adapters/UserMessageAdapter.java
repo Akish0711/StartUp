@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.ashish.startup.Activities.ViewSingleAnnouncement;
+import com.example.ashish.startup.activities.ViewSingleAnnouncement;
 import com.example.ashish.startup.Models.Message;
 import com.example.ashish.startup.R;
 
@@ -18,14 +18,14 @@ import java.util.List;
 public class UserMessageAdapter extends RecyclerView.Adapter<UserMessageAdapter.ViewHolder> {
 
     private List<Message> messageList;
-    private String class_id, Teacher_Name;
+    private String class_id, TeacherID;
     public Context context;
 
-    public UserMessageAdapter(Context context,List<Message> messageList, String class_id, String Teacher_Name){
+    public UserMessageAdapter(Context context,List<Message> messageList, String class_id, String Teacher_id){
         this.messageList = messageList;
         this.class_id = class_id;
         this.context = context;
-        this.Teacher_Name = Teacher_Name;
+        this.TeacherID = Teacher_id;
     }
 
     @NonNull
@@ -53,8 +53,8 @@ public class UserMessageAdapter extends RecyclerView.Adapter<UserMessageAdapter.
         holder.mView.setOnClickListener(v -> {
             Intent intent = new Intent(context,ViewSingleAnnouncement.class);
             intent.putExtra("class_id", class_id);
-            intent.putExtra("Teacher_Name", Teacher_Name);
             intent.putExtra("message_id",message_id);
+            intent.putExtra("uid",TeacherID);
             intent.putExtra("text_message",text_message);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);

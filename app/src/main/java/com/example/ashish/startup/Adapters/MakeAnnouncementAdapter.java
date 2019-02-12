@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.ashish.startup.Activities.FullScreenImage;
+import com.example.ashish.startup.activities.FullScreenImage;
 import com.example.ashish.startup.R;
 
 import java.util.List;

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.MakeAnnouncement">
+    tools:context=".activities.MakeAnnouncement">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
@@ -38,7 +38,7 @@
                 android:id="@+id/chat_message_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Share with your class"
+                android:hint="Text message..."
                 android:inputType="textCapSentences"/>
 
         </android.support.design.widget.TextInputLayout>

@@ -22,13 +22,26 @@
         android:required="true" />
 
     <application
-        android:name=".App.OfflineCapability"
+        android:name=".app.OfflineCapability"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+        <activity android:name=".activities.SingleExamStudent"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activities.ExamStudent"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activities.SingleExamAdmin"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activities.AddMarks"
+            android:theme="@style/AppTheme2" />
+        <activity android:name=".activities.InstituteOthers" />
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.example.ashish.startup.fileprovider"
@@ -40,103 +53,71 @@
         </provider>
 
         <activity
-            android:name=".Activities.Welcome"
-            android:screenOrientation="portrait">
+            android:name=".authentication.Login"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <service android:name=".Others.MyFirebaseInstanceIDService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
-        </service>
-        <service android:name=".Others.MyFirebaseMessagingService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-        <!-- [START fcm_default_icon] -->
-        <!--
-             Set custom default icon. This is used when no icon is set for incoming notification messages.
-             See README(https://goo.gl/l4GJaQ) for more.
-        -->
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/ic_stat_ic_notification" />
-        <!--
-             Set color used with incoming notification messages. This is used when no color is set for the incoming
-             notification message. See README(https://goo.gl/6BKBk7) for more.
-        -->
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/colorAccent" />
-        <!-- [END fcm_default_icon] -->
-        <!-- [START fcm_default_channel] -->
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="@string/default_notification_channel_id" />
-        <!-- [END fcm_default_channel] -->
-
         <activity
-            android:name=".Authentication.Login"
+            android:name=".activities.Welcome"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Activities.MainActivity"
+            android:name=".activities.MainActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".Activities.AboutUsActivity" />
-        <activity android:name=".Activities.PrivacyPolicyActivity" />
+        <activity android:name=".activities.AboutUsActivity" />
+        <activity android:name=".activities.PrivacyPolicyActivity" />
         <activity
-            android:name=".Authentication.ChangePassword"
+            android:name=".authentication.ChangePassword"
             android:screenOrientation="portrait" />
-        <activity android:name=".Authentication.ReAuthentication" />
-        <activity android:name=".Activities.nonadmin" />
+        <activity android:name=".authentication.ReAuthentication" />
         <activity
-            android:name=".Activities.AnnouncementAdmin"
+            android:name=".activities.AnnouncementAdmin"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Activities.UserAttendance"
+            android:name=".activities.UserAttendance"
             android:screenOrientation="portrait" />
-        <activity android:name=".Activities.UserMarks" />
-        <activity android:name=".Activities.CreateNewTest" />
-        <activity android:name=".Activities.GetMarks" />
-        <activity android:name=".Activities.ViewSingleAnnouncement" />
-        <activity android:name=".Authentication.CreateAccount" />
-        <activity android:name=".Activities.UpdateAttendanceNew"
-            android:theme="@style/AppTheme3"
-            />
+        <activity android:name=".activities.ViewSingleAnnouncement" />
+        <activity android:name=".authentication.CreateAccount" />
         <activity
-            android:name=".Activities.EditProfile"
+            android:name=".activities.UpdateAttendanceNew"
+            android:theme="@style/AppTheme3" />
+        <activity
+            android:name=".activities.EditProfile"
             android:configChanges="orientation|keyboardHidden|screenSize" />
-        <activity android:name=".Activities.NewClass" />
+        <activity android:name=".activities.NewClass" />
         <activity
-            android:name=".Activities.TakeAttendance"
+            android:name=".activities.TakeAttendance"
             android:theme="@style/AppTheme3" />
         <activity
-            android:name=".Activities.ViewAttendance"
+            android:name=".activities.ViewAttendance"
             android:theme="@style/AppTheme3" />
         <activity
-            android:name=".Activities.UpdateAttendance"
+            android:name=".activities.UpdateAttendance"
             android:theme="@style/AppTheme3" />
-        <activity android:name=".Activities.ViewMarks" />
+        <activity android:name=".activities.AnnouncementStudents" />
         <activity
-            android:name=".Activities.UploadMarks"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme2" />
-        <activity android:name=".Activities.AnnouncementStudents" />
-        <activity
-            android:name=".Activities.AddStudents"
+            android:name=".activities.AddStudents"
             android:theme="@style/AppTheme4" />
-        <activity android:name=".Activities.FullScreenImage" />
-        <activity android:name=".Activities.MakeAnnouncement" />
-        <activity android:name=".Activities.EditAnnouncement" />
+        <activity android:name=".activities.FullScreenImage" />
+        <activity android:name=".activities.MakeAnnouncement" />
+        <activity android:name=".activities.EditAnnouncement" />
         <activity
-            android:name=".Activities.RemoveStudents"
+            android:name=".activities.RemoveStudents"
             android:theme="@style/AppTheme5" />
-        <activity android:name=".Activities.MainActivityStudent"></activity>
+        <activity android:name=".activities.MainActivityTeacher" />
+        <activity android:name=".authentication.CreateAccountTeacher" />
+        <activity android:name=".activities.DeleteAccount" />
+        <activity android:name=".authentication.ForgotPassword" />
+        <activity android:name=".activities.MainActivityStudent" />
+        <activity android:name=".activities.SettingsAdmin" />
+        <activity
+            android:name=".activities.ExamsAdmin"
+            android:theme="@style/AppTheme2" />
+        <activity android:name=".activities.InstituteAdmin" />
     </application>
 
 </manifest>

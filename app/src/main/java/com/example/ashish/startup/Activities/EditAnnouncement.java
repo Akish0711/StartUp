@@ -1,4 +1,4 @@
-package com.example.ashish.startup.Activities;
+package com.example.ashish.startup.activities;
 
 import android.Manifest;
 import android.app.Activity;
@@ -61,7 +61,7 @@ public class EditAnnouncement extends AppCompatActivity {
     private static final int REQUEST_CODE = 1;
     private DatabaseReference mRootRef;
     private String class_id;
-    private String email_red;
+    private String uid;
     private String message_id;
     private String text_time;
     private String text_message;
@@ -81,12 +81,12 @@ public class EditAnnouncement extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_announcement);
 
-        if (getIntent().hasExtra("email_red")
+        if (getIntent().hasExtra("uid")
                 && getIntent().hasExtra("class_id")
                 && getIntent().hasExtra("message_id")
                 && getIntent().hasExtra("text_message")
                 && getIntent().hasExtra("text_time")) {
-            email_red = getIntent().getStringExtra("email_red");
+            uid = getIntent().getStringExtra("uid");
             class_id = getIntent().getStringExtra("class_id");
             message_id = getIntent().getStringExtra("message_id");
             text_message = getIntent().getStringExtra("text_message");
@@ -118,12 +118,12 @@ public class EditAnnouncement extends AppCompatActivity {
             mMessagesList.setAdapter(mAdapter);
 
             mChatMessageView.setText(text_message);
-            loadmessage(class_id, email_red, message_id);
+            loadmessage(class_id, uid, message_id);
         }
     }
 
-    private void loadmessage(String class_id, String email_red, String message_id) {
-        DatabaseReference messageRef = mRootRef.child("Announcement").child(email_red).child(class_id).child(message_id);
+    private void loadmessage(String class_id, String uid, String message_id) {
+        DatabaseReference messageRef = mRootRef.child(uid).child(class_id).child(message_id);
         messageRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -180,8 +180,8 @@ public class EditAnnouncement extends AppCompatActivity {
         DateFormat df1=new SimpleDateFormat("MMM dd (hh:mm a)", Locale.ENGLISH);
         final String time=df1.format(Calendar.getInstance().getTime());
         if (!TextUtils.isEmpty(message)){
-            String message_ref = "Announcement/"+email_red+"/"+class_id;
-            String attachment_ref = "Announcement/" + email_red + "/" + class_id + "/" + message_id;
+            String message_ref = uid+"/"+class_id;
+            String attachment_ref = uid + "/" + class_id + "/" + message_id;
 
             Map messageMap = new HashMap();
             messageMap.put("Message", message);
@@ -199,7 +199,7 @@ public class EditAnnouncement extends AppCompatActivity {
 
             for (int x=0; x<listStringUri.size();x++){
                 if (listStringUri.get(x)!=null) {
-                    DatabaseReference user_message_push = mRootRef.child("Announcement").child(email_red).child(class_id).child(message_id).push();
+                    DatabaseReference user_message_push = mRootRef.child(uid).child(class_id).child(message_id).push();
                     String push_id = user_message_push.getKey();
 
                     Map StringImageMap = new HashMap();
@@ -220,7 +220,7 @@ public class EditAnnouncement extends AppCompatActivity {
 
             for (int x=0; x<listStringUriPdf.size();x++){
                 if (listStringUriPdf.get(x)!=null) {
-                    DatabaseReference user_message_push = mRootRef.child("Announcement").child(email_red).child(class_id).child(message_id).push();
+                    DatabaseReference user_message_push = mRootRef.child(uid).child(class_id).child(message_id).push();
                     String push_id = user_message_push.getKey();
 
                     Map StringPdfMap = new HashMap();
@@ -242,12 +242,12 @@ public class EditAnnouncement extends AppCompatActivity {
             if (listUri.size()!= 0){
                 for (int x=listStringUri.size();x<listUri.size();x++) {
                     if (listUri.get(x)!=null) {
-                        final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("message/" + email_red + "/"+ fileNameList.get(x));
+                        final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("message/" + uid + "/"+ fileNameList.get(x));
                         int finalX = x;
                         profileImageRef.putFile(listUri.get(x)).addOnSuccessListener(taskSnapshot -> profileImageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                             profileImageUrl = uri.toString();
 
-                            DatabaseReference user_image_push = mRootRef.child("Announcement").child(email_red).child(class_id).child(message_id).push();
+                            DatabaseReference user_image_push = mRootRef.child(uid).child(class_id).child(message_id).push();
                             String push_id = user_image_push.getKey();
 
                             Map imageMap = new HashMap();
@@ -272,13 +272,13 @@ public class EditAnnouncement extends AppCompatActivity {
             if (listUriPdf.size()!=0){
                 for (int y=0;y<listUriPdf.size();y++){
                     if (listUriPdf.get(y)!=null) {
-                        final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("message/" + email_red + "/" + fileNameList.get(y));
+                        final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("message/" + uid + "/" + fileNameList.get(y));
                         int finalY = y;
                         profileImageRef.putFile(listUriPdf.get(y)).addOnSuccessListener(taskSnapshot -> profileImageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                             Uri downloadUrl = uri;
                             profileImageUrl = downloadUrl.toString();
 
-                            DatabaseReference user_image_push = mRootRef.child("Announcement").child(email_red).child(class_id).push();
+                            DatabaseReference user_image_push = mRootRef.child(uid).child(class_id).push();
                             String image_push_id = user_image_push.getKey();
 
                             Map pdfMap = new HashMap();

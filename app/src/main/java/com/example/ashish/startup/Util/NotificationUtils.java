@@ -28,7 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import com.example.ashish.startup.App.Config;
+import com.example.ashish.startup.app.Config;
 import com.example.ashish.startup.R;
 
 public class NotificationUtils {

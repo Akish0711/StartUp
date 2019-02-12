@@ -12,6 +12,11 @@
         <item name="android:windowAllowReturnTransitionOverlap">true</item>
     </style>
 
+    <style name="AppTheme.Launcher">
+        <item name="android:windowBackground">@drawable/launch_screen</item>
+        <item name="colorPrimaryDark">#ffffff</item>
+    </style>
+
     <style name="Login" parent="TextAppearance.AppCompat">
         <!-- Hint color and label color in FALSE state -->
         <item name="android:textColorHint">#c0c8d6</item>
@@ -66,17 +71,8 @@
     </style>
 
     <!-- ActionBar styles -->
-    <style name="MyTheme2.ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar">
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:background">@color/colorPrimary2</item>
-        <item name="android:displayOptions" />
-        <item name="android:titleTextStyle">@style/MyTheme.ActionBar.Text</item>
-    </style>
 
     <!-- ActionBar styles icons color-->
-    <style name="MyTheme2.ActionBar.Text" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/colorAccent</item>
-    </style>
 
     <style name="AppTheme3" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
@@ -100,17 +96,8 @@
     </style>
 
     <!-- ActionBar styles -->
-    <style name="MyTheme3.ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar">
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:background">@color/colorPrimary3</item>
-        <item name="android:displayOptions" />
-        <item name="android:titleTextStyle">@style/MyTheme.ActionBar.Text</item>
-    </style>
 
     <!-- ActionBar styles icons color-->
-    <style name="MyTheme3.ActionBar.Text" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/colorAccent</item>
-    </style>
 
     <style name="AppTheme4" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
@@ -134,17 +121,8 @@
     </style>
 
     <!-- ActionBar styles -->
-    <style name="MyTheme4.ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar">
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:background">@color/colorPrimary4</item>
-        <item name="android:displayOptions" />
-        <item name="android:titleTextStyle">@style/MyTheme.ActionBar.Text</item>
-    </style>
 
     <!-- ActionBar styles icons color-->
-    <style name="MyTheme4.ActionBar.Text" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/colorAccent</item>
-    </style>
 
     <style name="AppTheme5" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
@@ -168,15 +146,6 @@
     </style>
 
     <!-- ActionBar styles -->
-    <style name="MyTheme5.ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar">
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:background">@color/colorPrimary5</item>
-        <item name="android:displayOptions" />
-        <item name="android:titleTextStyle">@style/MyTheme.ActionBar.Text</item>
-    </style>
 
     <!-- ActionBar styles icons color-->
-    <style name="MyTheme5.ActionBar.Text" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/colorAccent</item>
-    </style>
 </resources>

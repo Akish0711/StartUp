@@ -1,4 +1,4 @@
-package com.example.ashish.startup.Activities;
+package com.example.ashish.startup.activities;
 
 import android.Manifest;
 import android.app.Activity;
@@ -58,7 +58,7 @@ public class MakeAnnouncement extends AppCompatActivity {
     private static final int REQUEST_CODE = 1;
     private DatabaseReference mRootRef;
     private String class_id;
-    private String email_red;
+    private String uid;
     private String profileImageUrl;
     private List<String> fileNameList;
     private MakeAnnouncementAdapter makeAnnouncementAdapter;
@@ -74,7 +74,7 @@ public class MakeAnnouncement extends AppCompatActivity {
 
         if (getIntent().hasExtra("class_id")) {
             class_id = getIntent().getStringExtra("class_id");
-            email_red = getIntent().getStringExtra("username");
+            uid = getIntent().getStringExtra("uid");
 
             Toolbar toolbar = findViewById(R.id.my_toolbar);
             setSupportActionBar(toolbar);
@@ -108,9 +108,9 @@ public class MakeAnnouncement extends AppCompatActivity {
         DateFormat df1=new SimpleDateFormat("MMM dd (hh:mm a)", Locale.ENGLISH);
         final String time=df1.format(Calendar.getInstance().getTime());
         if (!TextUtils.isEmpty(message)){
-            String user_ref = "Announcement/"+email_red+"/"+class_id;
+            String user_ref = uid+"/"+class_id;
 
-            DatabaseReference user_message_push = mRootRef.child("Announcement").child(email_red).child(class_id).push();
+            DatabaseReference user_message_push = mRootRef.child(uid).child(class_id).push();
             String push_id = user_message_push.getKey();
 
             Map messageMap = new HashMap();
@@ -129,14 +129,14 @@ public class MakeAnnouncement extends AppCompatActivity {
             if (listUri.size()!= 0){
                 for (int x=0;x<listUri.size();x++) {
                     if (listUri.get(x)!=null) {
-                        final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("message/" + email_red + "/"+ fileNameList.get(x));
+                        final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("message/" + uid + "/"+ fileNameList.get(x));
                         int finalX = x;
                         profileImageRef.putFile(listUri.get(x)).addOnSuccessListener(taskSnapshot -> profileImageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                             Uri downloadUrl = uri;
                             profileImageUrl = downloadUrl.toString();
-                            String image_ref = "Announcement/" + email_red + "/" + class_id + "/" + push_id;
+                            String image_ref = uid + "/" + class_id + "/" + push_id;
 
-                            DatabaseReference user_image_push = mRootRef.child("Announcement").child(email_red).child(class_id).push();
+                            DatabaseReference user_image_push = mRootRef.child(uid).child(class_id).push();
                             String image_push_id = user_image_push.getKey();
 
                             Map imageMap = new HashMap();
@@ -161,14 +161,14 @@ public class MakeAnnouncement extends AppCompatActivity {
             if (listUriPdf.size()!=0){
                 for (int y=0;y<listUriPdf.size();y++){
                     if (listUriPdf.get(y)!=null) {
-                        final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("message/" + email_red + "/" + fileNameList.get(y));
+                        final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("message/" + uid + "/" + fileNameList.get(y));
                         int finalY = y;
                         profileImageRef.putFile(listUriPdf.get(y)).addOnSuccessListener(taskSnapshot -> profileImageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                             Uri downloadUrl = uri;
                             profileImageUrl = downloadUrl.toString();
-                            String image_ref = "Announcement/" + email_red + "/" + class_id + "/" + push_id;
+                            String image_ref = uid + "/" + class_id + "/" + push_id;
 
-                            DatabaseReference user_image_push = mRootRef.child("Announcement").child(email_red).child(class_id).push();
+                            DatabaseReference user_image_push = mRootRef.child(uid).child(class_id).push();
                             String image_push_id = user_image_push.getKey();
 
                             Map imageMap = new HashMap();

@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
     <item
         android:id="@+id/select_date"
         android:icon="@drawable/calendar"
-        android:title="Date"
+        android:title="Select Date"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/history"
+        android:icon="@drawable/history"
+        android:title="History"
         app:showAsAction="always"/>
 </menu>

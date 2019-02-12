@@ -1,20 +1,26 @@
 package com.example.ashish.startup.Models;
 
 public class Subject extends SubjectID{
-    private String Name,Subject_Name,Username, Teacher_Name;
-    private int Percentage,Total_Class,Total_Present;
+    private String Subject_Name, Teacher_Name, Teacher_id;
+    private int Total_Class,Total_Present;
 
     public Subject() {
     }
 
-    public Subject(String name, String subject_Name, String username, int percentage, int total_Class, int total_Present) {
-        Name = name;
+    public Subject(String subject_Name, int total_Class, int total_Present, String teacher_Name, String teacher_id ) {
         Subject_Name = subject_Name;
-        Username = username;
-        Percentage = percentage;
         Total_Class = total_Class;
         Total_Present = total_Present;
-        Teacher_Name = Teacher_Name;
+        Teacher_Name = teacher_Name;
+        Teacher_id = teacher_id;
+    }
+
+    public String getTeacher_id(){
+        return Teacher_id;
+    }
+
+    public void setTeacher_id(String teacher_id){
+        Teacher_id = teacher_id;
     }
 
     public String getTeacher_Name(){
@@ -31,30 +37,6 @@ public class Subject extends SubjectID{
 
     public void setSubject_Name(String subject_Name) {
         Subject_Name = subject_Name;
-    }
-
-    public String getName() {
-        return Name;
-    }
-
-    public void setName(String name) {
-        Name = name;
-    }
-
-    public String getUsername() {
-        return Username;
-    }
-
-    public void setUsername(String username) {
-        Username = username;
-    }
-
-    public int getPercentage() {
-        return Percentage;
-    }
-
-    public void setPercentage(int percentage) {
-        Percentage = percentage;
     }
 
     public int getTotal_Class() {

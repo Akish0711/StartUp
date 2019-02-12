@@ -1,4 +1,4 @@
-package com.example.ashish.startup.Authentication;
+package com.example.ashish.startup.authentication;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.support.v7.widget.Toolbar;
 
 import com.example.ashish.startup.R;
+import com.example.ashish.startup.activities.SettingsAdmin;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.onurkaganaldemir.ktoastlib.KToast;
@@ -68,11 +69,10 @@ public class ChangePassword extends AppCompatActivity {
                             dialog.dismiss();
                             KToast.successToast(ChangePassword.this,"Your Password has been Changed",Gravity.BOTTOM,KToast.LENGTH_AUTO);
                             FirebaseAuth.getInstance().signOut();
-                            Intent intent = new Intent("finish");
+                            Intent intent = new Intent(ChangePassword.this, Login.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                             sendBroadcast(intent);
                             finish();
-                            Intent i = new Intent(ChangePassword.this,Login.class);
-                            startActivity(i);
                         }
                         else
                         {

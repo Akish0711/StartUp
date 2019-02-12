@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -36,7 +35,6 @@
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"/>
 
             <RelativeLayout
-                android:id="@+id/top_bar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center">
@@ -51,7 +49,6 @@
                     android:foreground="?android:attr/selectableItemBackground">
 
                     <TextView
-                        android:id="@+id/add_students_text"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_above="@id/add_students_image"
@@ -95,7 +92,8 @@
                         android:layout_centerInParent="true"
                         android:background="@color/trans"
                         android:scaleType="fitCenter"
-                        app:srcCompat="@drawable/attendance" />
+                        app:srcCompat="@drawable/edit"
+                        android:tint="#fff"/>
 
                 </RelativeLayout>
 
@@ -109,14 +107,13 @@
                     android:foreground="?android:attr/selectableItemBackground">
 
                     <TextView
-                        android:id="@+id/marks_text"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_centerHorizontal="true"
                         android:layout_above="@+id/marks_image"
                         android:gravity="center"
                         android:textSize="12sp"
-                        android:text="Marks"
+                        android:text="Exams"
                         android:textColor="#fff" />
 
                     <ImageView
@@ -139,7 +136,6 @@
                     android:foreground="?android:attr/selectableItemBackground">
 
                     <TextView
-                        android:id="@+id/remove_text"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:textSize="12sp"
@@ -176,7 +172,7 @@
         android:src="@drawable/announcement"
         app:layout_anchor="@id/appbar_new_class2"
         app:layout_anchorGravity="bottom|right|end"
-        app:backgroundTint="@color/colorPrimary"
+        app:backgroundTint="@color/Dark"
         app:elevation="6dp"
         app:fabSize="normal"/>
 

@@ -1,4 +1,4 @@
-package com.example.ashish.startup.Activities;
+package com.example.ashish.startup.activities;
 
 import android.Manifest;
 import android.content.Intent;
@@ -15,7 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.example.ashish.startup.Adapters.UserMessageAdapter;
 import com.example.ashish.startup.Models.Message;
@@ -49,14 +49,20 @@ public class AnnouncementStudents extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_announcement_students);
 
-        if (getIntent().hasExtra("subject_id") && getIntent().hasExtra("subject_name") && getIntent().hasExtra("Teacher_Name")) {
+        if (getIntent().hasExtra("subject_id") &&
+                getIntent().hasExtra("subject_name") &&
+                getIntent().hasExtra("Teacher_Name") &&
+                getIntent().hasExtra("uid") &&
+                getIntent().hasExtra("Teacher_id")) {
             String class_id = getIntent().getStringExtra("subject_id");
+            String uid = getIntent().getStringExtra("uid");
             final String subject_name = getIntent().getStringExtra("subject_name");
             String Teacher_Name = getIntent().getStringExtra("Teacher_Name");
+            String TeacherID = getIntent().getStringExtra("Teacher_id");
 
             FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
 
-            mFirestore.collection("Users").document(Teacher_Name).get().addOnCompleteListener(task -> {
+            mFirestore.collection("Users").document(TeacherID).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     email = document.getString("Email");
@@ -65,7 +71,7 @@ public class AnnouncementStudents extends AppCompatActivity {
             });
 
             messageList = new ArrayList<>();
-            mAdapter = new UserMessageAdapter(getApplicationContext(),messageList,class_id,Teacher_Name);
+            mAdapter = new UserMessageAdapter(getApplicationContext(),messageList,class_id,TeacherID);
             mMessagesList = findViewById(R.id.messages_list);
             LinearLayoutManager mLinearLayout = new LinearLayoutManager(this);
             mLinearLayout.setReverseLayout(true);
@@ -73,9 +79,9 @@ public class AnnouncementStudents extends AppCompatActivity {
             mMessagesList.setLayoutManager(mLinearLayout);
             mMessagesList.setAdapter(mAdapter);
 
-            ImageView view_atttendance = findViewById(R.id.view_attendance_image);
-            ImageView view_marks = findViewById(R.id.view_marks_image);
-            ImageView contact = findViewById(R.id.contact_image);
+            RelativeLayout attendance = findViewById(R.id.attendance);
+            RelativeLayout exams = findViewById(R.id.marks);
+            RelativeLayout contact = findViewById(R.id.contact);
 
             Toolbar toolbar = findViewById(R.id.user_new_class_toolbar);
             setSupportActionBar(toolbar);
@@ -98,7 +104,7 @@ public class AnnouncementStudents extends AppCompatActivity {
                 }
             });
 
-            view_atttendance.setOnClickListener(view -> {
+            attendance.setOnClickListener(view -> {
                 Intent intent = new Intent(AnnouncementStudents.this, UserAttendance.class);
                 intent.putExtra("subject_id", class_id);
                 intent.putExtra("subject_name", subject_name);
@@ -106,11 +112,10 @@ public class AnnouncementStudents extends AppCompatActivity {
                 startActivity(intent);
             });
 
-            view_marks.setOnClickListener(view -> {
-                Intent intent = new Intent(AnnouncementStudents.this, UserMarks.class);
-                intent.putExtra("subject_id", class_id);
-                intent.putExtra("subject_name", subject_name);
-                intent.putExtra("Teacher_Name", Teacher_Name);
+            exams.setOnClickListener(view -> {
+                Intent intent = new Intent(AnnouncementStudents.this, ExamStudent.class);
+                intent.putExtra("class_id", class_id);
+                intent.putExtra("uid", uid);
                 startActivity(intent);
             });
 
@@ -135,12 +140,12 @@ public class AnnouncementStudents extends AppCompatActivity {
 
             mRootRef = FirebaseDatabase.getInstance().getReference();
 
-            loadmessage(class_id,Teacher_Name);
+            loadmessage(class_id,TeacherID);
         }
     }
 
     private void loadmessage(String class_id, String email_red) {
-        DatabaseReference messageRef = mRootRef.child("Announcement").child(email_red).child(class_id);
+        DatabaseReference messageRef = mRootRef.child(email_red).child(class_id);
         messageRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {

@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ashish.startup.Activities.UpdateAttendanceNew;
+import com.example.ashish.startup.activities.UpdateAttendanceNew;
 import com.example.ashish.startup.Models.UpdateAttendanceModel;
 import com.example.ashish.startup.R;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -22,15 +22,14 @@ import java.util.List;
 
 public class UpdateAttendanceAdapter extends RecyclerView.Adapter<UpdateAttendanceAdapter.ViewHolder> {
 
-    public List<UpdateAttendanceModel> updateAttendanceModelList;
+    private List<UpdateAttendanceModel> updateAttendanceModelList;
     private FirebaseFirestore rootRef;
-    private String classId,email_red;
-    private List<String> names,status;
+    private String classId,uid;
 
-    public UpdateAttendanceAdapter(List<UpdateAttendanceModel> updateAttendanceModelList,String classId,String email_red) {
+    public UpdateAttendanceAdapter(List<UpdateAttendanceModel> updateAttendanceModelList,String classId,String uid) {
         this.updateAttendanceModelList = updateAttendanceModelList;
         this.classId = classId;
-        this.email_red = email_red;
+        this.uid = uid;
     }
 
     @NonNull
@@ -40,8 +39,7 @@ public class UpdateAttendanceAdapter extends RecyclerView.Adapter<UpdateAttendan
         if(viewType == 1){
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.no_attendance_record,parent,false);
             return new ViewHolder(view);
-        }
-        else {
+        }else {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_update_attendance, parent, false);
             return new ViewHolder(view);
         }
@@ -51,27 +49,19 @@ public class UpdateAttendanceAdapter extends RecyclerView.Adapter<UpdateAttendan
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         int viewType = getItemViewType(position);
         if(viewType == 2) {
-            names = new ArrayList<>();
-            status = new ArrayList<>();
             holder.timeStamp.setText(updateAttendanceModelList.get(position).getTimeStamp());
-
             rootRef = FirebaseFirestore.getInstance();
 
             holder.delete_record.setOnClickListener((View v) -> {
-
-
                 AlertDialog.Builder alertBox = new AlertDialog.Builder(v.getRootView().getContext());
                 alertBox.setTitle("Delete ?");
                 alertBox.setMessage("Warning : You cannot undo this.");
-
                 alertBox.setPositiveButton("Ok", (dialog, which) -> {
-                    rootRef.collection("Users").document(email_red).collection("Subjects")
+                    rootRef.collection("Users").document(uid).collection("Subjects")
                             .document(classId).collection("Attendance")
                             .document(updateAttendanceModelList.get(position).getTimeStamp()).delete().addOnCompleteListener(task -> {
-                        Toast.makeText(v.getContext(),"Record deleted successfully.",Toast.LENGTH_SHORT).show();
-                            }
-                    )
-                            .addOnFailureListener(e -> {
+                                Toast.makeText(v.getContext(),"Record deleted successfully.",Toast.LENGTH_SHORT).show();
+                            }).addOnFailureListener(e -> {
                                 Log.e("Record not deleted",e.getLocalizedMessage());
                                 Toast.makeText(v.getContext(),"Couldn't delete record.Try again.",Toast.LENGTH_SHORT).show();
                             });
@@ -83,16 +73,12 @@ public class UpdateAttendanceAdapter extends RecyclerView.Adapter<UpdateAttendan
             });
 
             holder.mView.setOnClickListener(v -> {
-                names.clear();
-                status.clear();
-
                 Intent intent = new Intent(v.getContext(), UpdateAttendanceNew.class);
                 intent.putExtra("classId",classId);
-                intent.putExtra("email_red",email_red);
+                intent.putExtra("uid",uid);
                 intent.putExtra("timeStamp",updateAttendanceModelList.get(position).getTimeStamp());
                 v.getContext().startActivity(intent);
             });
-
         }
     }
 
@@ -120,7 +106,6 @@ public class UpdateAttendanceAdapter extends RecyclerView.Adapter<UpdateAttendan
         public ViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
-
             timeStamp = mView.findViewById(R.id.timeStamp);
             delete_record = mView.findViewById(R.id.delete_record);
         }

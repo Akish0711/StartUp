@@ -1,4 +1,4 @@
-package com.example.ashish.startup.Activities;
+package com.example.ashish.startup.activities;
 
 import android.os.Build;
 import android.support.v4.content.ContextCompat;

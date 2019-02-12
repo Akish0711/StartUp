@@ -1,4 +1,4 @@
-package com.example.ashish.startup.App;
+package com.example.ashish.startup.app;
 
 public class Config {
 

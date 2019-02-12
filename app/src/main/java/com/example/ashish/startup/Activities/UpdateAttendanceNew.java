@@ -1,4 +1,4 @@
-package com.example.ashish.startup.Activities;
+package com.example.ashish.startup.activities;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -42,10 +42,6 @@ public class UpdateAttendanceNew extends AppCompatActivity {
             timeStamp = getIntent().getStringExtra("timeStamp");
 
             rootRef = FirebaseFirestore.getInstance();
-
-            Toolbar toolbar = findViewById(R.id.update_attendance_toolbar);
-            setSupportActionBar(toolbar);
-
 
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);

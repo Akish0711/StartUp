@@ -11,12 +11,7 @@ public class UpdateAttendanceModel {
         this.timeStamp = timeStamp;
     }
 
-    public static final Comparator<UpdateAttendanceModel>BY_TIMESTAMP_LATEST = new Comparator<UpdateAttendanceModel>() {
-        @Override
-        public int compare(UpdateAttendanceModel o1, UpdateAttendanceModel o2) {
-            return o2.timeStamp.compareTo(o1.timeStamp);
-        }
-    };
+    public static final Comparator<UpdateAttendanceModel>BY_TIMESTAMP_LATEST = (o1, o2) -> o2.timeStamp.compareTo(o1.timeStamp);
 
     public String getTimeStamp() {
         return timeStamp;
@@ -25,7 +20,7 @@ public class UpdateAttendanceModel {
     public void setTimeStamp(String timeStamp) {
         this.timeStamp = timeStamp;
     }
-
+/*
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -38,6 +33,5 @@ public class UpdateAttendanceModel {
     public int hashCode() {
         return Objects.hash(getTimeStamp());
     }
-
-
+*/
 }
