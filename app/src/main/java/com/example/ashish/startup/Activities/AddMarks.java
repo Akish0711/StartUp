@@ -39,17 +39,15 @@ public class AddMarks extends AppCompatActivity {
     List<String> nameList = new ArrayList<>();
     List<String> usernameList = new ArrayList<>();
     List<Integer> userMarks = new ArrayList<>();
-    String uid, class_id;
+    private String class_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_marks);
 
-        if (getIntent().hasExtra("class_id")
-                &&getIntent().hasExtra("uid")) {
+        if (getIntent().hasExtra("class_id")) {
             class_id = getIntent().getStringExtra("class_id");
-            uid = getIntent().getStringExtra("uid");
 
             Toolbar toolbar = findViewById(R.id.my_toolbar);
             setSupportActionBar(toolbar);
@@ -57,7 +55,7 @@ public class AddMarks extends AppCompatActivity {
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 getSupportActionBar().setDisplayShowHomeEnabled(true);
-                getSupportActionBar().setTitle("");
+                getSupportActionBar().setTitle("Add Exams");
             }
 
             name_exam = findViewById(R.id.exam_name);

@@ -29,7 +29,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".activities.SingleExamStudent"
+        <activity android:name=".activities.EditMarks"
+            android:theme="@style/AppTheme2"/>
+        <activity
+            android:name=".activities.SingleExamStudent"
             android:theme="@style/AppTheme2" />
         <activity
             android:name=".activities.ExamStudent"

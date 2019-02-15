@@ -85,7 +85,6 @@ public class ExamsAdmin extends AppCompatActivity {
             add_exam.setOnClickListener(v -> {
                 Intent intent = new Intent(ExamsAdmin.this, AddMarks.class);
                 intent.putExtra("class_id", class_id);
-                intent.putExtra("uid", uid);
                 startActivity(intent);
             });
         }

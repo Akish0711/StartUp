@@ -14,65 +14,95 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="@style/MyTheme2" />
-
-    <com.github.mikephil.charting.charts.BarChart
-        android:id="@+id/chart"
+    <ScrollView
+        android:layout_marginTop="?android:attr/actionBarSize"
+        app:layout_constraintTop_toBottomOf="@id/my_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_alignParentTop="true"
-        app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
-
-    <LinearLayout
-        android:id="@+id/legend"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/chart"
-        android:orientation="horizontal"
-        android:gravity="center">
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:background="@color/bg_screen2"/>
-
-        <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingEnd="10dp"
-            android:paddingStart="5dp"
-            android:text="Highest"/>
+            android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:background="@color/bg_screen1"/>
+            <TextView
+                android:id="@+id/stats"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Stats:"
+                app:layout_constraintTop_toBottomOf="@id/my_toolbar"
+                android:padding="10dp"
+                android:textSize="25sp"
+                android:textColor="@color/colorPrimaryDark2"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingStart="5dp"
-            android:paddingEnd="10dp"
-            android:text="Lowest"/>
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/chart"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_alignParentTop="true"
+                app:layout_constraintTop_toBottomOf="@+id/stats" />
 
-        <LinearLayout
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:background="@color/bg_screen4"/>
+            <LinearLayout
+                android:id="@+id/legend"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/chart"
+                android:orientation="horizontal"
+                android:gravity="center">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingStart="5dp"
-            android:paddingEnd="10dp"
-            android:text="Average"/>
+                <LinearLayout
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:background="@color/bg_screen2"/>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="10dp"
+                    android:paddingStart="5dp"
+                    android:text="Highest"/>
 
-    </LinearLayout>
+                <LinearLayout
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:background="@color/bg_screen1"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/student_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/legend" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="10dp"
+                    android:text="Lowest"/>
+
+                <LinearLayout
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:background="@color/bg_screen4"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="10dp"
+                    android:text="Average"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Details:"
+                app:layout_constraintTop_toBottomOf="@id/legend"
+                android:padding="10dp"
+                android:textSize="25sp"
+                android:textColor="@color/colorPrimaryDark2"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/student_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/details" />
+        </LinearLayout>
+    </ScrollView>
 
 </android.support.constraint.ConstraintLayout>

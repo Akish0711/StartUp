@@ -1,11 +1,13 @@
 package com.example.ashish.startup.activities;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.ashish.startup.Adapters.SingleExamAdapter;
@@ -30,6 +32,8 @@ import java.util.List;
 
 public class SingleExamAdmin extends AppCompatActivity {
 
+    private String class_id, exam_id, exam_name;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,9 +42,9 @@ public class SingleExamAdmin extends AppCompatActivity {
         if (getIntent().hasExtra("class_id")
                 && getIntent().hasExtra("exam_id")
                 && getIntent().hasExtra("exam_name")) {
-            String class_id = getIntent().getStringExtra("class_id");
-            String exam_id = getIntent().getStringExtra("exam_id");
-            String exam_name = getIntent().getStringExtra("exam_name");
+            class_id = getIntent().getStringExtra("class_id");
+            exam_id = getIntent().getStringExtra("exam_id");
+            exam_name = getIntent().getStringExtra("exam_name");
 
             Toolbar toolbar = findViewById(R.id.my_toolbar);
             setSupportActionBar(toolbar);
@@ -117,15 +121,35 @@ public class SingleExamAdmin extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        // show menu only when home fragment is selected
+        getMenuInflater().inflate(R.menu.edit, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
+
         if (id == android.R.id.home){
             onBackPressed();
             return true;
         }
+
+        if (id == R.id.edit_button) {
+            Intent intent = new Intent(SingleExamAdmin.this,EditMarks.class);
+            intent.putExtra("class_id", class_id);
+            intent.putExtra("exam_id", exam_id);
+            intent.putExtra("exam_name", exam_name);
+            startActivity(intent);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 }
