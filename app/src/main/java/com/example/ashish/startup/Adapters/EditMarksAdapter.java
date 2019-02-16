@@ -15,19 +15,18 @@ import com.example.ashish.startup.R;
 
 import java.util.List;
 
-public class AddMarksAdpater extends RecyclerView.Adapter<AddMarksAdpater.ViewHolder> {
-
+public class EditMarksAdapter extends RecyclerView.Adapter<EditMarksAdapter.ViewHolder> {
     private List<Marks> marksList;
     private List<String> nameList;
     private List<String> usernameList;
-    private List<Integer> marks;
+    private List<Integer> userMarksList;
 
     public Context context;
 
-    public AddMarksAdpater(Context context, List<Marks> marksList, List<Integer> marks, List<String> nameList, List<String> usernameList){
+    public EditMarksAdapter(Context context, List<Marks> marksList, List<Integer> marks, List<String> nameList, List<String> usernameList){
         this.marksList = marksList;
         this.context = context;
-        this.marks = marks;
+        this.userMarksList = marks;
         this.nameList = nameList;
         this.usernameList = usernameList;
     }
@@ -35,7 +34,7 @@ public class AddMarksAdpater extends RecyclerView.Adapter<AddMarksAdpater.ViewHo
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_users_marks,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_edit_marks,parent,false);
         return new ViewHolder(view);
     }
 
@@ -43,12 +42,15 @@ public class AddMarksAdpater extends RecyclerView.Adapter<AddMarksAdpater.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String name = marksList.get(position).getName();
         String username = marksList.get(position).getUsername();
+        int userMarks = marksList.get(position).getMarks();
+
         holder.user_name.setText(username);
         holder.display_name.setText(name);
+        holder.marks.setText(String.valueOf(userMarks));
 
         nameList.add(name);
         usernameList.add(username);
-        marks.add(null);
+        userMarksList.add(userMarks);
 
         holder.marks.addTextChangedListener(new TextWatcher() {
             @Override
@@ -64,10 +66,10 @@ public class AddMarksAdpater extends RecyclerView.Adapter<AddMarksAdpater.ViewHo
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.toString().equals("")) {
-                    marks.set(position, null);
+                    userMarksList.set(position, null);
 
                 }else{
-                    marks.set(position, Integer.parseInt(editable.toString()));
+                    userMarksList.set(position, Integer.parseInt(editable.toString()));
                 }
             }
         });

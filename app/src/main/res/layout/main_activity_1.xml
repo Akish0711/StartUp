@@ -52,6 +52,26 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/performance"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:foreground="?android:attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:text="Performance"
+                android:textColor="#fff"
+                android:drawableBottom="@drawable/performance"/>
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/delete_user"
             android:layout_width="80dp"
             android:layout_height="80dp"

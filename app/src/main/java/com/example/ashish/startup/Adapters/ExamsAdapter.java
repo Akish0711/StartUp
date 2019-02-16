@@ -70,10 +70,10 @@ public class ExamsAdapter  extends RecyclerView.Adapter<ExamsAdapter.ViewHolder>
         viewBinderHelper.bind(holder.swipeLayout, exam_id);
         viewBinderHelper.setOpenOnlyOne(true);
         String examName = examsList.get(position).getName();
-        String maxMarks = "Max Marks: "+examsList.get(position).getMax_Marks();
+        String maxMarks = examsList.get(position).getMax_Marks();
         String examDate = examsList.get(position).getDate();
         holder.exam_name.setText(examName);
-        holder.max_marks.setText(maxMarks);
+        holder.max_marks.setText("Max Marks: "+maxMarks);
         holder.date.setText(examDate);
 
         holder.frontLayout.setOnClickListener(view -> {
@@ -81,6 +81,7 @@ public class ExamsAdapter  extends RecyclerView.Adapter<ExamsAdapter.ViewHolder>
             intent.putExtra("class_id", class_id);
             intent.putExtra("exam_id", exam_id);
             intent.putExtra("exam_name", examName);
+            intent.putExtra("max_marks", maxMarks);
             context.startActivity(intent);
         });
 

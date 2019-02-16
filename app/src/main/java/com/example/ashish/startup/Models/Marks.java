@@ -3,17 +3,17 @@ package com.example.ashish.startup.Models;
 import java.util.Comparator;
 
 public class Marks {
-    private String Name, Username, Uid, Marks;
+    private String Name, Username;
+    private int Marks;
 
     public Marks(){
     }
 
     public static final Comparator<Marks> BY_NAME_ALPHABETICAL = (marks, t1) -> marks.Username.compareTo(t1.Username);
 
-    public Marks(String name, String username, String uid, String marks) {
+    public Marks(String name, String username, int marks) {
         Name = name;
         Username = username;
-        Uid = uid;
         Marks = marks;
     }
 
@@ -31,17 +31,10 @@ public class Marks {
         Username = username;
     }
 
-    public String getUid() {
-        return Uid;
-    }
-    public void setUid(String uid) {
-        Uid = uid;
-    }
-
-    public String getMarks() {
+    public int getMarks() {
         return Marks;
     }
-    public void setMarks(String marks) {
+    public void setMarks(int marks) {
         Marks = marks;
     }
 }

@@ -35,7 +35,7 @@ import java.util.List;
 
 public class InstituteAdmin extends AppCompatActivity {
 
-    private LinearLayout dotsLayout;
+    //private LinearLayout dotsLayout;
     private int[] layouts;
     private RecyclerView mMessagesList;
     private List<Message> messageList;
@@ -80,14 +80,14 @@ public class InstituteAdmin extends AppCompatActivity {
             PagerAdapter mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
             mPager.setAdapter(mPagerAdapter);
             mPager.addOnPageChangeListener(viewPagerPageChangeListener);
-            dotsLayout = findViewById(R.id.layoutDots);
+            //dotsLayout = findViewById(R.id.layoutDots);
 
             layouts = new int[]{
                     R.layout.main_activity_1,
-                    R.layout.main_activity_2,
+                    //R.layout.main_activity_2,
             };
 
-            addBottomDots(0);
+            //addBottomDots(0);
 
             announcement.setOnClickListener(v -> {
                 Intent intent = new Intent(InstituteAdmin.this,MakeAnnouncement.class);
@@ -153,9 +153,9 @@ public class InstituteAdmin extends AppCompatActivity {
                 case 0:
                     f = MainActivitySlider1.newInstance(getApplicationContext());
                     break;
-                case 1:
+                /*case 1:
                     f = MainActivitySlider2.newInstance(getApplicationContext());
-                    break;
+                    break;*/
             }
             return f;
         }
@@ -170,7 +170,7 @@ public class InstituteAdmin extends AppCompatActivity {
 
         @Override
         public void onPageSelected(int position) {
-            addBottomDots(position);
+            //addBottomDots(position);
 
         }
 
@@ -185,7 +185,7 @@ public class InstituteAdmin extends AppCompatActivity {
         }
     };
 
-    private void addBottomDots(int currentPage) {
+    /*private void addBottomDots(int currentPage) {
         ImageView[] dots = new ImageView[layouts.length];
 
         dotsLayout.removeAllViews();
@@ -203,7 +203,7 @@ public class InstituteAdmin extends AppCompatActivity {
 
             dotsLayout.addView(dots[i], params);
         }
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

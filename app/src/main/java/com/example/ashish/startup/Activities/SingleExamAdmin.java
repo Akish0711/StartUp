@@ -32,7 +32,8 @@ import java.util.List;
 
 public class SingleExamAdmin extends AppCompatActivity {
 
-    private String class_id, exam_id, exam_name;
+    private String class_id, exam_id, exam_name, max_marks;
+    List<SingleExam> usersList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +42,12 @@ public class SingleExamAdmin extends AppCompatActivity {
 
         if (getIntent().hasExtra("class_id")
                 && getIntent().hasExtra("exam_id")
-                && getIntent().hasExtra("exam_name")) {
+                && getIntent().hasExtra("exam_name")
+                && getIntent().hasExtra("max_marks")) {
             class_id = getIntent().getStringExtra("class_id");
             exam_id = getIntent().getStringExtra("exam_id");
             exam_name = getIntent().getStringExtra("exam_name");
+            max_marks = getIntent().getStringExtra("max_marks");
 
             Toolbar toolbar = findViewById(R.id.my_toolbar);
             setSupportActionBar(toolbar);
@@ -55,7 +58,7 @@ public class SingleExamAdmin extends AppCompatActivity {
                 getSupportActionBar().setTitle(exam_name);
             }
 
-            List<SingleExam> usersList = new ArrayList<>();
+            usersList = new ArrayList<>();
 
             FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
             SingleExamAdapter mAdapter = new SingleExamAdapter(this, usersList);
@@ -147,6 +150,7 @@ public class SingleExamAdmin extends AppCompatActivity {
             intent.putExtra("class_id", class_id);
             intent.putExtra("exam_id", exam_id);
             intent.putExtra("exam_name", exam_name);
+            intent.putExtra("max_marks", max_marks);
             startActivity(intent);
         }
 
