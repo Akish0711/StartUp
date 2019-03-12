@@ -20,11 +20,11 @@ public class AddMarksAdpater extends RecyclerView.Adapter<AddMarksAdpater.ViewHo
     private List<Marks> marksList;
     private List<String> nameList;
     private List<String> usernameList;
-    private List<Integer> marks;
+    private List<Double> marks;
 
     public Context context;
 
-    public AddMarksAdpater(Context context, List<Marks> marksList, List<Integer> marks, List<String> nameList, List<String> usernameList){
+    public AddMarksAdpater(Context context, List<Marks> marksList, List<Double> marks, List<String> nameList, List<String> usernameList){
         this.marksList = marksList;
         this.context = context;
         this.marks = marks;
@@ -63,11 +63,11 @@ public class AddMarksAdpater extends RecyclerView.Adapter<AddMarksAdpater.ViewHo
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (editable.toString().equals("")) {
+                if (editable.toString().equals("")||editable.toString().equals(".")) {
                     marks.set(position, null);
 
                 }else{
-                    marks.set(position, Integer.parseInt(editable.toString()));
+                    marks.set(position, Double.parseDouble(editable.toString()));
                 }
             }
         });

@@ -4,14 +4,14 @@ import java.util.Comparator;
 
 public class Marks {
     private String Name, Username;
-    private int Marks;
+    private double Marks;
 
     public Marks(){
     }
 
     public static final Comparator<Marks> BY_NAME_ALPHABETICAL = (marks, t1) -> marks.Username.compareTo(t1.Username);
 
-    public Marks(String name, String username, int marks) {
+    public Marks(String name, String username, double marks) {
         Name = name;
         Username = username;
         Marks = marks;
@@ -31,10 +31,10 @@ public class Marks {
         Username = username;
     }
 
-    public int getMarks() {
+    public double getMarks() {
         return Marks;
     }
-    public void setMarks(int marks) {
+    public void setMarks(double marks) {
         Marks = marks;
     }
 }

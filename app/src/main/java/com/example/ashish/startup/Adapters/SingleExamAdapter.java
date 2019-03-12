@@ -35,7 +35,7 @@ public class SingleExamAdapter extends RecyclerView.Adapter<SingleExamAdapter.Vi
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String Username = usersList.get(position).getUsername();
         String Name = usersList.get(position).getName();
-        int Marks = usersList.get(position).getMarks();
+        double Marks = usersList.get(position).getMarks();
 
         holder.user_name.setText(Username);
         holder.display_name.setText(Name);

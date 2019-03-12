@@ -14,7 +14,9 @@
         android:layout_height="?android:attr/actionBarSize"
         android:background="@color/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/MyTheme" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/MyTheme"
+        tools:layout_editor_absoluteX="0dp" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/nameHolder"

@@ -37,7 +37,7 @@ public class AddMarks extends AppCompatActivity {
     List<Marks> marksList = new ArrayList<>();
     List<String> nameList = new ArrayList<>();
     List<String> usernameList = new ArrayList<>();
-    List<Integer> userMarks = new ArrayList<>();
+    List<Double> userMarks = new ArrayList<>();
     private String class_id;
 
     @Override
@@ -116,8 +116,8 @@ public class AddMarks extends AppCompatActivity {
                 DateFormat buttonTextFormat = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
                 String date = buttonTextFormat.format(Calendar.getInstance().getTime());
                 final int maxMarksInt = Integer.parseInt(maxMarks);
-                int max = userMarks.get(0);
-                int min = userMarks.get(0);
+                double max = userMarks.get(0);
+                double min = userMarks.get(0);
                 int sum = 0;
 
                 // Iterate through all elements and add them to sum

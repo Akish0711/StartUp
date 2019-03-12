@@ -89,7 +89,7 @@ public class AddStudents extends AppCompatActivity {
             mFirestore.collection("Users").whereEqualTo(class_id, "Removed").get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     if (task.getResult().isEmpty()){
-                        KToast.errorToast(AddStudents.this, "All Students are Added", Gravity.CENTER, KToast.LENGTH_SHORT);
+                        KToast.errorToast(AddStudents.this, "No Students to be Added", Gravity.CENTER, KToast.LENGTH_SHORT);
                         progressBar.setVisibility(View.GONE);
                     }else {
                         for (final DocumentSnapshot document : task.getResult()) {

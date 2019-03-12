@@ -19,11 +19,11 @@ public class EditMarksAdapter extends RecyclerView.Adapter<EditMarksAdapter.View
     private List<Marks> marksList;
     private List<String> nameList;
     private List<String> usernameList;
-    private List<Integer> userMarksList;
+    private List<Double> userMarksList;
 
     public Context context;
 
-    public EditMarksAdapter(Context context, List<Marks> marksList, List<Integer> marks, List<String> nameList, List<String> usernameList){
+    public EditMarksAdapter(Context context, List<Marks> marksList, List<Double> marks, List<String> nameList, List<String> usernameList){
         this.marksList = marksList;
         this.context = context;
         this.userMarksList = marks;
@@ -42,7 +42,7 @@ public class EditMarksAdapter extends RecyclerView.Adapter<EditMarksAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String name = marksList.get(position).getName();
         String username = marksList.get(position).getUsername();
-        int userMarks = marksList.get(position).getMarks();
+        double userMarks = marksList.get(position).getMarks();
 
         holder.user_name.setText(username);
         holder.display_name.setText(name);
@@ -69,7 +69,7 @@ public class EditMarksAdapter extends RecyclerView.Adapter<EditMarksAdapter.View
                     userMarksList.set(position, null);
 
                 }else{
-                    userMarksList.set(position, Integer.parseInt(editable.toString()));
+                    userMarksList.set(position, Double.parseDouble(editable.toString()));
                 }
             }
         });

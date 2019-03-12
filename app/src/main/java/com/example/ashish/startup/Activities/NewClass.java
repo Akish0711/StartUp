@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,7 +27,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.onurkaganaldemir.ktoastlib.KToast;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class NewClass extends AppCompatActivity {
@@ -38,6 +41,7 @@ public class NewClass extends AppCompatActivity {
     View parentLayout;
     FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
     final String[] Institute = new String[1];
+    private List<String> classList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +50,9 @@ public class NewClass extends AppCompatActivity {
 
         if (getIntent().hasExtra("uid")) {
             uid = getIntent().getStringExtra("uid");
+
+            classList = new ArrayList<>();
+            classList.add("Class");
 
             name_class = findViewById(R.id.name_class);
             Button new_class = findViewById(R.id.new_class);
@@ -71,11 +78,36 @@ public class NewClass extends AppCompatActivity {
                 }
             });
 
-            ArrayAdapter<String> myAdapter = new ArrayAdapter<>(NewClass.this,
-                    android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.classes));
+            rootRef.collection("Institute").document(uid).collection("Classes").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()){
+                        for (final DocumentSnapshot document : task.getResult()) {
+                            String Name = document.getString("Name");
+                            classList.add(Name);
+                        }
+                    }
+                }
+            }).addOnCompleteListener(task -> {
+                ArrayAdapter<String> myAdapter = new ArrayAdapter<>(NewClass.this,
+                        android.R.layout.simple_list_item_1, classList);
 
-            myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner.setAdapter(myAdapter);
+                myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(myAdapter);
+            });
+
+            /*spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                    spinner.setSelection(position);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parentView) {
+                    // your code here
+                }
+
+            });*/
 
             new_class.setOnClickListener(view -> createNewClass());
         }
@@ -120,6 +152,13 @@ public class NewClass extends AppCompatActivity {
                             }
                         }
                     })).addOnCompleteListener(task13 -> {
+                        final Map<String, Object> newClass = new HashMap<>();
+                        newClass.put("Name", className);
+                        newClass.put("Batch", batch[0]);
+                        newClass.put("Class_id", myId);
+
+                        rootRef.collection("Institute").document(uid).collection("Current Classes").document().set(newClass);
+
                         progressBar.setVisibility(View.INVISIBLE);
                         KToast.successToast(NewClass.this, "New Class Created", Gravity.BOTTOM, KToast.LENGTH_SHORT);
                         finish();
