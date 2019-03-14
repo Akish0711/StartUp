@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 
 import com.example.ashish.startup.R;
 import com.example.ashish.startup.activities.DeleteAccount;
+import com.example.ashish.startup.activities.Performance;
 import com.example.ashish.startup.authentication.CreateAccount;
 import com.example.ashish.startup.authentication.CreateAccountTeacher;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,6 +40,8 @@ public class MainActivitySlider1 extends Fragment {
         LinearLayout add_students = view.findViewById(R.id.add_students);
         LinearLayout add_teacher = view.findViewById(R.id.add_teacher);
         LinearLayout delete_user = view.findViewById(R.id.delete_user);
+        LinearLayout performance = view.findViewById(R.id.performance);
+
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -58,6 +61,12 @@ public class MainActivitySlider1 extends Fragment {
 
         add_teacher.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(),CreateAccountTeacher.class);
+            intent.putExtra("uid", uid);
+            startActivity(intent);
+        });
+
+        performance.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), Performance.class);
             intent.putExtra("uid", uid);
             startActivity(intent);
         });

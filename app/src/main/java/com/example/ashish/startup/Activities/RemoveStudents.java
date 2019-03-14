@@ -69,7 +69,6 @@ public class RemoveStudents extends AppCompatActivity {
             mFirestore.collection("Users").document(uid).collection("Subjects").document(class_id).addSnapshotListener((documentSnapshot, e) -> {
                 String total_students_text = documentSnapshot.getString("Total_Students");
                 total_students = Integer.parseInt(total_students_text);
-
             });
 
             mFirestore.collection("Users").whereEqualTo(class_id, "Added").addSnapshotListener((documentSnapshots, e) -> {

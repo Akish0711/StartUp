@@ -13,7 +13,6 @@ import android.telephony.SmsManager;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,9 +20,6 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 
 import com.example.ashish.startup.R;
-import com.example.ashish.startup.activities.NewClass;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,11 +27,12 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.onurkaganaldemir.ktoastlib.KToast;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,16 +44,16 @@ public class CreateAccount extends AppCompatActivity {
     Button createAccount;
     ProgressBar progressBar;
     Spinner spinner;
-    String uid, user2Uid;
+    int year;
+    String StringYear, uid;
     private static final String DATA = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     private String genPswd;
     private Random random;
     private FirebaseAuth mAuth2;
-    private long total_batch_students;
+    private long total_batch_students, total_students;
     View parentLayout;
     private static final int REQUEST_CODE = 1;
-    private List<String> classList, batchList;
-    private ArrayAdapter<String> myAdapter2;
+    private List<String> classList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +69,12 @@ public class CreateAccount extends AppCompatActivity {
             classList = new ArrayList<>();
             classList.add("Select Class");
 
-            batchList = new ArrayList<>();
-            batchList.add("Select Batch");
+            Date today = new Date(); // Fri Jun 17 14:54:28 PDT 2016
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(today);
+
+            year = cal.get(Calendar.YEAR);
+            StringYear = Integer.toString(year);
 
             name = findViewById(R.id.name);
             parentLayout = findViewById(R.id.create_account_parent);
@@ -86,14 +87,11 @@ public class CreateAccount extends AppCompatActivity {
 
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
 
-            rootRef.collection("Institute").document(uid).collection("Classes").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()){
-                        for (final DocumentSnapshot document : task.getResult()) {
-                            String Name = document.getString("Name");
-                            classList.add(Name);
-                        }
+            rootRef.collection("Users").document(uid).collection("Classes").get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()){
+                    for (final DocumentSnapshot document : task.getResult()) {
+                        String Name = document.getString("Name");
+                        classList.add(Name);
                     }
                 }
             }).addOnCompleteListener(task -> {
@@ -196,184 +194,111 @@ public class CreateAccount extends AppCompatActivity {
         }else if (!isEmailValid(user_email)){
             email.setError("Email not properly formatted");
             email.requestFocus();
-        }else if(section.equals("Class 12th")||section.equals("Class 11th")){
-            progressBar.setVisibility(View.VISIBLE);
-            rootRef.collection("Important").document("Batch").get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()){
-                    DocumentSnapshot document = task.getResult();
-                    batch[0] = document.getString(section);
-                }
-            }).addOnSuccessListener(documentSnapshot -> {
-                rootRef.collection("Users").document(uid).get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-
-                        final String Institute = document.getString("Institute");
-                        String code = document.getString("Code");
-                        long total_students = document.getLong("Total_Students");
-                        total_students++;
-                        Map<String, Object> update_data = new HashMap<>();
-                        update_data.put("Total_Students", total_students);
-                        Map<String, Object> update_data_institute = new HashMap<>();
-
-                        document.getReference().collection("Institute").document(batch[0]).get().addOnCompleteListener(task1 -> {
-                            if (task1.isSuccessful()) {
-                                DocumentSnapshot doc = task1.getResult();
-                                if (doc == null || !doc.exists()) {
-                                    total_batch_students = 1;
-                                    update_data_institute.put("Total_Batch_Students", total_batch_students);
-                                }else{
-                                    total_batch_students = doc.getLong("Total_Batch_Students");
-                                    total_batch_students++;
-                                    update_data_institute.put("Total_Batch_Students", total_batch_students);
-                                }
-                            }
-                        }).addOnCompleteListener(task12 -> {
-                            String new_username = (batch[0]+code+total_batch_students);
-                            genPswd = genRandomPswd();
-
-                            mAuth2.createUserWithEmailAndPassword(user_email,genPswd).addOnCompleteListener(task1 -> {
-                                progressBar.setVisibility(View.GONE);
-                                if (task1.isSuccessful()) {
-                                    FirebaseUser user2 = mAuth2.getCurrentUser();
-                                    String user2Uid = user2.getUid();
-
-                                    Map<String, Object> data = new HashMap<>();
-                                    data.put("Name", user_name);
-                                    data.put("Username",new_username);
-                                    data.put("Institute_Batch", Institute +"_"+ batch[0]);
-                                    data.put("Institute_Admin", Institute+"_No");
-                                    data.put("Admin","No");
-                                    data.put("Teacher","No");
-                                    data.put("Phone",user_number);
-                                    data.put("Batch", batch[0]);
-                                    data.put("Email",user_email.toLowerCase());
-                                    data.put("Uid",user2Uid);
-                                    data.put("Admin_Uid", uid);
-
-                                    rootRef.collection("Users").document(user2Uid).set(data).addOnCompleteListener(task123 -> rootRef.collection("Institute").document(uid).collection("Current Classes").whereEqualTo("Batch",batch[0]).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                            if (task.isSuccessful()){
-                                                for (final DocumentSnapshot document : task.getResult()) {
-                                                    String Classid = document.getString("Class_id");
-                                                    if (Classid!=null) {
-                                                        rootRef.collection("Users").document(user2Uid).update(Classid, "Removed");
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }));
-                                    rootRef.collection("Users").document(uid).update(update_data);
-                                    rootRef.collection("Users").document(uid).collection("Institute").document(batch[0]).set(update_data_institute);
-
-                                    SmsManager smsManager = SmsManager.getDefault();
-                                    smsManager.sendTextMessage(user_number, null, "Welcome OnBoard "+user_name+"!!\n\nHere are your Login Details \n\nUsername : " + new_username + "\nPassword : " + genPswd, null, null);
-                                    mAuth2.signOut();
-                                    finishAffinity();
-                                    KToast.successToast(CreateAccount.this, "Student Registered", Gravity.BOTTOM, KToast.LENGTH_SHORT);
-
-                                } else {
-                                    if (task1.getException() instanceof FirebaseAuthUserCollisionException) {
-                                        KToast.errorToast(CreateAccount.this, "This User is already registered.", Gravity.BOTTOM, KToast.LENGTH_SHORT);
-                                    } else {
-                                        KToast.errorToast(CreateAccount.this, task1.getException().getMessage(), Gravity.BOTTOM, KToast.LENGTH_SHORT);
-                                    }
-                                }
-                            });
-                        });
-                    }
-                });
-            });
         }else{
             progressBar.setVisibility(View.VISIBLE);
             rootRef.collection("Important").document("Batch").get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()){
-                    DocumentSnapshot document = task.getResult();
-                    batch[0] = document.getString(batch2);
-                }
-            }).addOnSuccessListener(documentSnapshot -> {
-                rootRef.collection("Users").document(uid).get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
+                    if (section.equals("Class 12th")||section.equals("Class 11th")) {
                         DocumentSnapshot document = task.getResult();
+                        batch[0] = document.getString(section);
+                    }else{
+                        DocumentSnapshot document = task.getResult();
+                        batch[0] = document.getString(batch2);
+                    }
+                }
+            }).addOnSuccessListener(documentSnapshot -> rootRef.collection("Users").document(uid).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
 
-                        final String Institute = document.getString("Institute");
-                        String code = document.getString("Code");
-                        long total_students = document.getLong("Total_Students");
-                        total_students++;
-                        Map<String, Object> update_data = new HashMap<>();
-                        update_data.put("Total_Students", total_students);
-                        Map<String, Object> update_data_institute = new HashMap<>();
+                    //final String Institute = document.getString("Institute");
+                    String code = document.getString("Code");
+                    //long total_students = document.getLong("Total_Students");
+                    //total_students++;
+                    //Map<String, Object> update_data = new HashMap<>();
+                    //update_data.put("Total_Students", total_students);
+                    Map<String, Object> update_data_institute = new HashMap<>();
+                    Map<String, Object> update_performance = new HashMap<>();
 
-                        document.getReference().collection("Institute").document(batch[0]).get().addOnCompleteListener(task1 -> {
-                            if (task1.isSuccessful()) {
-                                DocumentSnapshot doc = task1.getResult();
-                                if (doc == null || !doc.exists()) {
-                                    total_batch_students = 1;
-                                    update_data_institute.put("Total_Batch_Students", total_batch_students);
-                                }else{
-                                    total_batch_students = doc.getLong("Total_Batch_Students");
-                                    total_batch_students++;
-                                    update_data_institute.put("Total_Batch_Students", total_batch_students);
-                                }
+                    document.getReference().collection("Batches").document(batch[0]).get().addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+                            DocumentSnapshot doc = task1.getResult();
+                            if (doc == null || !doc.exists()) {
+                                total_batch_students = 1;
+                                update_data_institute.put("Total_Batch_Students", total_batch_students);
+                            }else{
+                                total_batch_students = doc.getLong("Total_Batch_Students");
+                                total_batch_students++;
+                                update_data_institute.put("Total_Batch_Students", total_batch_students);
                             }
-                        }).addOnCompleteListener(task12 -> {
-                            String new_username = (batch[0]+code+total_batch_students);
-                            genPswd = genRandomPswd();
+                        }
+                    }).addOnCompleteListener(task12 -> rootRef.collection("Users").document(uid).collection("Performance").document(StringYear).get().addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+                            DocumentSnapshot doc = task1.getResult();
+                            if (doc == null || !doc.exists()) {
+                                total_students = 1;
+                                update_performance.put("Total_Students", total_students);
+                                update_performance.put("Year", year);
+                            }else{
+                                total_students = doc.getLong("Total_Students");
+                                total_students++;
+                                update_performance.put("Total_Students", total_students);
+                                update_performance.put("Year", year);
+                            }
+                        }
+                    }).addOnCompleteListener(task13 -> {
+                        String new_username = (batch[0]+code+total_batch_students);
+                        genPswd = genRandomPswd();
 
-                            mAuth2.createUserWithEmailAndPassword(user_email,genPswd).addOnCompleteListener(task1 -> {
-                                progressBar.setVisibility(View.GONE);
-                                if (task1.isSuccessful()) {
-                                    FirebaseUser user2 = mAuth2.getCurrentUser();
-                                    String user2Uid = user2.getUid();
+                        mAuth2.createUserWithEmailAndPassword(user_email,genPswd).addOnCompleteListener(task1 -> {
+                            progressBar.setVisibility(View.GONE);
+                            if (task1.isSuccessful()) {
+                                FirebaseUser user2 = mAuth2.getCurrentUser();
+                                String user2Uid = user2.getUid();
 
-                                    Map<String, Object> data = new HashMap<>();
-                                    data.put("Name", user_name);
-                                    data.put("Username",new_username);
-                                    data.put("Institute_Batch", Institute +"_"+ batch[0]);
-                                    data.put("Institute_Admin", Institute+"_No");
-                                    data.put("Admin","No");
-                                    data.put("Teacher","No");
-                                    data.put("Phone",user_number);
-                                    data.put("Batch", batch[0]);
-                                    data.put("Email",user_email.toLowerCase());
-                                    data.put("Uid",user2Uid);
-                                    data.put("Admin_Uid", uid);
+                                Map<String, Object> data = new HashMap<>();
+                                data.put("Name", user_name);
+                                data.put("Username",new_username);
+                                //data.put("Institute_Batch", Institute +"_"+ batch[0]);
+                                //data.put("Institute_Admin", Institute+"_No");
+                                data.put("Admin","No");
+                                data.put("Teacher","No");
+                                data.put("Phone",user_number);
+                                data.put("Batch", batch[0]);
+                                data.put("Email",user_email.toLowerCase());
+                                data.put("Uid",user2Uid);
+                                data.put("Admin_Uid", uid);
 
-                                    rootRef.collection("Users").document(user2Uid).set(data).addOnCompleteListener(task123 -> rootRef.collection("Institute").document(uid).collection("Current Classes").whereEqualTo("Batch",batch[0]).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                            if (task.isSuccessful()){
-                                                for (final DocumentSnapshot document : task.getResult()) {
-                                                    String Classid = document.getString("Class_id");
-                                                    if (Classid!=null) {
-                                                        rootRef.collection("Users").document(user2Uid).update(Classid, "Removed");
-                                                    }
-                                                }
+                                rootRef.collection("Users").document(user2Uid).set(data).addOnCompleteListener(task123 -> rootRef.collection("Users").document(uid).collection("Current Classes").whereEqualTo("Batch",batch[0]).get().addOnCompleteListener(task2 -> {
+                                    if (task2.isSuccessful()){
+                                        for (final DocumentSnapshot document1 : task2.getResult()) {
+                                            String Classid = document1.getString("Class_id");
+                                            if (Classid!=null) {
+                                                rootRef.collection("Users").document(user2Uid).update(Classid, "Removed");
                                             }
                                         }
-                                    }));
-                                    rootRef.collection("Users").document(uid).update(update_data);
-                                    rootRef.collection("Users").document(uid).collection("Institute").document(batch[0]).set(update_data_institute);
-
-                                    SmsManager smsManager = SmsManager.getDefault();
-                                    smsManager.sendTextMessage(user_number, null, "Welcome OnBoard "+user_name+"!!\n\nHere are your Login Details \n\nUsername : " + new_username + "\nPassword : " + genPswd, null, null);
-                                    mAuth2.signOut();
-                                    finishAffinity();
-                                    KToast.successToast(CreateAccount.this, "Student Registered", Gravity.BOTTOM, KToast.LENGTH_SHORT);
-
-                                } else {
-                                    if (task1.getException() instanceof FirebaseAuthUserCollisionException) {
-                                        KToast.errorToast(CreateAccount.this, "This User is already registered.", Gravity.BOTTOM, KToast.LENGTH_SHORT);
-                                    } else {
-                                        KToast.errorToast(CreateAccount.this, task1.getException().getMessage(), Gravity.BOTTOM, KToast.LENGTH_SHORT);
                                     }
+                                }));
+                                //rootRef.collection("Users").document(uid).update(update_data);
+                                rootRef.collection("Users").document(uid).collection("Batches").document(batch[0]).set(update_data_institute);
+                                rootRef.collection("Users").document(uid).collection("Performance").document(StringYear).set(update_performance);
+
+                                SmsManager smsManager = SmsManager.getDefault();
+                                smsManager.sendTextMessage(user_number, null, "Welcome OnBoard "+user_name+"!!\n\nHere are your Login Details \n\nUsername : " + new_username + "\nPassword : " + genPswd, null, null);
+                                mAuth2.signOut();
+                                finishAffinity();
+                                KToast.successToast(CreateAccount.this, "Student Registered", Gravity.BOTTOM, KToast.LENGTH_SHORT);
+
+                            }else {
+                                if (task1.getException() instanceof FirebaseAuthUserCollisionException) {
+                                    KToast.errorToast(CreateAccount.this, "This User is already registered.", Gravity.BOTTOM, KToast.LENGTH_SHORT);
+                                } else {
+                                    KToast.errorToast(CreateAccount.this, task1.getException().getMessage(), Gravity.BOTTOM, KToast.LENGTH_SHORT);
                                 }
-                            });
+                            }
                         });
-                    }
-                });
-            });
+                    }));
+                }
+            }));
         }
     }
 

@@ -78,14 +78,11 @@ public class NewClass extends AppCompatActivity {
                 }
             });
 
-            rootRef.collection("Institute").document(uid).collection("Classes").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()){
-                        for (final DocumentSnapshot document : task.getResult()) {
-                            String Name = document.getString("Name");
-                            classList.add(Name);
-                        }
+            rootRef.collection("Users").document(uid).collection("Classes").get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()){
+                    for (final DocumentSnapshot document : task.getResult()) {
+                        String Name = document.getString("Name");
+                        classList.add(Name);
                     }
                 }
             }).addOnCompleteListener(task -> {
@@ -157,7 +154,7 @@ public class NewClass extends AppCompatActivity {
                         newClass.put("Batch", batch[0]);
                         newClass.put("Class_id", myId);
 
-                        rootRef.collection("Institute").document(uid).collection("Current Classes").document().set(newClass);
+                        rootRef.collection("Users").document(uid).collection("Current Classes").document().set(newClass);
 
                         progressBar.setVisibility(View.INVISIBLE);
                         KToast.successToast(NewClass.this, "New Class Created", Gravity.BOTTOM, KToast.LENGTH_SHORT);
