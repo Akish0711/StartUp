@@ -174,16 +174,15 @@ public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.
                             .setPositiveButton("DELETE", (dialog, id) ->
                                     mFirestore.collection("Users").document(uid).collection("Subjects")
                                             .document(class_id).delete().addOnSuccessListener(aVoid -> {
-                                        mFirestore.collection("Users").whereEqualTo("Institute_Batch", Institute + "_" + batch).get()
+                                        mFirestore.collection("Users").whereEqualTo(class_id,"Added").get()
                                                 .addOnCompleteListener(task -> {
                                                     if (task.isSuccessful()) {
                                                         for (final DocumentSnapshot document : task.getResult()) {
-                                                            Map<String, Object> data = new HashMap<>();
-                                                            data.put(class_id, FieldValue.delete());
-                                                            document.getReference().update(data);
+                                                            document.getReference().collection("Subjects").document(class_id).delete();
                                                         }
                                                     }
                                                 });
+                                        mFirestore.collection("Users").document(uid).collection("Current Classes").document(class_id).delete();
                                         mRootRef.child("Announcement").child(uid).child(class_id).removeValue();
                                         KToast.successToast((Activity) context, "Class Deleted", Gravity.BOTTOM, KToast.LENGTH_SHORT);
                                     }).addOnFailureListener(e -> Toast.makeText(context, "Error in deleting classes", Toast.LENGTH_SHORT).show()))

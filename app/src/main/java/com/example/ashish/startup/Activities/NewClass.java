@@ -150,11 +150,10 @@ public class NewClass extends AppCompatActivity {
                         }
                     })).addOnCompleteListener(task13 -> {
                         final Map<String, Object> newClass = new HashMap<>();
-                        newClass.put("Name", className);
                         newClass.put("Batch", batch[0]);
                         newClass.put("Class_id", myId);
 
-                        rootRef.collection("Users").document(uid).collection("Current Classes").document().set(newClass);
+                        rootRef.collection("Users").document(uid).collection("Current Classes").document(myId).set(newClass);
 
                         progressBar.setVisibility(View.INVISIBLE);
                         KToast.successToast(NewClass.this, "New Class Created", Gravity.BOTTOM, KToast.LENGTH_SHORT);

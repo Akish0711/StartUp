@@ -29,7 +29,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".activities.Performance"></activity>
+        <activity android:name=".activities.PaymentAdmin"></activity>
+        <activity android:name=".activities.EnquiryAdmin" />
+        <activity android:name=".activities.FeedbackAdmin" />
+        <activity android:name=".activities.Performance" />
         <activity
             android:name=".activities.EditMarks"
             android:theme="@style/AppTheme2" />

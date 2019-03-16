@@ -16,18 +16,28 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.ashish.startup.authentication.CreateAccount;
 import com.example.ashish.startup.others.CircleTransform;
 import com.example.ashish.startup.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.onurkaganaldemir.ktoastlib.KToast;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DeleteAccount extends AppCompatActivity {
     ProgressBar progressBar;
-    String Institute;
+    String Institute, uid, StringYear;
+    int year;
+    private long left_students;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +45,14 @@ public class DeleteAccount extends AppCompatActivity {
         setContentView(R.layout.activity_delete_account);
 
         if (getIntent().hasExtra("uid")) {
-            String uid = getIntent().getStringExtra("uid");
+            uid = getIntent().getStringExtra("uid");
+
+            Date today = new Date(); // Fri Jun 17 14:54:28 PDT 2016
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(today);
+
+            year = cal.get(Calendar.YEAR);
+            StringYear = Integer.toString(year);
 
             Toolbar myToolbar = findViewById(R.id.my_toolbar);
             setSupportActionBar(myToolbar);
@@ -74,9 +91,9 @@ public class DeleteAccount extends AppCompatActivity {
                                     String Name = documentSnapshot.getString("Name");
                                     String Username = documentSnapshot.getString("Username");
                                     String Email = documentSnapshot.getString("Email");
-                                    String Image = documentSnapshot.getString("Image");
+                                    String UserUid = documentSnapshot.getString("Uid");
                                     progressBar.setVisibility(View.GONE);
-                                    dialogOpener(Name, Username, Email, Image);
+                                    dialogOpener(Name, Username, Email, UserUid);
                                 }
                             }
                         }else if (isInternetAvailable()){
@@ -96,9 +113,9 @@ public class DeleteAccount extends AppCompatActivity {
                                     String Name = documentSnapshot.getString("Name");
                                     String Username = documentSnapshot.getString("Username");
                                     String Email = documentSnapshot.getString("Email");
-                                    String Image = documentSnapshot.getString("Image");
+                                    String UserUid = documentSnapshot.getString("Uid");
                                     progressBar.setVisibility(View.GONE);
-                                    dialogOpener(Name, Username, Email, Image);
+                                    dialogOpener(Name, Username, Email, UserUid);
                                 }
                             }
                         }else if (isInternetAvailable()){
@@ -126,7 +143,7 @@ public class DeleteAccount extends AppCompatActivity {
         return false;
     }
 
-    private void dialogOpener(String name, String username, String email, String image) {
+    private void dialogOpener(String name, String username, String email, String userUid) {
         final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         builder.setTitle("Delete this Account?");
         final LayoutInflater layoutInflater = LayoutInflater.from(this);
@@ -135,14 +152,13 @@ public class DeleteAccount extends AppCompatActivity {
         final TextView username_detail =attnView.findViewById(R.id.username_detail);
         final TextView email_detail =attnView.findViewById(R.id.email_detail);
         final ImageView image_detail = attnView.findViewById(R.id.image_detail);
-        final ProgressBar progressbar = attnView.findViewById(R.id.progressBar);
 
         name_detail.setText(name);
         username_detail.setText(username);
         email_detail.setText(email);
 
         Glide.with(this)
-                .load(image)
+                .load(R.drawable.default_profile)
                 .error(R.drawable.default_profile)
                 .crossFade()
                 .bitmapTransform(new CircleTransform(this))
@@ -150,17 +166,64 @@ public class DeleteAccount extends AppCompatActivity {
 
         builder.setMessage("WARNING: You cannot undo this.")
                 .setPositiveButton("DELETE", (dialog, id) -> {
-                    progressbar.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.VISIBLE);
                     if (isInternetAvailable()) {
                         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-                        rootRef.collection("Users").document(username).delete().addOnCompleteListener(task -> {
-                            rootRef.collection("Important").document("Deleted").update(username, email);
-                            progressbar.setVisibility(View.GONE);
-                            finish();
-                            Intent intent = new Intent(DeleteAccount.this, DeleteAccount.class);
-                            intent.putExtra("username", username);
-                            startActivity(intent);
-                        });
+
+                        rootRef.collection("Users").document(userUid).collection("Subjects").get().addOnCompleteListener(task -> {
+                            if (task.isSuccessful()){
+                                for (final DocumentSnapshot document : task.getResult()) {
+                                    String Classid = document.getId();
+                                    String Teacher_id = document.getString("Teacher_id");
+                                    rootRef.collection("Users").document(Teacher_id).collection("Subjects").document(Classid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentSnapshot doc = task.getResult();
+                                                Map<String, Object> update_count = new HashMap<>();
+
+                                                String total_students = doc.getString("Total_Students");
+                                                int int_students = Integer.parseInt(total_students);
+                                                int_students--;
+                                                total_students = Integer.toString(int_students);
+                                                update_count.put("Total_Students", total_students);
+                                                doc.getReference().update(update_count);
+                                            }
+                                        }
+                                    });
+                                    rootRef.collection("Attendance").document(Classid).collection("Students").document(userUid).delete();
+                                }
+                            }
+                        }).addOnCompleteListener(task -> rootRef.collection("Users").document(userUid).delete().addOnCompleteListener(task1 -> {
+                            rootRef.collection("Users").document(uid).collection("Performance").document(StringYear).get().addOnCompleteListener(task12 -> {
+                                if (task12.isSuccessful()) {
+                                    DocumentSnapshot doc = task12.getResult();
+                                    Map<String, Object> update_performance = new HashMap<>();
+
+                                    if (doc == null || !doc.exists()) {
+                                        left_students = 1;
+                                        update_performance.put("Left_Students", left_students);
+                                        update_performance.put("Total_Students", 0);
+                                        update_performance.put("Year", year);
+                                        doc.getReference().set(update_performance);
+
+                                    }else{
+                                        left_students = doc.getLong("Left_Students");
+                                        left_students++;
+                                        update_performance.put("Left_Students", left_students);
+                                        doc.getReference().update(update_performance);
+                                    }
+                                }
+                            }).addOnCompleteListener(task2 -> {
+                                rootRef.collection("Important").document("Deleted").update(username, email);
+                                progressBar.setVisibility(View.GONE);
+                                finish();
+                                KToast.successToast(DeleteAccount.this, "Account Deleted", Gravity.BOTTOM, KToast.LENGTH_SHORT);
+                                Intent intent = new Intent(DeleteAccount.this, DeleteAccount.class);
+                                intent.putExtra("uid", uid);
+                                startActivity(intent);
+                            });
+                        }));
                     }else{
                         notifyUser("No internet connection.");
                     }

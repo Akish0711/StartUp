@@ -12,7 +12,7 @@
         android:gravity="center_horizontal">
 
         <LinearLayout
-            android:id="@+id/add_students"
+            android:id="@+id/feedback"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:clickable="true"
@@ -24,35 +24,35 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Feedback"
+                android:textColor="#fff"
+                android:textSize="12sp"
+                android:drawableBottom="@drawable/feedback" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/enquiries"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:foreground="?android:attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
                 android:gravity="center"
                 android:text="Enquiries"
                 android:textColor="#fff"
-                android:textSize="12sp"
-                android:drawableBottom="@drawable/add_user" />
+                android:drawableBottom="@drawable/enquiries"/>
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/add_teacher"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:foreground="?android:attr/selectableItemBackground">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:gravity="center"
-                android:text="Complaints"
-                android:textColor="#fff"
-                android:drawableBottom="@drawable/add_teacher"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/delete_user"
+            android:id="@+id/payments"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:clickable="true"
@@ -66,9 +66,9 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="12sp"
-                android:text="Delete Users"
+                android:text="Payments"
                 android:textColor="#fff"
-                android:drawableBottom="@drawable/delete_student"/>
+                android:drawableBottom="@drawable/payments"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

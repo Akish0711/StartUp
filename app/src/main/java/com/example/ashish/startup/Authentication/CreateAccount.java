@@ -210,14 +210,13 @@ public class CreateAccount extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
 
-                    //final String Institute = document.getString("Institute");
+                    final String Institute = document.getString("Institute");
                     String code = document.getString("Code");
                     //long total_students = document.getLong("Total_Students");
                     //total_students++;
                     //Map<String, Object> update_data = new HashMap<>();
                     //update_data.put("Total_Students", total_students);
                     Map<String, Object> update_data_institute = new HashMap<>();
-                    Map<String, Object> update_performance = new HashMap<>();
 
                     document.getReference().collection("Batches").document(batch[0]).get().addOnCompleteListener(task1 -> {
                         if (task1.isSuccessful()) {
@@ -234,15 +233,18 @@ public class CreateAccount extends AppCompatActivity {
                     }).addOnCompleteListener(task12 -> rootRef.collection("Users").document(uid).collection("Performance").document(StringYear).get().addOnCompleteListener(task1 -> {
                         if (task1.isSuccessful()) {
                             DocumentSnapshot doc = task1.getResult();
+                            Map<String, Object> update_performance = new HashMap<>();
                             if (doc == null || !doc.exists()) {
                                 total_students = 1;
                                 update_performance.put("Total_Students", total_students);
                                 update_performance.put("Year", year);
+                                update_performance.put("Left_Students", 0);
+                                doc.getReference().set(update_performance);
                             }else{
                                 total_students = doc.getLong("Total_Students");
                                 total_students++;
                                 update_performance.put("Total_Students", total_students);
-                                update_performance.put("Year", year);
+                                doc.getReference().update(update_performance);
                             }
                         }
                     }).addOnCompleteListener(task13 -> {
@@ -258,8 +260,8 @@ public class CreateAccount extends AppCompatActivity {
                                 Map<String, Object> data = new HashMap<>();
                                 data.put("Name", user_name);
                                 data.put("Username",new_username);
-                                //data.put("Institute_Batch", Institute +"_"+ batch[0]);
-                                //data.put("Institute_Admin", Institute+"_No");
+                                data.put("Institute_Batch", Institute +"_"+ batch[0]);
+                                data.put("Institute_Admin", Institute+"_No");
                                 data.put("Admin","No");
                                 data.put("Teacher","No");
                                 data.put("Phone",user_number);
@@ -280,7 +282,6 @@ public class CreateAccount extends AppCompatActivity {
                                 }));
                                 //rootRef.collection("Users").document(uid).update(update_data);
                                 rootRef.collection("Users").document(uid).collection("Batches").document(batch[0]).set(update_data_institute);
-                                rootRef.collection("Users").document(uid).collection("Performance").document(StringYear).set(update_performance);
 
                                 SmsManager smsManager = SmsManager.getDefault();
                                 smsManager.sendTextMessage(user_number, null, "Welcome OnBoard "+user_name+"!!\n\nHere are your Login Details \n\nUsername : " + new_username + "\nPassword : " + genPswd, null, null);

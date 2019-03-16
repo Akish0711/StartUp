@@ -36,27 +36,27 @@ public class MainActivitySlider2 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.main_activity_2, null);
-        LinearLayout add_students = view.findViewById(R.id.add_students);
-        LinearLayout add_teacher = view.findViewById(R.id.add_teacher);
-        LinearLayout delete_user = view.findViewById(R.id.delete_user);
+        LinearLayout feedback = view.findViewById(R.id.feedback);
+        LinearLayout enquiries = view.findViewById(R.id.enquiries);
+        LinearLayout payments = view.findViewById(R.id.payments);
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
         uid = user.getUid();
 
-        add_students.setOnClickListener(v -> {
+        feedback.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(),CreateAccount.class);
             intent.putExtra("uid", uid);
             startActivity(intent);
         });
 
-        delete_user.setOnClickListener(v -> {
+        payments.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), DeleteAccount.class);
             intent.putExtra("uid", uid);
             startActivity(intent);
         });
 
-        add_teacher.setOnClickListener(v -> {
+        enquiries.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(),CreateAccountTeacher.class);
             intent.putExtra("uid", uid);
             startActivity(intent);
