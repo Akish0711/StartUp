@@ -7,12 +7,12 @@ import android.view.MenuItem;
 
 import com.example.ashish.startup.R;
 
-public class FeedbackAdmin extends AppCompatActivity {
+public class PaymentAdmin extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_feedback_admin);
+        setContentView(R.layout.activity_payment_admin);
 
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
@@ -20,9 +20,8 @@ public class FeedbackAdmin extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setTitle("Feedback");
+            getSupportActionBar().setTitle("Payment");
         }
-
     }
 
     @Override
@@ -38,4 +37,3 @@ public class FeedbackAdmin extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
-

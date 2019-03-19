@@ -1,5 +1,6 @@
 package com.example.ashish.startup.activities;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -23,6 +24,8 @@ import com.example.ashish.startup.Fragments.MainActivitySlider1;
 import com.example.ashish.startup.Fragments.MainActivitySlider2;
 import com.example.ashish.startup.Models.Message;
 import com.example.ashish.startup.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,20 +37,26 @@ import java.util.List;
 
 public class InstituteOthers extends AppCompatActivity {
 
-    private LinearLayout dotsLayout;
-    private int[] layouts;
     private RecyclerView mMessagesList;
     private List<Message> messageList;
     private UserMessageAdapter mAdapter;
     private DatabaseReference mRootRef;
+    private String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_institute_others);
-        if (getIntent().hasExtra("uid") && getIntent().hasExtra("admin_uid")){
-            String uid = getIntent().getStringExtra("uid");
+        if (getIntent().hasExtra("admin_uid")){
+            uid = getIntent().getStringExtra("uid");
             String admin_uid = getIntent().getStringExtra("admin_uid");
+
+            if (uid==null){
+                FirebaseUser user;
+                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                user = firebaseAuth.getCurrentUser();
+                uid = user.getUid();
+            }
 
             Toolbar toolbar = findViewById(R.id.my_toolbar);
             setSupportActionBar(toolbar);
@@ -64,6 +73,10 @@ public class InstituteOthers extends AppCompatActivity {
             messageList = new ArrayList<>();
             mAdapter = new UserMessageAdapter(getApplicationContext(),messageList,class_id,admin_uid);
             mMessagesList = findViewById(R.id.main_list);
+            LinearLayout birthdays = findViewById(R.id.birthdays);
+            LinearLayout enquiries = findViewById(R.id.enquiries);
+            LinearLayout payments = findViewById(R.id.payments);
+
             LinearLayoutManager mLinearLayout = new LinearLayoutManager(this);
             mLinearLayout.setReverseLayout(true);
             mMessagesList.setHasFixedSize(true);
@@ -72,18 +85,23 @@ public class InstituteOthers extends AppCompatActivity {
 
             loadmessage(class_id,admin_uid);
 
-            ViewPager mPager = findViewById(R.id.view_pager);
-            PagerAdapter mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
-            mPager.setAdapter(mPagerAdapter);
-            mPager.addOnPageChangeListener(viewPagerPageChangeListener);
-            dotsLayout = findViewById(R.id.layoutDots);
+            birthdays.setOnClickListener(v -> {
+                Intent intent = new Intent(this, FeedbackAdmin.class);
+                intent.putExtra("uid", uid);
+                startActivity(intent);
+            });
 
-            layouts = new int[]{
-                    R.layout.main_activity_1,
-                    R.layout.main_activity_2,
-            };
+            payments.setOnClickListener(v -> {
+                Intent intent = new Intent(this, PaymentAdmin.class);
+                intent.putExtra("uid", uid);
+                startActivity(intent);
+            });
 
-            addBottomDots(0);
+            enquiries.setOnClickListener(v -> {
+                Intent intent = new Intent(this, EnquiryAdmin.class);
+                intent.putExtra("uid", uid);
+                startActivity(intent);
+            });
         }
     }
 
@@ -119,71 +137,6 @@ public class InstituteOthers extends AppCompatActivity {
 
             }
         });
-    }
-
-    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
-        ScreenSlidePagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            Fragment f = new Fragment();
-            switch (position) {
-
-                case 0:
-                    f = MainActivitySlider1.newInstance(getApplicationContext());
-                    break;
-                case 1:
-                    f = MainActivitySlider2.newInstance(getApplicationContext());
-                    break;
-            }
-            return f;
-        }
-
-        @Override
-        public int getCount() {
-            return 2;
-        }
-    }
-
-    ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
-
-        @Override
-        public void onPageSelected(int position) {
-            addBottomDots(position);
-
-        }
-
-        @Override
-        public void onPageScrolled(int arg0, float arg1, int arg2) {
-
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int arg0) {
-
-        }
-    };
-
-    private void addBottomDots(int currentPage) {
-        ImageView[] dots = new ImageView[layouts.length];
-
-        dotsLayout.removeAllViews();
-        for (int i = 0; i < dots.length; i++) {
-            dots[i] = new ImageView(this);
-            if (i == currentPage) {
-                dots[i].setImageDrawable(ContextCompat.getDrawable(this, R.drawable.active_dots));
-
-            } else {
-                dots[i].setImageDrawable(ContextCompat.getDrawable(this, R.drawable.inactive_dots));
-            }
-
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.setMargins(4, 0, 4, 0);
-
-            dotsLayout.addView(dots[i], params);
-        }
     }
 
     @Override

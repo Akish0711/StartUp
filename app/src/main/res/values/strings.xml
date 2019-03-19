@@ -46,4 +46,5 @@
     <string name="no_records_as_of_now">No records as of now</string>
     <string name="graph">Graph</string>
     <string name="no_attendance_records_for_selected_date">No attendance records for selected date.</string>
+    <string name = "default_notification_channel_id">Vision01</string>
 </resources>

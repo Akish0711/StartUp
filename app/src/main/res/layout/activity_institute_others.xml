@@ -35,20 +35,72 @@
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"/>
 
-            <android.support.v4.view.ViewPager
-                android:id="@+id/view_pager"
-                android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:layout_marginTop="40dp">
-            </android.support.v4.view.ViewPager>
-
             <LinearLayout
-                android:id="@+id/layoutDots"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dots_height"
-                android:layout_alignParentTop="true"
-                android:gravity="center"
-                android:orientation="horizontal" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <LinearLayout
+                    android:id="@+id/birthdays"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:foreground="?android:attr/selectableItemBackground">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Birthday"
+                        android:textColor="#fff"
+                        android:textSize="12sp"
+                        android:drawableBottom="@drawable/birthday" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/enquiries"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:foreground="?android:attr/selectableItemBackground">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="Enquiries"
+                        android:textColor="#fff"
+                        android:drawableBottom="@drawable/enquiries"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/payments"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:foreground="?android:attr/selectableItemBackground">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:text="Payments"
+                        android:textColor="#fff"
+                        android:drawableBottom="@drawable/payments"/>
+                </LinearLayout>
+            </LinearLayout>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 

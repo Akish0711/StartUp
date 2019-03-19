@@ -150,6 +150,7 @@ public class CreateAccountTeacher extends AppCompatActivity {
                             Map<String, Object> data = new HashMap<>();
                             data.put("Name", user_name);
                             data.put("Username", new_username);
+                            data.put("Code", code);
                             data.put("Teacher","Yes");
                             data.put("Admin", "No");
                             data.put("Email", user_email);

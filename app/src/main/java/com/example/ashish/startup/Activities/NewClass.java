@@ -1,6 +1,5 @@
 package com.example.ashish.startup.activities;
 
-
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -141,7 +140,7 @@ public class NewClass extends AppCompatActivity {
                     DocumentReference ref = rootRef.collection("Users").document(uid).collection("Subjects").document();
                     String myId = ref.getId();
                     rootRef.collection("Users").document(uid).collection("Subjects").document(myId).set(subject).addOnCompleteListener(task1 -> {
-                    }).addOnCompleteListener(task12 -> rootRef.collection("Users").whereEqualTo("Batch", batch[0]).get().addOnCompleteListener(task121 -> {
+                    }).addOnCompleteListener(task12 -> rootRef.collection("Users").whereEqualTo("Batch", Integer.parseInt(batch[0])).get().addOnCompleteListener(task121 -> {
                         if (task121.isSuccessful()){
                             for (final DocumentSnapshot document : task121.getResult()) {
                                 String docID = document.getId();

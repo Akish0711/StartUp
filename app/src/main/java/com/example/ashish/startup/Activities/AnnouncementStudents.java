@@ -20,6 +20,10 @@ import android.widget.RelativeLayout;
 import com.example.ashish.startup.Adapters.UserMessageAdapter;
 import com.example.ashish.startup.Models.Message;
 import com.example.ashish.startup.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -37,7 +41,7 @@ import java.util.regex.Pattern;
 public class AnnouncementStudents extends AppCompatActivity {
 
     private static final int REQUEST_CODE = 1;
-    private String phone, email;
+    private String phone, email, uid, Teacher_Name;
     private RecyclerView mMessagesList;
     private List<Message> messageList;
     private UserMessageAdapter mAdapter;
@@ -51,24 +55,40 @@ public class AnnouncementStudents extends AppCompatActivity {
 
         if (getIntent().hasExtra("subject_id") &&
                 getIntent().hasExtra("subject_name") &&
-                getIntent().hasExtra("Teacher_Name") &&
-                getIntent().hasExtra("uid") &&
                 getIntent().hasExtra("Teacher_id")) {
             String class_id = getIntent().getStringExtra("subject_id");
-            String uid = getIntent().getStringExtra("uid");
+            uid = getIntent().getStringExtra("uid");
             final String subject_name = getIntent().getStringExtra("subject_name");
-            String Teacher_Name = getIntent().getStringExtra("Teacher_Name");
+            Teacher_Name = getIntent().getStringExtra("Teacher_Name");
             String TeacherID = getIntent().getStringExtra("Teacher_id");
 
             FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
 
-            mFirestore.collection("Users").document(TeacherID).get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    email = document.getString("Email");
-                    phone = document.getString("Phone");
-                }
-            });
+            if (uid==null){
+                FirebaseUser user;
+                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                user = firebaseAuth.getCurrentUser();
+                uid = user.getUid();
+            }
+
+            if (Teacher_Name==null){
+                mFirestore.collection("Users").document(TeacherID).get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        DocumentSnapshot document = task.getResult();
+                        email = document.getString("Email");
+                        phone = document.getString("Phone");
+                        Teacher_Name = document.getString("Name");
+                    }
+                });
+            }else{
+                mFirestore.collection("Users").document(TeacherID).get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        email = document.getString("Email");
+                        phone = document.getString("Phone");
+                    }
+                });
+            }
 
             messageList = new ArrayList<>();
             mAdapter = new UserMessageAdapter(getApplicationContext(),messageList,class_id,TeacherID);

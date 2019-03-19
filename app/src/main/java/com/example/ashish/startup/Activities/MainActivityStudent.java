@@ -27,6 +27,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,6 +111,18 @@ public class MainActivityStudent extends AppCompatActivity {
                         .into(imgProfile);
             }
         });
+
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        return;
+                    }
+
+                    // Get new Instance ID token
+                    String token = task.getResult().getToken();
+                    rootRef.collection("Users").document(uid).update("token", token);
+
+                });
 
         rootRef.collection("Users").document(uid).collection("Subjects").addSnapshotListener((documentSnapshots, e) -> {
             for (DocumentChange doc: documentSnapshots.getDocumentChanges()){

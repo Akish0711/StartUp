@@ -10,9 +10,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.example.ashish.startup.R;
-import com.example.ashish.startup.activities.DeleteAccount;
-import com.example.ashish.startup.authentication.CreateAccount;
-import com.example.ashish.startup.authentication.CreateAccountTeacher;
+import com.example.ashish.startup.activities.EnquiryAdmin;
+import com.example.ashish.startup.activities.FeedbackAdmin;
+import com.example.ashish.startup.activities.PaymentAdmin;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -45,19 +45,19 @@ public class MainActivitySlider2 extends Fragment {
         uid = user.getUid();
 
         feedback.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(),CreateAccount.class);
+            Intent intent = new Intent(getActivity(), FeedbackAdmin.class);
             intent.putExtra("uid", uid);
             startActivity(intent);
         });
 
         payments.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), DeleteAccount.class);
+            Intent intent = new Intent(getActivity(), PaymentAdmin.class);
             intent.putExtra("uid", uid);
             startActivity(intent);
         });
 
         enquiries.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(),CreateAccountTeacher.class);
+            Intent intent = new Intent(getActivity(), EnquiryAdmin.class);
             intent.putExtra("uid", uid);
             startActivity(intent);
         });

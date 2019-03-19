@@ -265,7 +265,7 @@ public class CreateAccount extends AppCompatActivity {
                                 data.put("Admin","No");
                                 data.put("Teacher","No");
                                 data.put("Phone",user_number);
-                                data.put("Batch", batch[0]);
+                                data.put("Batch", Integer.parseInt(batch[0]));
                                 data.put("Email",user_email.toLowerCase());
                                 data.put("Uid",user2Uid);
                                 data.put("Admin_Uid", uid);

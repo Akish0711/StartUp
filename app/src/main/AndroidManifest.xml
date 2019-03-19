@@ -29,7 +29,29 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".activities.PaymentAdmin"></activity>
+
+        <!--<service android:name=".others.FirebaseMessagingServices">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>-->
+
+        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
+        See README(https://goo.gl/l4GJaQ) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@mipmap/ic_launcher" />
+        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorPrimary" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" />
+
+        <activity android:name=".activities.PaymentAdmin"/>
         <activity android:name=".activities.EnquiryAdmin" />
         <activity android:name=".activities.FeedbackAdmin" />
         <activity android:name=".activities.Performance" />
@@ -48,7 +70,12 @@
         <activity
             android:name=".activities.AddMarks"
             android:theme="@style/AppTheme2" />
-        <activity android:name=".activities.InstituteOthers" />
+        <activity android:name=".activities.InstituteOthers">
+            <intent-filter>
+                <action android:name="intent.instituteothers.notification"></action>
+                <category android:name="android.intent.category.DEFAULT"></category>
+            </intent-filter>
+        </activity>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -106,7 +133,12 @@
         <activity
             android:name=".activities.UpdateAttendance"
             android:theme="@style/AppTheme3" />
-        <activity android:name=".activities.AnnouncementStudents" />
+        <activity android:name=".activities.AnnouncementStudents">
+            <intent-filter>
+                <action android:name="intent.announcementstudents.notification"></action>
+                <category android:name="android.intent.category.DEFAULT"></category>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".activities.AddStudents"
             android:theme="@style/AppTheme4" />
