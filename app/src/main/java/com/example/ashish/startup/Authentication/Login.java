@@ -57,12 +57,18 @@ public class Login extends AppCompatActivity {
             mPasswordField = findViewById(R.id.password);
             Button mLoginBtn = findViewById(R.id.login);
             Button forgot = findViewById(R.id.forgot);
+            Button trouble = findViewById(R.id.trouble);
+
             mProgressBar =  findViewById(R.id.progressBar2);
             mProgressBar.setVisibility(View.INVISIBLE);
 
             mLoginBtn.setOnClickListener(view -> startSign());
 
             forgot.setOnClickListener(v -> {
+                startActivity(new Intent(Login.this, ForgotPassword.class));
+            });
+
+            trouble.setOnClickListener(v -> {
                 startActivity(new Intent(Login.this, ForgotPassword.class));
             });
         }

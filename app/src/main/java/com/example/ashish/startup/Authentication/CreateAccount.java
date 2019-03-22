@@ -17,6 +17,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 import com.example.ashish.startup.R;
@@ -54,6 +56,7 @@ public class CreateAccount extends AppCompatActivity {
     View parentLayout;
     private static final int REQUEST_CODE = 1;
     private List<String> classList;
+    private RadioGroup genderRadioGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +70,7 @@ public class CreateAccount extends AppCompatActivity {
             setSupportActionBar(myToolbar);
 
             classList = new ArrayList<>();
-            classList.add("Select Class");
+            classList.add("Select here");
 
             Date today = new Date(); // Fri Jun 17 14:54:28 PDT 2016
             Calendar cal = Calendar.getInstance();
@@ -84,6 +87,7 @@ public class CreateAccount extends AppCompatActivity {
             progressBar = findViewById(R.id.progressBar3);
             progressBar.setVisibility(View.INVISIBLE);
             spinner = findViewById(R.id.spinner);
+            genderRadioGroup = findViewById(R.id.gender_radiogroup);
 
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
 
@@ -168,8 +172,17 @@ public class CreateAccount extends AppCompatActivity {
     }
 
     public void registerUser() {
+        if (uid==null){
+            FirebaseUser user;
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+            user = firebaseAuth.getCurrentUser();
+            uid = user.getUid();
+        }
         final FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
         String section = spinner.getSelectedItem().toString();
+        RadioButton selectedRadioButton = findViewById(genderRadioGroup.getCheckedRadioButtonId());
+        String gender = selectedRadioButton==null ? "":selectedRadioButton.getText().toString();
+
         String batch2 = spinner.getSelectedItem().toString();
         final String user_name = name.getText().toString();
         final String user_number = phoneNumber.getText().toString();
@@ -180,8 +193,10 @@ public class CreateAccount extends AppCompatActivity {
         if (user_name.isEmpty()) {
             name.setError("Name is required");
             name.requestFocus();
-        }else if (spinner == null || spinner.getSelectedItem() ==null || section.equals("Select Class")) {
+        }else if (spinner == null || spinner.getSelectedItem() ==null || section.equals("Select here")) {
             KToast.warningToast(this,"Class Required",Gravity.BOTTOM,KToast.LENGTH_LONG);
+        }else if (gender.equals("")) {
+            KToast.warningToast(this,"Gender Required",Gravity.BOTTOM,KToast.LENGTH_LONG);
         }else if(user_number.isEmpty()){
             phoneNumber.setError("Contact Number required");
             phoneNumber.requestFocus();
@@ -269,6 +284,7 @@ public class CreateAccount extends AppCompatActivity {
                                 data.put("Email",user_email.toLowerCase());
                                 data.put("Uid",user2Uid);
                                 data.put("Admin_Uid", uid);
+                                data.put("Gender", gender);
 
                                 rootRef.collection("Users").document(user2Uid).set(data).addOnCompleteListener(task123 -> rootRef.collection("Users").document(uid).collection("Current Classes").whereEqualTo("Batch",batch[0]).get().addOnCompleteListener(task2 -> {
                                     if (task2.isSuccessful()){

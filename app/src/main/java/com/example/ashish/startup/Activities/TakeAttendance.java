@@ -43,7 +43,6 @@ public class TakeAttendance extends AppCompatActivity {
     private List<Attendance> attendanceList;
     private List<String> presentList;
     private List<String> absentList;
-    private List<Integer> percentageList;
     private String default_time = null;
     private String default_date = null;
     Button mark_present;
@@ -57,8 +56,7 @@ public class TakeAttendance extends AppCompatActivity {
         attendanceList = new ArrayList<>();
         presentList = new ArrayList<>();
         absentList = new ArrayList<>();
-        percentageList = new ArrayList<>();
-        attendanceListAdapter = new AttendanceListAdapter(this,attendanceList, presentList, absentList, percentageList);
+        attendanceListAdapter = new AttendanceListAdapter(this,attendanceList, presentList, absentList);
 
         if (getIntent().hasExtra("class_id")&& getIntent().hasExtra("uid")) {
             class_id = getIntent().getStringExtra("class_id");
@@ -90,7 +88,7 @@ public class TakeAttendance extends AppCompatActivity {
                 if (task.isSuccessful()){
                     for (final DocumentSnapshot document : task.getResult()) {
                         Attendance attendance = document.toObject(Attendance.class);
-                        presentList.add(attendance.getUid());
+                        //presentList.add(attendance.getUid());
                         attendanceList.add(attendance);
                         Collections.sort(attendanceList, Attendance.BY_NAME_ALPHABETICAL);
                         attendanceListAdapter.notifyDataSetChanged();

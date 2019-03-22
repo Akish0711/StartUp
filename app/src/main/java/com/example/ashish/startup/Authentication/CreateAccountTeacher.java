@@ -16,6 +16,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.example.ashish.startup.R;
 import com.google.firebase.FirebaseApp;
@@ -45,6 +47,7 @@ public class CreateAccountTeacher extends AppCompatActivity {
     private FirebaseAuth mAuth2;
     View parentLayout;
     private static final int REQUEST_CODE = 1;
+    private RadioGroup genderRadioGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +67,7 @@ public class CreateAccountTeacher extends AppCompatActivity {
             createAccount = findViewById(R.id.createAccount);
             progressBar = findViewById(R.id.progressBar3);
             progressBar.setVisibility(View.INVISIBLE);
+            genderRadioGroup = findViewById(R.id.gender_radiogroup);
 
             FirebaseOptions firebaseOptions = new FirebaseOptions.Builder()
                     .setDatabaseUrl("https://startup-ec618.firebaseio.com")
@@ -105,10 +109,14 @@ public class CreateAccountTeacher extends AppCompatActivity {
         final String user_name = name.getText().toString();
         final String user_number = phoneNumber.getText().toString();
         final String user_email = email.getText().toString();
+        RadioButton selectedRadioButton = findViewById(genderRadioGroup.getCheckedRadioButtonId());
+        String gender = selectedRadioButton==null ? "":selectedRadioButton.getText().toString();
 
         if (user_name.isEmpty()) {
             name.setError("Name is required");
             name.requestFocus();
+        }else if (gender.equals("")) {
+            KToast.warningToast(this,"Gender Required",Gravity.BOTTOM,KToast.LENGTH_LONG);
         }else if(user_number.isEmpty()){
             phoneNumber.setError("Contact Number required");
             phoneNumber.requestFocus();
@@ -156,6 +164,7 @@ public class CreateAccountTeacher extends AppCompatActivity {
                             data.put("Email", user_email);
                             data.put("Phone",user_number);
                             data.put("Admin_Uid", uid);
+                            data.put("Gender", gender);
                             rootRef.collection("Users").document(user2.getUid()).set(data);
                             rootRef.collection("Users").document(uid).update(update_data);
 

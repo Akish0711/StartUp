@@ -20,15 +20,13 @@ public class AttendanceListAdapter extends RecyclerView.Adapter<AttendanceListAd
     private List<Attendance> attendanceList;
     private List<String> presentList;
     private List<String> absentList;
-    private List<Integer> percentageList;
     public Context context;
 
-    public AttendanceListAdapter(Context context, List<Attendance> attendanceList, List<String>presentList, List<String>absentList, List<Integer>percentageList){
+    public AttendanceListAdapter(Context context, List<Attendance> attendanceList, List<String>presentList, List<String>absentList){
         this.attendanceList = attendanceList;
         this.context = context;
         this.presentList = presentList;
         this.absentList = absentList;
-        this.percentageList = percentageList;
     }
 
     @NonNull
@@ -62,20 +60,20 @@ public class AttendanceListAdapter extends RecyclerView.Adapter<AttendanceListAd
             }
 
             String UID = attendanceList.get(position).getUid();
-            presentList.add(UID);
+            presentList.add(position,UID);
 
             final boolean[] showingFirst = {true};
             holder.check.setOnClickListener(v -> {
                 if (showingFirst[0]) {
                     holder.check.setImageResource(R.drawable.checked_remove);
                     showingFirst[0] = false;
-                    presentList.remove(UID);
-                    absentList.add(UID);
+                    presentList.remove(position);
+                    absentList.add(position,UID);
                 } else {
                     holder.check.setImageResource(R.drawable.present_check);
                     showingFirst[0] = true;
-                    presentList.add(UID);
-                    absentList.remove(UID);
+                    presentList.add(position,UID);
+                    absentList.remove(position);
                 }
             });
         }
