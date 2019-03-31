@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:939365503729:android:4b57bf1bacb0f91f",
         "android_client_info": {
-          "package_name": "com.example.ashish.startup"
+          "package_name": "com.google.vision"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "939365503729-efucrea3g55c8p2kkp51cncnianburjr.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.ashish.startup",
+            "package_name": "com.google.vision",
             "certificate_hash": "8503cfa20f0115e248c3d0663fdd6e98d3756b4c"
           }
         },
@@ -26,7 +26,7 @@
           "client_id": "939365503729-3mgprtmnp9bf6t9kf95rq26n4mdnonvm.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.ashish.startup",
+            "package_name": "com.google.vision",
             "certificate_hash": "85834b7097be0db5e030dc45c13ace3ccd72dd81"
           }
         },

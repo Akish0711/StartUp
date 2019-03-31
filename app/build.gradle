@@ -13,11 +13,11 @@ android {
         exclude 'META-INF/ASL2.0'
     }
     defaultConfig {
-        applicationId "com.example.ashish.startup"
+        applicationId "com.google.vision"
         minSdkVersion 21
         targetSdkVersion 27
         versionCode 1
-        versionName "1.0"
+        versionName "Beta101"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true

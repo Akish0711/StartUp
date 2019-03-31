@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.ashish.startup.activities.SettingsAdmin">
+    tools:context="com.google.vision.activities.SettingsAdmin">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"

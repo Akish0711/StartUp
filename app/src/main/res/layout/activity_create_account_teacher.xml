@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.example.ashish.startup.authentication.CreateAccount"
+    tools:context="com.google.vision.authentication.CreateAccount"
     android:id="@+id/create_teacher_parent">
 
     <android.support.v7.widget.Toolbar
@@ -128,7 +128,7 @@
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/birthday_layout"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/gender_layout"
                 android:layout_marginStart="16dp"
@@ -137,12 +137,22 @@
 
                 <EditText
                     android:id="@+id/birthday"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="Birth Date (dd/mm/yyyy)"
                     android:inputType="date" />
             </android.support.design.widget.TextInputLayout>
+
+            <ImageView
+                android:id="@+id/calenderdob"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                app:srcCompat="@drawable/calendar"
+                android:layout_marginTop="16dp"
+                android:layout_toEndOf="@id/birthday_layout"
+                android:layout_below="@id/gender_layout"
+                android:tint="@color/colorPrimary"/>
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/contact"

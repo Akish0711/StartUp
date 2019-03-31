@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:background="@color/colorPrimary"
-    tools:context="com.example.ashish.startup.activities.AboutUsActivity">
+    tools:context="com.google.vision.activities.AboutUsActivity">
 
     <TextView
         android:layout_width="wrap_content"
