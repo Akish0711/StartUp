@@ -5,13 +5,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.google.vision.Adapters.UpdateAttendanceAdapter;
-import com.google.vision.Models.UpdateAttendanceModel;
 import com.google.vision.R;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -23,7 +19,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 public class UpdateAttendance extends AppCompatActivity {
@@ -37,17 +32,9 @@ public class UpdateAttendance extends AppCompatActivity {
             String class_id = getIntent().getStringExtra("class_id");
             String uid = getIntent().getStringExtra("uid");
 
-            List<UpdateAttendanceModel> updateAttendanceModelList = new ArrayList<>();
-            UpdateAttendanceAdapter updateAttendanceAdapter = new UpdateAttendanceAdapter(updateAttendanceModelList, class_id, uid);
-
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
             ProgressBar mProgressBar = findViewById(R.id.progressBarUpdateAttendance);
             mProgressBar.setVisibility(View.INVISIBLE);
-
-            RecyclerView mAttendanceList = findViewById(R.id.update_attendance_list);
-            mAttendanceList.setHasFixedSize(true);
-            mAttendanceList.setLayoutManager(new LinearLayoutManager(this));
-            mAttendanceList.setAdapter(updateAttendanceAdapter);
 
             final ColorDrawable green = new ColorDrawable(Color.rgb(139, 194, 74));
             final DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
@@ -57,8 +44,7 @@ public class UpdateAttendance extends AppCompatActivity {
             Bundle args = new Bundle();
             Calendar cal = Calendar.getInstance();
 
-            rootRef.collection("Users").document(uid).collection("Subjects").document(class_id)
-                    .collection("Attendance").get().addOnCompleteListener(task -> {
+            rootRef.collection("Attendance").document(class_id).collection("Dates").get().addOnCompleteListener(task -> {
                 args.putInt(CaldroidFragment.MONTH, cal.get(Calendar.MONTH) + 1);
                 args.putInt(CaldroidFragment.YEAR, cal.get(Calendar.YEAR));
                 args.putBoolean(CaldroidFragment.ENABLE_CLICK_ON_DISABLED_DATES, true);

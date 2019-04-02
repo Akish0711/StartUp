@@ -164,7 +164,7 @@ public class CreateAccount extends AppCompatActivity {
         },calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
     }
 
-    private void verifyPermissions() {
+   /* private void verifyPermissions() {
         String[] permissions = {Manifest.permission.SEND_SMS};
         if(ContextCompat.checkSelfPermission(this, permissions[0]) == PackageManager.PERMISSION_GRANTED){
             if (isInternetAvailable()){
@@ -175,12 +175,20 @@ public class CreateAccount extends AppCompatActivity {
         }else{
             ActivityCompat.requestPermissions(this, permissions, REQUEST_CODE);
         }
+    }*/
+
+    private void verifyPermissions() {
+        if (isInternetAvailable()){
+            registerUser();
+        }else {
+            Snackbar.make(parentLayout, "This action requires Internet Connection", Snackbar.LENGTH_LONG).show();
+        }
     }
 
-    @Override
+    /*@Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         verifyPermissions();
-    }
+    }*/
 
     public String genRandomPswd(){
         StringBuilder sb = new StringBuilder(8);
@@ -348,6 +356,7 @@ public class CreateAccount extends AppCompatActivity {
                                 data.put("Uid",user2Uid);
                                 data.put("Admin_Uid", uid);
                                 data.put("Gender", gender);
+                                data.put("FTP", genPswd);
 
                                 rootRef.collection("Users").document(user2Uid).set(data).addOnCompleteListener(task123 -> rootRef.collection("Users").document(uid).collection("Current Classes").whereEqualTo("Batch",batch[0]).get().addOnCompleteListener(task2 -> {
                                     if (task2.isSuccessful()){
@@ -362,9 +371,9 @@ public class CreateAccount extends AppCompatActivity {
                                 //rootRef.collection("Users").document(uid).update(update_data);
                                 rootRef.collection("Users").document(uid).collection("Batches").document(batch[0]).set(update_data_institute);
 
-                                SmsManager smsManager = SmsManager.getDefault();
+                                /*SmsManager smsManager = SmsManager.getDefault();
                                 smsManager.sendTextMessage(user_number, null, "Welcome OnBoard "+user_name+"!!\n\nHere are your Login Details \n\nUsername : " + new_username + "\nPassword : " + genPswd, null, null);
-                                mAuth2.signOut();
+                                */mAuth2.signOut();
                                 finishAffinity();
                                 KToast.successToast(CreateAccount.this, "Student Registered", Gravity.BOTTOM, KToast.LENGTH_SHORT);
 

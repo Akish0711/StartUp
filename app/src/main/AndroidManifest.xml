@@ -124,17 +124,11 @@
         <activity android:name=".activities.ViewSingleAnnouncement" />
         <activity android:name=".authentication.CreateAccount" />
         <activity
-            android:name=".activities.UpdateAttendanceNew"
-            android:theme="@style/AppTheme3" />
-        <activity
             android:name=".activities.EditProfile"
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity android:name=".activities.NewClass" />
         <activity
             android:name=".activities.TakeAttendance"
-            android:theme="@style/AppTheme3" />
-        <activity
-            android:name=".activities.ViewAttendance"
             android:theme="@style/AppTheme3" />
         <activity
             android:name=".activities.UpdateAttendance"

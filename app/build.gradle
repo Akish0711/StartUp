@@ -24,8 +24,6 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -37,9 +35,9 @@ android {
 
 dependencies {
     //firebase
-    implementation 'com.google.firebase:firebase-firestore:18.1.0'
+    implementation 'com.google.firebase:firebase-firestore:18.2.0'
     implementation 'com.google.firebase:firebase-core:16.0.8'
-    implementation 'com.google.firebase:firebase-messaging:17.4.0'
+    implementation 'com.google.firebase:firebase-messaging:17.5.0'
     implementation 'com.google.firebase:firebase-auth:16.2.0'
     implementation 'com.google.firebase:firebase-storage:16.1.0'
     implementation 'com.google.firebase:firebase-database:16.1.0'
@@ -67,6 +65,7 @@ dependencies {
     //others
     implementation 'com.github.Shashank02051997:FancyGifDialog-Android:1.1'
     implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
+    androidTestImplementation 'junit:junit:4.12'
 }
 
 repositories {

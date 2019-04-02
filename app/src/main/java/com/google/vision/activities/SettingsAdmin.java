@@ -1,6 +1,7 @@
 package com.google.vision.activities;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +10,9 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.vision.R;
 import com.google.vision.authentication.Login;
 import com.google.vision.authentication.ReAuthentication;
@@ -16,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.onurkaganaldemir.ktoastlib.KToast;
 
 public class SettingsAdmin extends AppCompatActivity {
+    String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +28,7 @@ public class SettingsAdmin extends AppCompatActivity {
         setContentView(R.layout.activity_settings_admin);
 
         if (getIntent().hasExtra("uid")) {
-            String uid = getIntent().getStringExtra("uid");
+            uid = getIntent().getStringExtra("uid");
 
 
             Toolbar toolbar = findViewById(R.id.my_toolbar);
@@ -51,11 +56,14 @@ public class SettingsAdmin extends AppCompatActivity {
                     .setMessage("Are you sure you want to Logout?")
                     .setCancelable(false)
                     .setPositiveButton("Logout", (dialog, id1) -> {
-                        FirebaseAuth.getInstance().signOut();
-                        finishAffinity();
-                        Intent intent = new Intent(SettingsAdmin.this, Login.class);
-                        startActivity(intent);
-                        KToast.successToast(SettingsAdmin.this, "Logged Out", Gravity.BOTTOM, KToast.LENGTH_SHORT);
+                        FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+                        rootRef.collection("Users").document(uid).update("token","").addOnSuccessListener(aVoid -> {
+                            FirebaseAuth.getInstance().signOut();
+                            finishAffinity();
+                            Intent intent = new Intent(SettingsAdmin.this, Login.class);
+                            startActivity(intent);
+                            KToast.successToast(SettingsAdmin.this, "Logged Out", Gravity.BOTTOM, KToast.LENGTH_SHORT);
+                        }).addOnFailureListener(e -> KToast.successToast(SettingsAdmin.this, "Check your Internet Connection", Gravity.BOTTOM, KToast.LENGTH_SHORT));
                     })
                     .setNegativeButton("Cancel", null)
                     .show());
