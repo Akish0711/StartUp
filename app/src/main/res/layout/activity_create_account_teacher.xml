@@ -110,14 +110,12 @@
                     android:orientation="horizontal">
 
                     <RadioButton
-                        android:id="@+id/male"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Male"
                         android:textSize="16sp" />
 
                     <RadioButton
-                        android:id="@+id/female"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Female"

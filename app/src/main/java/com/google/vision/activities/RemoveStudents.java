@@ -55,9 +55,9 @@ public class RemoveStudents extends AppCompatActivity {
             Button remove_students = findViewById(R.id.remove_students);
             parentLayout = findViewById(R.id.remove_students_parent);
             List<Users> usersList = new ArrayList<>();
-            List<String> selectedUsername = new ArrayList<>();
-            List<String> selectedName = new ArrayList<>();
-            removeStudentsAdapter = new RemoveStudentsAdapter(this, usersList, selectedUsername, selectedName);
+            List<String> selectedUid = new ArrayList<>();
+
+            removeStudentsAdapter = new RemoveStudentsAdapter(this, usersList, selectedUid);
             RecyclerView mMainList = findViewById(R.id.remove_list);
             mMainList.setHasFixedSize(true);
             mMainList.setLayoutManager(new LinearLayoutManager(this));
@@ -89,31 +89,33 @@ public class RemoveStudents extends AppCompatActivity {
 
             remove_students.setOnClickListener(v -> {
                 if (isInternetAvailable()) {
-                    if (selectedUsername.size() > 0) {
+                    if (selectedUid.size() > 0) {
                         int index;
-                        for (index = 0; index < selectedUsername.size(); index++) {
-                            mFirestore.collection("Users").whereEqualTo("Username", selectedUsername.get(index)).get().addOnCompleteListener(task -> {
+                        for (index = 0; index < selectedUid.size(); index++) {
+                            int finalIndex = index;
+                            mFirestore.collection("Users").whereEqualTo("Uid", selectedUid.get(index)).get().addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {
                                     for (DocumentSnapshot document : task.getResult()) {
                                         Map<String, Object> data = new HashMap<>();
                                         data.put(class_id, "Removed");
                                         document.getReference().update(data);
                                         document.getReference().collection("Subjects").document(class_id).delete();
+                                        mFirestore.collection("Attendance").document(class_id).collection("Students").document(selectedUid.get(finalIndex)).delete();
                                     }
                                 }
                             });
                         }
 
-                        String new_total_student = String.valueOf(total_students - selectedUsername.size());
+                        String new_total_student = String.valueOf(total_students - selectedUid.size());
                         Map<String, Object> data3 = new HashMap<>();
                         data3.put("Total_Students", new_total_student);
                         mFirestore.collection("Users").document(uid).collection("Subjects").document(class_id).update(data3);
 
-                        if (selectedUsername.size() == 1) {
-                            KToast.successToast(RemoveStudents.this, selectedUsername.size() + " Student Removed", Gravity.BOTTOM, KToast.LENGTH_SHORT);
+                        if (selectedUid.size() == 1) {
+                            KToast.successToast(RemoveStudents.this, selectedUid.size() + " Student Removed", Gravity.BOTTOM, KToast.LENGTH_SHORT);
                         }
-                        if (selectedUsername.size() > 1) {
-                            KToast.successToast(RemoveStudents.this, selectedUsername.size() + " Students Removed", Gravity.BOTTOM, KToast.LENGTH_SHORT);
+                        if (selectedUid.size() > 1) {
+                            KToast.successToast(RemoveStudents.this, selectedUid.size() + " Students Removed", Gravity.BOTTOM, KToast.LENGTH_SHORT);
                         }
                         finish();
                         startActivity(new Intent(RemoveStudents.this, MainActivity.class));

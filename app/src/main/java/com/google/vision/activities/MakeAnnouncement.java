@@ -327,7 +327,7 @@ public class MakeAnnouncement extends AppCompatActivity {
                     // Continue only if the File was successfully created
                     if (photoFile != null) {
                         Uri photoURI = FileProvider.getUriForFile(MakeAnnouncement.this,
-                                "com.example.ashish.startup.fileprovider",
+                                "com.google.vision.fileprovider",
                                 photoFile);
                         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                         startActivityForResult(takePictureIntent, PICK_IMAGE_CAMERA);

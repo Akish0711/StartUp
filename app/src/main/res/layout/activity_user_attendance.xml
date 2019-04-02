@@ -15,58 +15,101 @@
         android:orientation="vertical">
     </LinearLayout>
 
-    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <android.support.v7.widget.CardView
+        app:layout_constraintTop_toBottomOf="@id/calendar2"
         android:layout_width="match_parent"
-        android:layout_height="69dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:elevation="3dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        card_view:layout_constraintTop_toBottomOf="@id/calendar2"
-        card_view:cardBackgroundColor="#FFF"
-        card_view:cardCornerRadius="2dp"
-        card_view:cardElevation="14dp">
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="2dp"
+        android:elevation="4dp">
 
-        <TextView
-            android:id="@+id/classes_taken_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
-            android:text=""
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.706"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintVertical_bias="0.235" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/classes_attended"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="36dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
-            android:text=""
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.706"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/classes_taken_2"
-            app:layout_constraintVertical_bias="0.235" />
+            <LinearLayout
+                android:id="@+id/leftSide_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_margin="10dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@color/green"/>
+
+                    <TextView
+                        android:layout_marginTop="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="PRESENT"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_margin="10dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@color/red"/>
+
+                    <TextView
+                        android:layout_marginTop="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ABSENT"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/defult_text"
+                android:layout_toEndOf="@id/leftSide_layout"
+                android:layout_marginStart="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Click on date for attendance"
+                />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_toEndOf="@id/leftSide_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_centerVertical="true">
+
+                <TextView
+                    android:id="@+id/total_lectures"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="Total Lectures: "
+                    android:textSize="15sp"/>
+
+                <TextView
+                    android:id="@+id/attended_lectures"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="Attended Lectures: " />
+
+                <TextView
+                    android:id="@+id/bunked_lectures"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="Bunked Lectures: " />
+            </LinearLayout>
+        </RelativeLayout>
     </android.support.v7.widget.CardView>
-
 </android.support.constraint.ConstraintLayout>

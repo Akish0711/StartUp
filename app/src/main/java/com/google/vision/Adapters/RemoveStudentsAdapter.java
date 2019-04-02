@@ -16,15 +16,14 @@ import java.util.List;
 public class RemoveStudentsAdapter extends RecyclerView.Adapter<RemoveStudentsAdapter.ViewHolder> {
 
     private List<Users> usersList;
-    private List<String> selectedUsername;
-    private List<String> selectedName;
+    private List<String> selectedUid;
+
     public Context context;
 
-    public RemoveStudentsAdapter(Context context, List<Users> usersList, List<String>selectedUsername, List<String> selectedName){
+    public RemoveStudentsAdapter(Context context, List<Users> usersList, List<String> selectedUid){
         this.usersList = usersList;
         this.context = context;
-        this.selectedUsername = selectedUsername;
-        this.selectedName = selectedName;
+        this.selectedUid = selectedUid;
     }
 
     @NonNull
@@ -54,13 +53,11 @@ public class RemoveStudentsAdapter extends RecyclerView.Adapter<RemoveStudentsAd
                 if (showingFirst[0]) {
                     holder.check.setImageResource(R.drawable.checked_remove);
                     showingFirst[0] = false;
-                    selectedUsername.add(usersList.get(position).getUsername());
-                    selectedName.add(usersList.get(position).getName());
+                    selectedUid.add(usersList.get(position).getUid());
                 } else {
                     holder.check.setImageResource(R.drawable.checkbox_outline);
                     showingFirst[0] = true;
-                    selectedUsername.remove(usersList.get(position).getUsername());
-                    selectedName.remove(usersList.get(position).getName());
+                    selectedUid.remove(usersList.get(position).getUid());
                 }
             });
         }

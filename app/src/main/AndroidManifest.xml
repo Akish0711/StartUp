@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.google.vision"
-    android:versionCode="1"
-    android:versionName="Beta">
+    package="com.google.vision">
 
     <uses-sdk tools:overrideLibrary="com.shashank.sony.fancygifdialoglib,com.highsoft.highcharts" />
 
@@ -14,7 +12,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.SEND_SMS" />
+    <!--<uses-permission android:name="android.permission.SEND_SMS" />-->
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -37,10 +35,10 @@
             android:value="true" />
 
         <!--<service android:name=".others.FirebaseMessagingServices">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>-->
+        <intent-filter>
+            <action android:name="com.google.firebase.MESSAGING_EVENT" />
+        </intent-filter>
+    </service>-->
 
         <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
         See README(https://goo.gl/l4GJaQ) for more. -->
@@ -78,14 +76,14 @@
             android:theme="@style/AppTheme2" />
         <activity android:name=".activities.InstituteOthers">
             <intent-filter>
-                <action android:name="intent.instituteothers.notification"></action>
-                <category android:name="android.intent.category.DEFAULT"></category>
+                <action android:name="intent.instituteothers.notification"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.google.vision.startup.fileprovider"
+            android:authorities="com.google.vision.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -135,8 +133,8 @@
             android:theme="@style/AppTheme3" />
         <activity android:name=".activities.AnnouncementStudents">
             <intent-filter>
-                <action android:name="intent.announcementstudents.notification"></action>
-                <category android:name="android.intent.category.DEFAULT"></category>
+                <action android:name="intent.announcementstudents.notification"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
         <activity

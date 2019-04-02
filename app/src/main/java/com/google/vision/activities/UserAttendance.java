@@ -32,10 +32,7 @@ import java.util.Locale;
 public class UserAttendance extends AppCompatActivity {
 
     private static final String TAG = "MYMYMYMY";
-    private FirebaseFirestore rootRef;
-    private FirebaseAuth mAuth;
-    private TextView classes_taken_2 , classes_attended;
-    Collection<String> present = new ArrayList<>();
+    private TextView default_text, total_lectures, attended_lectures, bunked_lectures;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +44,14 @@ public class UserAttendance extends AppCompatActivity {
             String subject_name = getIntent().getStringExtra("subject_name");
             String Teacher_Name = getIntent().getStringExtra("Teacher_Name");
 
-            classes_taken_2 = findViewById(R.id.classes_taken_2);
-            classes_attended = findViewById(R.id.classes_attended);
+            default_text = findViewById(R.id.defult_text);
+            total_lectures = findViewById(R.id.total_lectures);
+            attended_lectures = findViewById(R.id.attended_lectures);
+            bunked_lectures = findViewById(R.id.bunked_lectures);
+
+            total_lectures.setVisibility(View.INVISIBLE);
+            attended_lectures.setVisibility(View.INVISIBLE);
+            bunked_lectures.setVisibility(View.INVISIBLE);
 
             final ColorDrawable green = new ColorDrawable(Color.GREEN);
             final ColorDrawable red = new ColorDrawable(Color.RED);
@@ -56,10 +59,10 @@ public class UserAttendance extends AppCompatActivity {
             final DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
             final SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
 
-            mAuth = FirebaseAuth.getInstance();
-            rootRef = FirebaseFirestore.getInstance();
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
+            FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
             FirebaseUser user = mAuth.getCurrentUser();
-            final String email = user.getEmail();
+            final String uid = user.getUid();
 
             rootRef.collection("Attendance").document(subject_id).collection("Dates").get().addOnCompleteListener(task -> {
                 final CaldroidFragment caldroidFragment = new CaldroidFragment();
@@ -84,7 +87,7 @@ public class UserAttendance extends AppCompatActivity {
                         String database__all_date = document.getId().substring(0, document.getId().length() - 9);
                         list.add(database__all_date);
 
-                        Object o = document.get(FieldPath.of(email));
+                        Object o = document.get(FieldPath.of(uid));
                         final Boolean status = (Boolean) o;
                         try {
                             if (status) {
@@ -111,6 +114,11 @@ public class UserAttendance extends AppCompatActivity {
                         final CaldroidListener listener = new CaldroidListener() {
                             @Override
                             public void onSelectDate(Date date, View view) {
+                                default_text.setVisibility(View.INVISIBLE);
+                                total_lectures.setVisibility(View.VISIBLE);
+                                attended_lectures.setVisibility(View.VISIBLE);
+                                bunked_lectures.setVisibility(View.VISIBLE);
+
                                 int i = 0,p=0;
                                 for (int x = 0; x < list.size(); x++) {
                                     if (list.get(x).equals(formatter.format(date))) {
@@ -121,8 +129,11 @@ public class UserAttendance extends AppCompatActivity {
                                     if(list_present.get(k).equals(formatter.format(date)))
                                         p++;
                                 }
-                                classes_taken_2.setText("Total Lectures: " + i);
-                                classes_attended.setText("Present: " + p);
+
+                                int z = i-p;
+                                total_lectures.setText("Total Lectures: " + i);
+                                attended_lectures.setText("Attended Lectures: " + p);
+                                bunked_lectures.setText("Bunked Lectures: " + z);
                             }
                         };
 

@@ -11,15 +11,12 @@
 
     <color name="colorPrimary3">#9D28A9</color>
     <color name="colorPrimaryDark3">#9D28A9</color>
-    <color name="Dark3">#7A2489</color>
 
     <color name="colorPrimary4">#FF551C</color>
     <color name="colorPrimaryDark4">#FF551C</color>
-    <color name="Dark4">#D14421</color>
 
     <color name="colorPrimary5">#E53935</color>
     <color name="colorPrimaryDark5">#E53935</color>
-    <color name="Dark5">#B71C1C</color>
 
     <!-- Screens background color-->
     <color name="bg_screen1">#f64c73</color>

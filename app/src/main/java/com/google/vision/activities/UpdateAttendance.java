@@ -7,11 +7,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.vision.R;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.roomorama.caldroid.CaldroidFragment;
+import com.roomorama.caldroid.CaldroidListener;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -22,6 +24,8 @@ import java.util.Date;
 import java.util.Locale;
 
 public class UpdateAttendance extends AppCompatActivity {
+
+    private TextView total_lectures;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +38,8 @@ public class UpdateAttendance extends AppCompatActivity {
 
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
             ProgressBar mProgressBar = findViewById(R.id.progressBarUpdateAttendance);
+            total_lectures = findViewById(R.id.lectures_taken);
+
             mProgressBar.setVisibility(View.INVISIBLE);
 
             final ColorDrawable green = new ColorDrawable(Color.rgb(139, 194, 74));
@@ -41,6 +47,8 @@ public class UpdateAttendance extends AppCompatActivity {
             final SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
 
             final CaldroidFragment caldroidFragment = new CaldroidFragment();
+            final ArrayList<String> list = new ArrayList<>();
+
             Bundle args = new Bundle();
             Calendar cal = Calendar.getInstance();
 
@@ -55,7 +63,6 @@ public class UpdateAttendance extends AppCompatActivity {
                 t.replace(R.id.calendar1, caldroidFragment);
                 t.commitAllowingStateLoss();
 
-                final ArrayList<String> list = new ArrayList<>();
                 if (task.isSuccessful()) {
                     for (DocumentSnapshot doc : task.getResult()) {
                         String database_date = doc.getId().substring(0, doc.getId().length() - 9);
@@ -73,28 +80,19 @@ public class UpdateAttendance extends AppCompatActivity {
                 }
             });
 
-            /*final CaldroidListener listener = new CaldroidListener() {
+            final CaldroidListener listener = new CaldroidListener() {
                 @Override
                 public void onSelectDate(Date date, View view) {
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    updateAttendanceModelList.clear();
-                    rootRef.collection("Users").document(uid).collection("Subjects").document(class_id)
-                            .collection("Attendance").whereEqualTo("Date",formatter.format(date)).get()
-                            .addOnCompleteListener(task12 -> {
-                                if(task12.isSuccessful()){
-                                    for (final DocumentSnapshot document : task12.getResult()) {
-                                        if( document != null && document.exists()) {
-                                            updateAttendanceModelList.add(new UpdateAttendanceModel(document.getId()));
-                                        }
-                                    }
-                                    Collections.sort(updateAttendanceModelList,UpdateAttendanceModel.BY_TIMESTAMP_LATEST);
-                                    updateAttendanceAdapter.notifyDataSetChanged();
-                                    mProgressBar.setVisibility(View.INVISIBLE);
-                                }
-                            });
+                    int i = 0;
+                    for (int x = 0; x < list.size(); x++) {
+                        if (list.get(x).equals(formatter.format(date))) {
+                            i++;
+                        }
+                    }
+                    total_lectures.setText("Lectures taken on "+formatter.format(date)+": " + i);
                 }
             };
-            caldroidFragment.setCaldroidListener(listener);*/
+            caldroidFragment.setCaldroidListener(listener);
         }
     }
 }

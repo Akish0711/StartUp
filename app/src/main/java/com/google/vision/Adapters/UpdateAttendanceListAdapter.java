@@ -222,8 +222,8 @@ public class UpdateAttendanceListAdapter extends RecyclerView.Adapter<UpdateAtte
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         View mView;
-        public TextView userName;
-        public ImageView checkBox;
+        TextView userName;
+        ImageView checkBox;
 
         public ViewHolder(View itemView) {
             super(itemView);

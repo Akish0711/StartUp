@@ -14,37 +14,12 @@
     <string name="slide_4_title">World Travel</string>
     <string name="slide_4_desc">Book tickets of any transportation and travel the world!</string>
 
-    <string name="openDrawer">open_drawer</string>
-    <string name="closeDrawer">close_drawer</string>
-
     <!-- Navigation Drawer menu labels -->
-    <string name="nav_home">Home</string>
-    <string name="nav_settings">Settings</string>
-    <string name="nav_about_us">About Us</string>
 
     <!-- Toolbar titles when navigation menu item is selected -->
 
-    <string-array name="classes">
-        <item>Class</item>
-        <item>Class 8th</item>
-        <item>Class 9th</item>
-        <item>Class 10th</item>
-        <item>Class 11th</item>
-        <item>Class 12th</item>
-    </string-array>
-
-    <string name="action_logout">Logout</string>
-    <string name="privacy_policy">Privacy Policy</string>
-    <string name="update_attendance">Update Attendance</string>
-    <string name="detailed_analysis">Detailed Analysis</string>
-    <string name="submit_attendance">SUBMIT ATTENDANCE</string>
     <string name="add_selected_students">Add Selected Students</string>
     <string name="about_us">About Us !!  VISION 101 !!</string>
-    <string name="submit_marks">Update Marks</string>
     <string name="no_records">No records as of now.</string>
-    <string name="no_students">All the students have already been added.</string>
-    <string name="no_records_as_of_now">No records as of now</string>
-    <string name="graph">Graph</string>
-    <string name="no_attendance_records_for_selected_date">No attendance records for selected date.</string>
     <string name = "default_notification_channel_id">Vision01</string>
 </resources>

@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import com.google.vision.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.vision.activities.SettingsAdmin;
 import com.onurkaganaldemir.ktoastlib.KToast;
 
 public class ChangePassword extends AppCompatActivity {
@@ -67,10 +68,6 @@ public class ChangePassword extends AppCompatActivity {
                         if(task.isSuccessful()){
                             dialog.dismiss();
                             KToast.successToast(ChangePassword.this,"Your Password has been Changed",Gravity.BOTTOM,KToast.LENGTH_AUTO);
-                            FirebaseAuth.getInstance().signOut();
-                            Intent intent = new Intent(ChangePassword.this, Login.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-                            sendBroadcast(intent);
                             finish();
                         }
                         else

@@ -46,6 +46,7 @@ public class ReAuthentication extends AppCompatActivity {
 
     public void next(View v) {
         String pass = current_pass.getText().toString();
+        current_pass.setText("");
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if (TextUtils.isEmpty(pass)) {
