@@ -9,6 +9,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.vision.Adapters.SingleExamAdapter;
 import com.google.vision.Models.SingleExam;
 import com.google.vision.R;
@@ -64,23 +69,38 @@ public class SingleExamAdmin extends AppCompatActivity {
             mMessagesList.setLayoutManager(mLinearLayout);
             mMessagesList.setAdapter(mAdapter);
 
-            BarChart chart = findViewById(R.id.chart);
-            chart.setPinchZoom(false);
-            chart.getDescription().setEnabled(false);
-            chart.setDrawGridBackground(false);
-            chart.getXAxis().setDrawLabels(false);
-            chart.getAxisLeft().setEnabled(false);
-            chart.getAxisRight().setEnabled(false);
-            chart.getDescription().setEnabled(false);
-            chart.getLegend().setEnabled(false);
-            chart.setTouchEnabled(false);
+            ArrayList<String> labels = new ArrayList<>();
+            labels.add("Average");
+            labels.add("Lowest");
+            labels.add("Highest");
 
-            XAxis xAxis = chart.getXAxis();
-            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-            xAxis.setDrawGridLines(false);
+            HorizontalBarChart mChart = findViewById(R.id.chart);
+            mChart.setDrawBarShadow(false);
+            mChart.setDrawValueAboveBar(true);
+            mChart.getDescription().setEnabled(false);
+            mChart.setPinchZoom(false);
+            mChart.setDrawGridBackground(false);
+            mChart.setTouchEnabled(false);
 
-            YAxis leftAxis = chart.getAxisLeft();
-            leftAxis.setAxisMinimum(1);
+            XAxis xl = mChart.getXAxis();
+            xl.setPosition(XAxis.XAxisPosition.BOTTOM);
+            xl.setDrawAxisLine(true);
+            xl.setDrawGridLines(false);
+            CategoryBarChartXaxisFormatter xaxisFormatter = new CategoryBarChartXaxisFormatter(labels);
+            xl.setValueFormatter(xaxisFormatter);
+            xl.setGranularity(1);
+
+            YAxis yl = mChart.getAxisLeft();
+            yl.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
+            yl.setDrawGridLines(false);
+            yl.setEnabled(false);
+            yl.setAxisMinimum(0f);
+
+            YAxis yr = mChart.getAxisRight();
+            yr.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
+            yr.setDrawGridLines(false);
+            yr.setAxisMinimum(0f);
+
 
             mFirestore.collection("Marks").document(class_id).collection("Exams").document(exam_id).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()){
@@ -90,19 +110,24 @@ public class SingleExamAdmin extends AppCompatActivity {
                     long Avg = document.getLong("Average");
 
                     List<BarEntry> entries = new ArrayList<>();
-                    entries.add(new BarEntry(0f, Max));
+                    entries.add(new BarEntry(0f, Avg));
                     entries.add(new BarEntry(1f, Min));
-                    entries.add(new BarEntry(2f, Avg));
+                    entries.add(new BarEntry(2f, Max));
 
-                    BarDataSet set = new BarDataSet(entries, "");
-
-                    BarData data = new BarData(set);
-                    data.setBarWidth(0.7f); // set custom bar width
-                    set.setColors(new int[]{R.color.bg_screen2 , R.color.bg_screen1, R.color.bg_screen4},getApplicationContext());
-                    chart.setData(data);
-                    chart.animateY(3000 , Easing.EasingOption.EaseOutBack );
-                    chart.setFitBars(true); // make the x-axis fit exactly all bars
-                    chart.invalidate();
+                    BarDataSet set1;
+                    set1 = new BarDataSet(entries, "DataSet 1");
+                    ArrayList<IBarDataSet> dataSets = new ArrayList<>();
+                    dataSets.add(set1);
+                    BarData data = new BarData(dataSets);
+                    //data.setValueTextSize(12f);
+                    set1.setColors(ColorTemplate.MATERIAL_COLORS);
+                    mChart.setData(data);
+                    mChart.getLegend().setEnabled(false);
+                    data.setBarWidth(0.9f);
+                    //data.setBarWidth(0.7f); // set custom bar width
+                    mChart.animateY(3000 , Easing.EasingOption.EaseOutBack );
+                    mChart.setFitBars(true); // make the x-axis fit exactly all bars
+                    //chart.invalidate();
                 }
             });
 
@@ -116,6 +141,28 @@ public class SingleExamAdmin extends AppCompatActivity {
                     }
                 }
             });
+        }
+    }
+
+    public class CategoryBarChartXaxisFormatter implements IAxisValueFormatter {
+
+        ArrayList<String> mValues;
+
+        CategoryBarChartXaxisFormatter(ArrayList<String> values) {
+            this.mValues = values;
+        }
+
+        @Override
+        public String getFormattedValue(float value, AxisBase axis) {
+
+            int val = (int) value;
+            String label = "";
+            if (val >= 0 && val < mValues.size()) {
+                label = mValues.get(val);
+            } else {
+                label = "";
+            }
+            return label;
         }
     }
 

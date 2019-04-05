@@ -2,6 +2,7 @@ package com.google.vision.authentication;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -32,6 +33,8 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.vision.activities.AddStudents;
+import com.google.vision.activities.AnnouncementAdmin;
 import com.onurkaganaldemir.ktoastlib.KToast;
 
 import java.io.IOException;
@@ -374,7 +377,7 @@ public class CreateAccount extends AppCompatActivity {
                                 /*SmsManager smsManager = SmsManager.getDefault();
                                 smsManager.sendTextMessage(user_number, null, "Welcome OnBoard "+user_name+"!!\n\nHere are your Login Details \n\nUsername : " + new_username + "\nPassword : " + genPswd, null, null);
                                 */mAuth2.signOut();
-                                finishAffinity();
+                                finish();
                                 KToast.successToast(CreateAccount.this, "Student Registered", Gravity.BOTTOM, KToast.LENGTH_SHORT);
 
                             }else {

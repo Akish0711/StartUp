@@ -4,7 +4,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="100dp"
-    android:layout_margin="4dp"
     app:mode="same_level"
     app:dragEdge="right">
 
@@ -12,7 +11,7 @@
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="#e0e0e0">
+        android:background="@color/colorPrimaryDark2">
 
         <RelativeLayout
             android:layout_width="80dp"
@@ -26,7 +25,8 @@
                 android:src="@drawable/delete"
                 android:layout_centerInParent="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginEnd="20dp" />
+                android:layout_marginEnd="20dp"
+                android:tint="#F5F5F5"/>
         </RelativeLayout>
         <!--What you want to show-->
     </FrameLayout>
@@ -39,7 +39,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:foreground="?android:attr/selectableItemBackground"
-        android:background="@color/colorPrimary2">
+        android:background="#FFFFFF">
 
         <LinearLayout
             android:orientation="vertical"
@@ -55,7 +55,7 @@
                 android:paddingEnd="10dp"
                 android:paddingBottom="0dp"
                 android:text="Exam"
-                android:textColor="#ffffff"
+                android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -68,7 +68,7 @@
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
                 android:text="Max Marks"
-                android:textColor="#ffffff"
+                android:textColor="@color/black"
                 android:textSize="16sp"/>
 
             <TextView
@@ -80,7 +80,12 @@
                 android:textSize="16sp"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:textColor="@color/colorAccent"/>
+                android:textColor="#636363"/>
+            <View
+                android:layout_marginTop="2dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#C2C1C1"/>
         </LinearLayout>
     </FrameLayout>
     <!-- Surface View End -->

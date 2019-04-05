@@ -3,7 +3,7 @@ package com.google.vision.Models;
 import java.util.Comparator;
 
 public class Marks {
-    private String Name, Username;
+    private String Name, Username, Uid;
     private double Marks;
 
     public Marks(){
@@ -11,10 +11,11 @@ public class Marks {
 
     public static final Comparator<Marks> BY_NAME_ALPHABETICAL = (marks, t1) -> marks.Username.compareTo(t1.Username);
 
-    public Marks(String name, String username, double marks) {
+    public Marks(String name, String username, double marks, String uid) {
         Name = name;
         Username = username;
         Marks = marks;
+        Uid = uid;
     }
 
     public String getName() {
@@ -22,6 +23,13 @@ public class Marks {
     }
     public void setName(String name) {
         Name = name;
+    }
+
+    public String getUid() {
+        return Uid;
+    }
+    public void setUid(String uid) {
+        Uid = uid;
     }
 
     public String getUsername() {

@@ -15,11 +15,84 @@
         app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="@style/MyTheme2" />
 
-    <com.github.mikephil.charting.charts.BarChart
-        android:id="@+id/chart"
+    <LinearLayout
+        app:layout_constraintTop_toBottomOf="@id/my_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_alignParentTop="true"
-        app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp">
+            <TextView
+                android:id="@+id/stats"
+                android:layout_gravity="bottom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Result"
+                app:layout_constraintTop_toBottomOf="@id/my_toolbar"
+                android:textSize="25sp"
+                android:textColor="@color/Dark2"/>
+
+            <ImageView
+                android:layout_marginStart="5dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/empty"
+                android:tint="@color/Dark2"/>
+        </LinearLayout>
+
+        <View
+            android:layout_margin="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimaryDark2"/>
+
+        <TextView
+            android:id="@+id/maxMarks"
+            android:layout_marginStart="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Max Marks: "
+            android:textSize="18sp"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/userMarks"
+            android:layout_marginStart="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Your Marks: "
+            android:textSize="18sp"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/percentage"
+            android:layout_marginStart="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Percentage: "
+            android:textSize="18sp"
+            android:textColor="@color/black"/>
+
+        <com.github.mikephil.charting.charts.HorizontalBarChart
+            android:layout_marginEnd="8dp"
+            android:id="@+id/chart"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:layout_constraintTop_toBottomOf="@+id/stats" />
+
+        <TextView
+            android:id="@+id/comment"
+            android:layout_margin="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Comments: "
+            android:textSize="18sp"
+            android:textColor="@color/black"/>
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

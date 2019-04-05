@@ -5,6 +5,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -36,13 +38,22 @@ public class UpdateAttendance extends AppCompatActivity {
             String class_id = getIntent().getStringExtra("class_id");
             String uid = getIntent().getStringExtra("uid");
 
+            Toolbar toolbar = findViewById(R.id.my_toolbar);
+            setSupportActionBar(toolbar);
+
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
+                getSupportActionBar().setTitle("Attendance history");
+            }
+
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
             ProgressBar mProgressBar = findViewById(R.id.progressBarUpdateAttendance);
             total_lectures = findViewById(R.id.lectures_taken);
 
             mProgressBar.setVisibility(View.INVISIBLE);
 
-            final ColorDrawable green = new ColorDrawable(Color.rgb(139, 194, 74));
+            final ColorDrawable green = new ColorDrawable(getResources().getColor(R.color.custom_green));
             final DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
             final SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
 
@@ -94,5 +105,18 @@ public class UpdateAttendance extends AppCompatActivity {
             };
             caldroidFragment.setCaldroidListener(listener);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == android.R.id.home){
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

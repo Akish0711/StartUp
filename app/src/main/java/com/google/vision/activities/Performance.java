@@ -1,5 +1,7 @@
 package com.google.vision.activities;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -86,6 +88,8 @@ public class Performance extends AppCompatActivity {
             List<BarEntry> entries2 = new ArrayList<>();
             ArrayList<String> xLabels2 = new ArrayList<>();
 
+            final ColorDrawable green = new ColorDrawable(Color.rgb(139, 194, 74));
+
             rootRef.collection("Users").document(uid).collection("Performance").orderBy("Year").get().addOnCompleteListener(task2 -> {
                 if (task2.isSuccessful()) {
                     int i = 0;
@@ -104,7 +108,7 @@ public class Performance extends AppCompatActivity {
                 }
             }).addOnCompleteListener(task -> {
                 BarDataSet set = new BarDataSet(entries, "");
-                set.setColor(getResources().getColor(R.color.colorPrimary));
+                set.setColor(getResources().getColor(R.color.custom_green));
                 BarData data = new BarData(set);
                 data.setBarWidth(0.9f); // set custom bar width
                 data.setValueTextSize(15);
@@ -117,7 +121,7 @@ public class Performance extends AppCompatActivity {
                 BarDataSet set2 = new BarDataSet(entries2, "");
 
                 BarData data2 = new BarData(set2);
-                set2.setColor(getResources().getColor(R.color.colorPrimary5));
+                set2.setColor(getResources().getColor(R.color.custom_red));
                 data2.setBarWidth(0.9f); // set custom bar width
                 data2.setValueTextSize(15);
                 chart2.setData(data2);

@@ -4,7 +4,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="@color/colorPrimaryDark3"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/MyTheme" />
+
     <LinearLayout
+        android:layout_below="@id/my_toolbar"
         android:id="@+id/calendar1"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
@@ -28,7 +37,7 @@
             android:layout_margin="16dp"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:background="@color/green"/>
+            android:background="@color/custom_green"/>
 
         <TextView
             android:id="@+id/lectures_taken"

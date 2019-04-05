@@ -5,6 +5,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -44,6 +46,15 @@ public class UserAttendance extends AppCompatActivity {
             String subject_name = getIntent().getStringExtra("subject_name");
             String Teacher_Name = getIntent().getStringExtra("Teacher_Name");
 
+            Toolbar toolbar = findViewById(R.id.my_toolbar);
+            setSupportActionBar(toolbar);
+
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
+                getSupportActionBar().setTitle("Attendance");
+            }
+
             default_text = findViewById(R.id.defult_text);
             total_lectures = findViewById(R.id.total_lectures);
             attended_lectures = findViewById(R.id.attended_lectures);
@@ -53,8 +64,11 @@ public class UserAttendance extends AppCompatActivity {
             attended_lectures.setVisibility(View.INVISIBLE);
             bunked_lectures.setVisibility(View.INVISIBLE);
 
-            final ColorDrawable green = new ColorDrawable(Color.GREEN);
-            final ColorDrawable red = new ColorDrawable(Color.RED);
+            //final ColorDrawable green = new ColorDrawable(Color.rgb(139, 194, 74));
+            final ColorDrawable green = new ColorDrawable(getResources().getColor(R.color.custom_green));
+            final ColorDrawable red = new ColorDrawable(getResources().getColor(R.color.custom_red));
+
+            //final ColorDrawable red = new ColorDrawable(Color.RED);
 
             final DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
             final SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
@@ -152,5 +166,18 @@ public class UserAttendance extends AppCompatActivity {
             });
         }
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == android.R.id.home){
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

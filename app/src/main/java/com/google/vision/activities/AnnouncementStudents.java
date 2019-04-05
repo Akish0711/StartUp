@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.google.vision.Adapters.UserMessageAdapter;
@@ -100,6 +101,7 @@ public class AnnouncementStudents extends AppCompatActivity {
             RelativeLayout attendance = findViewById(R.id.attendance);
             RelativeLayout exams = findViewById(R.id.marks);
             RelativeLayout contact = findViewById(R.id.contact);
+            RelativeLayout feedback = findViewById(R.id.feedback);
 
             Toolbar toolbar = findViewById(R.id.user_new_class_toolbar);
             setSupportActionBar(toolbar);
@@ -119,6 +121,13 @@ public class AnnouncementStudents extends AppCompatActivity {
                     invalidateOptionsMenu();
                 } else {
                     invalidateOptionsMenu();
+                }
+            });
+
+            feedback.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
                 }
             });
 

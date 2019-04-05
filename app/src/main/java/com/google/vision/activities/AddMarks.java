@@ -37,6 +37,7 @@ public class AddMarks extends AppCompatActivity {
     List<Marks> marksList = new ArrayList<>();
     List<String> nameList = new ArrayList<>();
     List<String> usernameList = new ArrayList<>();
+    List<String> uidList = new ArrayList<>();
     List<Double> userMarks = new ArrayList<>();
     private String class_id;
 
@@ -60,7 +61,7 @@ public class AddMarks extends AppCompatActivity {
             name_exam = findViewById(R.id.exam_name);
             max_marks = findViewById(R.id.max_marks);
 
-            AddMarksAdpater mAdapter = new AddMarksAdpater(this, marksList, userMarks, nameList, usernameList);
+            AddMarksAdpater mAdapter = new AddMarksAdpater(this, marksList, userMarks, nameList, usernameList, uidList);
             RecyclerView mMainList = findViewById(R.id.student_list);
             mMainList.setHasFixedSize(true);
             mMainList.setLayoutManager(new LinearLayoutManager(this));
@@ -159,13 +160,15 @@ public class AddMarks extends AppCompatActivity {
                     String myId = ref.getId();
                     mFirestore.collection("Marks").document(class_id).collection("Exams").document(myId).set(exam).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            for (int x=0;x<usernameList.size();x++){
+                            for (int x=0;x<uidList.size();x++){
                                 Map<String, Object> data = new HashMap<>();
                                 data.put("Marks",userMarks.get(x));
                                 data.put("Name", nameList.get(x));
                                 data.put("Username", usernameList.get(x));
+                                data.put("Uid", uidList.get(x));
+
                                 mFirestore.collection("Marks").document(class_id).collection("Exams")
-                                        .document(myId).collection("Students").document(usernameList.get(x)).set(data);
+                                        .document(myId).collection("Students").document(uidList.get(x)).set(data);
                             }
                         }
                     }).addOnCompleteListener(task -> {

@@ -20,15 +20,17 @@ public class EditMarksAdapter extends RecyclerView.Adapter<EditMarksAdapter.View
     private List<String> nameList;
     private List<String> usernameList;
     private List<Double> userMarksList;
+    private List<String> uidList;
 
     public Context context;
 
-    public EditMarksAdapter(Context context, List<Marks> marksList, List<Double> marks, List<String> nameList, List<String> usernameList){
+    public EditMarksAdapter(Context context, List<Marks> marksList, List<Double> marks, List<String> nameList, List<String> usernameList, List<String> uidList){
         this.marksList = marksList;
         this.context = context;
         this.userMarksList = marks;
         this.nameList = nameList;
         this.usernameList = usernameList;
+        this.uidList = uidList;
     }
 
     @NonNull
@@ -51,6 +53,7 @@ public class EditMarksAdapter extends RecyclerView.Adapter<EditMarksAdapter.View
         nameList.add(name);
         usernameList.add(username);
         userMarksList.add(userMarks);
+        uidList.add(marksList.get(position).getUid());
 
         holder.marks.addTextChangedListener(new TextWatcher() {
             @Override

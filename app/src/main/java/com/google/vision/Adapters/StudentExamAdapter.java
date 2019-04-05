@@ -41,10 +41,10 @@ public class StudentExamAdapter extends RecyclerView.Adapter<StudentExamAdapter.
         // Use ViewBindHelper to restore and save the open/close state of the SwipeRevealView
         // put an unique string id as value, can be any string which uniquely define the data
         String examName = examsList.get(position).getName();
-        String maxMarks = "Max Marks: "+examsList.get(position).getMax_Marks();
+        String maxMarks = examsList.get(position).getMax_Marks();
         String examDate = examsList.get(position).getDate();
         holder.exam_name.setText(examName);
-        holder.max_marks.setText(maxMarks);
+        holder.max_marks.setText("Max Marks: "+maxMarks);
         holder.date.setText(examDate);
 
         holder.frontLayout.setOnClickListener(view -> {
@@ -53,6 +53,7 @@ public class StudentExamAdapter extends RecyclerView.Adapter<StudentExamAdapter.
             intent.putExtra("exam_id", exam_id);
             intent.putExtra("exam_name", examName);
             intent.putExtra("uid", uid);
+            intent.putExtra("max_marks", maxMarks);
             context.startActivity(intent);
         });
     }

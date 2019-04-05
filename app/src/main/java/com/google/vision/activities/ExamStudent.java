@@ -1,5 +1,6 @@
 package com.google.vision.activities;
 
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -7,6 +8,18 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.github.mikephil.charting.animation.Easing;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.vision.Adapters.StudentExamAdapter;
 import com.google.vision.Models.Exams;
 import com.google.vision.R;
@@ -15,6 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class ExamStudent extends AppCompatActivity {
 
@@ -23,7 +37,7 @@ public class ExamStudent extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exam_student);
         if (getIntent().hasExtra("class_id")
-            && getIntent().hasExtra("uid")) {
+                && getIntent().hasExtra("uid")) {
             String class_id = getIntent().getStringExtra("class_id");
             String uid = getIntent().getStringExtra("uid");
 
@@ -44,8 +58,8 @@ public class ExamStudent extends AppCompatActivity {
             mMainList.setLayoutManager(new LinearLayoutManager(this));
             mMainList.setAdapter(mAdapter);
 
-
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+
             rootRef.collection("Marks").document(class_id).collection("Exams").orderBy("TimeStamp").addSnapshotListener((documentSnapshots, e) -> {
                 for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
                     switch (doc.getType()) {

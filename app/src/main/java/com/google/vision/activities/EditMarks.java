@@ -38,6 +38,7 @@ public class EditMarks extends AppCompatActivity {
     List<String> nameList = new ArrayList<>();
     List<String> usernameList = new ArrayList<>();
     List<Double> userMarks = new ArrayList<>();
+    List<String> uidList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +69,7 @@ public class EditMarks extends AppCompatActivity {
             name_exam.setText(exam_name);
             max_marks.setText(maxMarks);
 
-            EditMarksAdapter mAdapter = new EditMarksAdapter(this, marksList, userMarks, nameList, usernameList);
+            EditMarksAdapter mAdapter = new EditMarksAdapter(this, marksList, userMarks, nameList, usernameList, uidList);
             RecyclerView mMainList = findViewById(R.id.student_list);
             mMainList.setHasFixedSize(true);
             mMainList.setLayoutManager(new LinearLayoutManager(this));
@@ -166,13 +167,13 @@ public class EditMarks extends AppCompatActivity {
 
                     mFirestore.collection("Marks").document(class_id).collection("Exams").document(exam_id).set(exam).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            for (int x=0;x<usernameList.size();x++){
+                            for (int x=0;x<uidList.size();x++){
                                 final Map<String, Object> data = new HashMap<>();
                                 data.put("Marks",userMarks.get(x));
                                 data.put("Name", nameList.get(x));
                                 data.put("Username", usernameList.get(x));
                                 mFirestore.collection("Marks").document(class_id).collection("Exams")
-                                        .document(exam_id).collection("Students").document(usernameList.get(x)).set(data);
+                                        .document(exam_id).collection("Students").document(uidList.get(x)).set(data);
                             }
                         }
                     }).addOnCompleteListener(task -> {

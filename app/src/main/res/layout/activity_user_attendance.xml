@@ -7,8 +7,17 @@
     android:layout_height="match_parent"
     tools:context=".activities.UserAttendance">
 
-    <LinearLayout
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/MyTheme" />
+
+    <LinearLayout
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
         android:id="@+id/calendar2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,7 +50,7 @@
                         android:layout_margin="10dp"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:background="@color/green"/>
+                        android:background="@color/custom_green"/>
 
                     <TextView
                         android:layout_marginTop="10dp"
@@ -59,7 +68,7 @@
                         android:layout_margin="10dp"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:background="@color/red"/>
+                        android:background="@color/custom_red"/>
 
                     <TextView
                         android:layout_marginTop="10dp"

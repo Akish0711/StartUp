@@ -73,7 +73,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:rotation="-90"
-                android:text="-------Students Leaving-------"
+                android:text="-------Students Drop-------"
                 android:textStyle="bold"
                 android:layout_below="@+id/textView"/>
         </RelativeLayout>

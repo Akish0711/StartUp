@@ -28,6 +28,10 @@
     <color name="trans">#00000000</color>
     <color name="black">#000</color>
 
+    <color name="custom_green">#8BC34A</color>
+    <color name="custom_red">#F44336</color>
+    <color name="custom_purple">#03A9F4</color>
+
     <!-- dots active colors -->
     <color name="active_dots">#ffffff</color>
 </resources>

@@ -21,15 +21,17 @@ public class AddMarksAdpater extends RecyclerView.Adapter<AddMarksAdpater.ViewHo
     private List<String> nameList;
     private List<String> usernameList;
     private List<Double> marks;
+    private List<String> uidList;
 
     public Context context;
 
-    public AddMarksAdpater(Context context, List<Marks> marksList, List<Double> marks, List<String> nameList, List<String> usernameList){
+    public AddMarksAdpater(Context context, List<Marks> marksList, List<Double> marks, List<String> nameList, List<String> usernameList, List<String> uidList){
         this.marksList = marksList;
         this.context = context;
         this.marks = marks;
         this.nameList = nameList;
         this.usernameList = usernameList;
+        this.uidList = uidList;
     }
 
     @NonNull
@@ -47,6 +49,7 @@ public class AddMarksAdpater extends RecyclerView.Adapter<AddMarksAdpater.ViewHo
         holder.display_name.setText(name);
 
         nameList.add(name);
+        uidList.add(marksList.get(position).getUid());
         usernameList.add(username);
         marks.add(null);
 

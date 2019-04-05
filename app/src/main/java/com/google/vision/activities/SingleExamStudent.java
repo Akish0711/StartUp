@@ -4,7 +4,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.vision.R;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarChart;
@@ -31,11 +37,15 @@ public class SingleExamStudent extends AppCompatActivity {
         if (getIntent().hasExtra("class_id")
                 && getIntent().hasExtra("exam_id")
                 && getIntent().hasExtra("exam_name")
-                && getIntent().hasExtra("uid")) {
+                && getIntent().hasExtra("uid")
+                && getIntent().hasExtra("max_marks")) {
             String class_id = getIntent().getStringExtra("class_id");
             String exam_id = getIntent().getStringExtra("exam_id");
             String uid = getIntent().getStringExtra("uid");
             String exam_name = getIntent().getStringExtra("exam_name");
+            String max_marks = getIntent().getStringExtra("max_marks");
+
+            int intMax = Integer.parseInt(max_marks);
 
             Toolbar toolbar = findViewById(R.id.my_toolbar);
             setSupportActionBar(toolbar);
@@ -48,23 +58,45 @@ public class SingleExamStudent extends AppCompatActivity {
 
             FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
 
-            BarChart chart = findViewById(R.id.chart);
-            chart.setPinchZoom(false);
-            chart.getDescription().setEnabled(false);
-            chart.setDrawGridBackground(false);
-            chart.getXAxis().setDrawLabels(false);
-            chart.getAxisLeft().setEnabled(false);
-            chart.getAxisRight().setEnabled(false);
-            chart.getDescription().setEnabled(false);
-            chart.getLegend().setEnabled(false);
-            chart.setTouchEnabled(false);
+            ArrayList<String> labels = new ArrayList<>();
+            labels.add("Your Marks");
+            labels.add("Average");
+            labels.add("Highest");
 
-            XAxis xAxis = chart.getXAxis();
-            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-            xAxis.setDrawGridLines(false);
+            HorizontalBarChart mChart = findViewById(R.id.chart);
+            TextView maxMarks = findViewById(R.id.maxMarks);
+            TextView userMarks = findViewById(R.id.userMarks);
+            TextView percentage = findViewById(R.id.percentage);
+            TextView comment = findViewById(R.id.comment);
 
-            YAxis leftAxis = chart.getAxisLeft();
-            leftAxis.setAxisMinimum(1);
+            maxMarks.setText("Max Marks: "+max_marks);
+
+            mChart.setDrawBarShadow(false);
+            mChart.setDrawValueAboveBar(true);
+            mChart.getDescription().setEnabled(false);
+            mChart.setPinchZoom(false);
+            mChart.setDrawGridBackground(false);
+            mChart.setTouchEnabled(false);
+
+            XAxis xl = mChart.getXAxis();
+            xl.setPosition(XAxis.XAxisPosition.BOTTOM);
+            xl.setDrawAxisLine(true);
+            xl.setDrawGridLines(false);
+            SingleExamStudent.CategoryBarChartXaxisFormatter xaxisFormatter = new SingleExamStudent.CategoryBarChartXaxisFormatter(labels);
+            xl.setValueFormatter(xaxisFormatter);
+            xl.setGranularity(1);
+
+            YAxis yl = mChart.getAxisLeft();
+            yl.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
+            yl.setDrawGridLines(false);
+            yl.setEnabled(false);
+            yl.setAxisMinimum(0f);
+
+            YAxis yr = mChart.getAxisRight();
+            yr.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
+            yr.setDrawGridLines(false);
+            yr.setAxisMinimum(0f);
+
 
             mFirestore.collection("Marks").document(class_id).collection("Exams").document(exam_id).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()){
@@ -78,21 +110,58 @@ public class SingleExamStudent extends AppCompatActivity {
                     Marks = document1.getLong("Marks");
 
                     List<BarEntry> entries = new ArrayList<>();
-                    entries.add(new BarEntry(0f, Max));
+                    entries.add(new BarEntry(0f, Marks));
                     entries.add(new BarEntry(1f, Avg));
-                    entries.add(new BarEntry(2f, Marks));
+                    entries.add(new BarEntry(2f, Max));
 
-                    BarDataSet set = new BarDataSet(entries, "");
+                    userMarks.setText("Your Marks: "+Marks);
+                    double percent = Marks*100/intMax;
+                    percentage.setText("Percentage: "+percent+"%");
 
-                    BarData data = new BarData(set);
-                    data.setBarWidth(0.9f); // set custom bar width
-                    set.setColors(new int[]{R.color.bg_screen2 , R.color.bg_screen1, R.color.bg_screen4},getApplicationContext());
-                    chart.setData(data);
-                    chart.animateY(3000 , Easing.EasingOption.EaseOutBack );
-                    chart.setFitBars(true); // make the x-axis fit exactly all bars
-                    chart.invalidate();
+                    if (Marks>Avg){
+                        comment.setText("Good going!! Your marks are above average. Keep up the hard work.");
+                    }else{
+                        comment.setText("Uh oh!! You marks are below average. Focus and see yourself go up.");
+                    }
+
+                    BarDataSet set1;
+                    set1 = new BarDataSet(entries, "DataSet 1");
+                    ArrayList<IBarDataSet> dataSets = new ArrayList<>();
+                    dataSets.add(set1);
+                    BarData data = new BarData(dataSets);
+                    //data.setValueTextSize(12f);
+                    set1.setColors(ColorTemplate.MATERIAL_COLORS);
+                    mChart.setData(data);
+                    mChart.getLegend().setEnabled(false);
+                    data.setBarWidth(0.9f);
+                    //data.setBarWidth(0.7f); // set custom bar width
+                    mChart.animateY(3000 , Easing.EasingOption.EaseOutBack );
+                    mChart.setFitBars(true); // make the x-axis fit exactly all bars
+                    //chart.invalidate();
                 }
             }));
+        }
+    }
+
+    public class CategoryBarChartXaxisFormatter implements IAxisValueFormatter {
+
+        ArrayList<String> mValues;
+
+        CategoryBarChartXaxisFormatter(ArrayList<String> values) {
+            this.mValues = values;
+        }
+
+        @Override
+        public String getFormattedValue(float value, AxisBase axis) {
+
+            int val = (int) value;
+            String label = "";
+            if (val >= 0 && val < mValues.size()) {
+                label = mValues.get(val);
+            } else {
+                label = "";
+            }
+            return label;
         }
     }
 

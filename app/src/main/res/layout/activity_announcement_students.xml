@@ -53,7 +53,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_above="@id/add_students_image"
+                        android:layout_above="@id/take_attendance_image"
                         android:layout_centerHorizontal="true"
                         android:gravity="center"
                         android:text="Attendance"
@@ -61,7 +61,7 @@
                         android:textSize="12sp" />
 
                     <ImageView
-                        android:id="@+id/add_students_image"
+                        android:id="@+id/take_attendance_image"
                         android:layout_width="45dp"
                         android:layout_height="45dp"
                         android:layout_centerInParent="true"
@@ -83,12 +83,12 @@
                         android:textSize="12sp"
                         android:layout_centerHorizontal="true"
                         android:gravity="center"
-                        android:layout_above="@id/take_attendance_image"
+                        android:layout_above="@id/marks_image"
                         android:text="Exams"
                         android:textColor="#fff" />
 
                     <ImageView
-                        android:id="@+id/take_attendance_image"
+                        android:id="@+id/marks_image"
                         android:layout_width="45dp"
                         android:layout_height="45dp"
                         android:layout_centerInParent="true"
@@ -112,20 +112,49 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_centerHorizontal="true"
-                        android:layout_above="@+id/marks_image"
+                        android:layout_above="@+id/contact_image"
                         android:gravity="center"
                         android:textSize="12sp"
                         android:text="Contact"
                         android:textColor="#fff" />
 
                     <ImageView
-                        android:id="@+id/marks_image"
+                        android:id="@+id/contact_image"
                         android:layout_width="45dp"
                         android:layout_height="45dp"
                         android:layout_centerInParent="true"
                         android:background="@color/trans"
                         android:scaleType="fitCenter"
                         app:srcCompat="@drawable/contact2" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/feedback"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_toEndOf="@id/contact"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerHorizontal="true"
+                        android:layout_above="@+id/feedback_image"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:text="Feedback"
+                        android:textColor="#fff" />
+
+                    <ImageView
+                        android:id="@+id/feedback_image"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_centerInParent="true"
+                        android:background="@color/trans"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/feedback" />
                 </RelativeLayout>
             </RelativeLayout>
         </android.support.design.widget.CollapsingToolbarLayout>

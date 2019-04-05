@@ -1,16 +1,11 @@
 package com.google.vision.authentication;
 
-import android.Manifest;
 import android.app.DatePickerDialog;
-import android.content.pm.PackageManager;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.telephony.SmsManager;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -204,11 +199,9 @@ public class CreateAccountTeacher extends AppCompatActivity {
 
                     String code = document.getString("Code");
                     long overall_teachers = document.getLong("Overall_Teachers");
-                    long total_teachers = document.getLong("Total_Teachers");
                     overall_teachers++;
 
                     Map<String, Object> update_data = new HashMap<>();
-                    update_data.put("Total_Teachers", total_teachers);
                     update_data.put("Overall_Teachers", overall_teachers);
 
                     String new_username = (code+overall_teachers);
@@ -241,7 +234,7 @@ public class CreateAccountTeacher extends AppCompatActivity {
                             /*SmsManager smsManager = SmsManager.getDefault();
                             smsManager.sendTextMessage(user_number, null, "Welcome OnBoard "+user_name+"!!\n\nHere are your Login Details \n\nUsername : " + new_username + "\nPassword : " + genPswd, null, null);
                             */mAuth2.signOut();
-                            finishAffinity();
+                            finish();
                             KToast.successToast(CreateAccountTeacher.this, "Teacher Registered", Gravity.BOTTOM, KToast.LENGTH_AUTO);
                         } else {
                             if (task1.getException() instanceof FirebaseAuthUserCollisionException) {
