@@ -198,6 +198,7 @@ public class CreateAccountTeacher extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
 
                     String code = document.getString("Code");
+                    final String Institute = document.getString("Institute");
                     long overall_teachers = document.getLong("Overall_Teachers");
                     overall_teachers++;
 
@@ -223,6 +224,8 @@ public class CreateAccountTeacher extends AppCompatActivity {
                             data.put("Admin", "No");
                             data.put("Email", user_email);
                             data.put("Phone",user_number);
+                            data.put("Code_Admin", code+"_No");
+                            data.put("Institute", Institute);
                             data.put("Admin_Uid", uid);
                             data.put("BirthDate", getDateFromString(birthdate));
                             data.put("Gender", gender);

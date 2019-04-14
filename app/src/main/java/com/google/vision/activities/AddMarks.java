@@ -155,10 +155,11 @@ public class AddMarks extends AppCompatActivity {
                     exam.put("Average", average);
                     exam.put("Date", date);
                     exam.put("TimeStamp", FieldValue.serverTimestamp());
+                    exam.put("Class_id",class_id);
 
-                    DocumentReference ref = mFirestore.collection("Marks").document(class_id).collection("Exams").document();
+                    DocumentReference ref = mFirestore.collection("Marks").document();
                     String myId = ref.getId();
-                    mFirestore.collection("Marks").document(class_id).collection("Exams").document(myId).set(exam).addOnCompleteListener(task -> {
+                    mFirestore.collection("Marks").document(myId).set(exam).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             for (int x=0;x<uidList.size();x++){
                                 Map<String, Object> data = new HashMap<>();
@@ -167,8 +168,7 @@ public class AddMarks extends AppCompatActivity {
                                 data.put("Username", usernameList.get(x));
                                 data.put("Uid", uidList.get(x));
 
-                                mFirestore.collection("Marks").document(class_id).collection("Exams")
-                                        .document(myId).collection("Students").document(uidList.get(x)).set(data);
+                                mFirestore.collection("Marks").document(myId).collection("Students").document(uidList.get(x)).set(data);
                             }
                         }
                     }).addOnCompleteListener(task -> {

@@ -18,6 +18,10 @@ import android.widget.Toast;
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
 import com.chauthai.swipereveallayout.ViewBinderHelper;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.vision.activities.AnnouncementAdmin;
 import com.google.vision.Models.Classes;
 import com.google.vision.R;
@@ -44,7 +48,7 @@ public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.
     private List<Classes> classesList;
     public Context context;
     private DatabaseReference mRootRef;
-    private String uid, Institute;
+    private String uid, Institute, admin_uid;
     private View parentLayout;
     private FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
 
@@ -60,7 +64,7 @@ public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         if(viewType == 1){
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_class, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_no_class, parent, false);
             return new ViewHolder(view);
         }
         else{
@@ -170,17 +174,44 @@ public class ClassesListAdapter extends RecyclerView.Adapter<ClassesListAdapter.
                             .setMessage("Warning : You cannot undo this.")
                             .setCancelable(false)
                             .setPositiveButton("DELETE", (dialog, id) ->
+
                                     mFirestore.collection("Users").document(uid).collection("Subjects")
-                                            .document(class_id).delete().addOnSuccessListener(aVoid -> {
+                                            .document(class_id).delete().addOnCompleteListener(task1 -> {
                                         mFirestore.collection("Users").whereEqualTo(class_id,"Added").get()
                                                 .addOnCompleteListener(task -> {
                                                     if (task.isSuccessful()) {
-                                                        for (final DocumentSnapshot document : task.getResult()) {
+                                                        for (DocumentSnapshot document : task.getResult()) {
+                                                            document.getReference().update(class_id, FieldValue.delete());
                                                             document.getReference().collection("Subjects").document(class_id).delete();
                                                         }
                                                     }
                                                 });
-                                        mFirestore.collection("Users").document(uid).collection("Current Classes").document(class_id).delete();
+                                        mFirestore.collection("Marks").whereEqualTo("Class_id", class_id).get().addOnCompleteListener(task -> {
+                                            if (task.isSuccessful()) {
+                                                for (DocumentSnapshot document : task.getResult()) {
+                                                    document.getReference().delete();
+                                                }
+                                            }
+                                        });
+
+                                        mFirestore.collection("Attendance").whereEqualTo("Class_id", class_id).get().addOnCompleteListener(task -> {
+                                            if (task.isSuccessful()) {
+                                                for (DocumentSnapshot document : task.getResult()) {
+                                                    document.getReference().delete();
+                                                }
+                                            }
+                                        });
+
+                                        mFirestore.collection("Users").document(uid).get().addOnCompleteListener(task -> {
+                                            if (task.isSuccessful()){
+                                                DocumentSnapshot document = task.getResult();
+                                                admin_uid = document.getString("Admin_Uid");
+                                            }
+                                        }).addOnCompleteListener(task -> {
+                                            if (task.isSuccessful()){
+                                                mFirestore.collection("Current Classes").document(admin_uid).collection("Classes").document(class_id).delete();
+                                            }
+                                        });
                                         mRootRef.child("Announcement").child(uid).child(class_id).removeValue();
                                         KToast.successToast((Activity) context, "Class Deleted", Gravity.BOTTOM, KToast.LENGTH_SHORT);
                                     }).addOnFailureListener(e -> Toast.makeText(context, "Error in deleting classes", Toast.LENGTH_SHORT).show()))

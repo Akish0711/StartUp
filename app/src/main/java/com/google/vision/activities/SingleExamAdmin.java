@@ -102,7 +102,7 @@ public class SingleExamAdmin extends AppCompatActivity {
             yr.setAxisMinimum(0f);
 
 
-            mFirestore.collection("Marks").document(class_id).collection("Exams").document(exam_id).get().addOnCompleteListener(task -> {
+            mFirestore.collection("Marks").document(exam_id).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()){
                     DocumentSnapshot document = task.getResult();
                     long Max = document.getLong("Highest");
@@ -131,7 +131,7 @@ public class SingleExamAdmin extends AppCompatActivity {
                 }
             });
 
-            mFirestore.collection("Marks").document(class_id).collection("Exams").document(exam_id).collection("Students").get().addOnCompleteListener(task -> {
+            mFirestore.collection("Marks").document(exam_id).collection("Students").get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     for (final DocumentSnapshot document : task.getResult()) {
                         SingleExam singleExam = document.toObject(SingleExam.class);

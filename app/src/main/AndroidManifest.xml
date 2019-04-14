@@ -12,8 +12,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    <!--<uses-permission android:name="android.permission.SEND_SMS" />-->
-
+    <!-- <uses-permission android:name="android.permission.SEND_SMS" /> -->
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
@@ -33,51 +32,69 @@
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
             android:value="true" />
-
-        <!--<service android:name=".others.FirebaseMessagingServices">
-        <intent-filter>
-            <action android:name="com.google.firebase.MESSAGING_EVENT" />
-        </intent-filter>
-    </service>-->
-
-        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
-        See README(https://goo.gl/l4GJaQ) for more. -->
+        <service android:name=".others.FirebaseMessagingServices">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <!--
+ Set custom default icon. This is used when no icon is set for incoming notification messages.
+        See README(https://goo.gl/l4GJaQ) for more.
+        -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@mipmap/ic_launcher" />
-        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
-             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <!--
+ Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more.
+        -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorPrimary" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
 
-        <activity android:name=".activities.PaymentAdmin"/>
-        <activity android:name=".activities.EnquiryAdmin" />
-        <activity android:name=".activities.FeedbackAdmin" />
-        <activity android:name=".activities.Performance" />
+        <activity android:name=".activities.InstituteTeachers"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.NewClassTeacher"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.FeedbackStudents"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.PaymentAdmin"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.EnquiryAdmin"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.FeedbackAdmin"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.Performance"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.EditMarks"
-            android:theme="@style/AppTheme2" />
+            android:theme="@style/AppTheme2"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.SingleExamStudent"
-            android:theme="@style/AppTheme2" />
+            android:theme="@style/AppTheme2"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.ExamStudent"
-            android:theme="@style/AppTheme2" />
+            android:theme="@style/AppTheme2"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.SingleExamAdmin"
-            android:theme="@style/AppTheme2" />
+            android:theme="@style/AppTheme2"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.AddMarks"
-            android:theme="@style/AppTheme2" />
-        <activity android:name=".activities.InstituteOthers">
+            android:theme="@style/AppTheme2"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.InstituteOthers"
+            android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="intent.instituteothers.notification"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="intent.instituteothers.notification" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
@@ -102,60 +119,76 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.Welcome"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activities.MainActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activities.AboutUsActivity" />
-        <activity android:name=".activities.PrivacyPolicyActivity" />
         <activity
             android:name=".authentication.ChangePassword"
             android:screenOrientation="portrait" />
-        <activity android:name=".authentication.ReAuthentication" />
+        <activity android:name=".authentication.ReAuthentication"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.AnnouncementAdmin"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.UserAttendance"
             android:screenOrientation="portrait" />
-        <activity android:name=".activities.ViewSingleAnnouncement" />
-        <activity android:name=".authentication.CreateAccount" />
+        <activity android:name=".activities.ViewSingleAnnouncement"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".authentication.CreateAccount"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.EditProfile"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
-        <activity android:name=".activities.NewClass" />
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.NewClass"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.TakeAttendance"
-            android:theme="@style/AppTheme3" />
+            android:theme="@style/AppTheme3"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.UpdateAttendance"
-            android:theme="@style/AppTheme3" />
-        <activity android:name=".activities.AnnouncementStudents">
+            android:theme="@style/AppTheme3"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.AnnouncementStudents"
+            android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="intent.announcementstudents.notification"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="intent.announcementstudents.notification" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name=".activities.AddStudents"
-            android:theme="@style/AppTheme4" />
-        <activity android:name=".activities.FullScreenImage" />
-        <activity android:name=".activities.MakeAnnouncement" />
-        <activity android:name=".activities.EditAnnouncement" />
+            android:theme="@style/AppTheme4"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.FullScreenImage"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.MakeAnnouncement"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.EditAnnouncement"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.RemoveStudents"
-            android:theme="@style/AppTheme5" />
-        <activity android:name=".activities.MainActivityTeacher" />
-        <activity android:name=".authentication.CreateAccountTeacher" />
-        <activity android:name=".activities.DeleteAccount" />
-        <activity android:name=".authentication.ForgotPassword" />
-        <activity android:name=".activities.MainActivityStudent" />
-        <activity android:name=".activities.SettingsAdmin" />
+            android:theme="@style/AppTheme5"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.MainActivityTeacher"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".authentication.CreateAccountTeacher"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.DeleteAccount"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".authentication.ForgotPassword"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.MainActivityStudent"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.SettingsAdmin"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.ExamsAdmin"
-            android:theme="@style/AppTheme2" />
-        <activity android:name=".activities.InstituteAdmin" />
+            android:theme="@style/AppTheme2"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.InstituteAdmin"
+            android:screenOrientation="portrait"/>
     </application>
-
 </manifest>

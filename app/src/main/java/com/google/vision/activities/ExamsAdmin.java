@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.google.vision.Adapters.ExamsAdapter;
+import com.google.vision.Models.Classes;
 import com.google.vision.Models.Exams;
 import com.google.vision.R;
 import com.google.firebase.firestore.DocumentChange;
@@ -54,7 +55,7 @@ public class ExamsAdmin extends AppCompatActivity {
 
 
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-            rootRef.collection("Marks").document(class_id).collection("Exams").orderBy("TimeStamp").addSnapshotListener((documentSnapshots, e) -> {
+            rootRef.collection("Marks").whereEqualTo("Class_id", class_id).addSnapshotListener((documentSnapshots, e) -> {
                 for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
                     switch (doc.getType()) {
                         case ADDED:
@@ -65,11 +66,11 @@ public class ExamsAdmin extends AppCompatActivity {
                             mAdapter.notifyDataSetChanged();
                             break;
                         case MODIFIED:
-                           /* class_id = doc.getDocument().getId();
-                            int index = keyList.indexOf(class_id);
-                            Classes classes2 = doc.getDocument().toObject(Classes.class).withID(class_id);
-                            classesList.set(index, classes2);
-                            classesListAdapter.notifyDataSetChanged();*/
+                           /* exam_id = doc.getDocument().getId();
+                            int index = keyList.indexOf(exam_id);
+                            Exams exams2 = doc.getDocument().toObject(Exams.class).withID(exam_id);
+                            examList.set(index, exams2);
+                            mAdapter.notifyDataSetChanged();*/
                             break;
                         case REMOVED:
                             exam_id = doc.getDocument().getId();

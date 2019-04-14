@@ -1,9 +1,9 @@
 package com.google.vision.activities;
 
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -16,12 +16,11 @@ import android.widget.Spinner;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.SetOptions;
-import com.google.vision.R;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.vision.R;
 import com.onurkaganaldemir.ktoastlib.KToast;
 
 import java.io.IOException;
@@ -30,11 +29,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NewClass extends AppCompatActivity {
+public class NewClassTeacher extends AppCompatActivity {
 
     private EditText name_class;
     ProgressBar progressBar;
-    String uid;
+    String uid, admin_uid;
     Spinner spinner;
     View parentLayout;
     FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
@@ -44,10 +43,11 @@ public class NewClass extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_class);
+        setContentView(R.layout.activity_new_class_teacher);
 
-        if (getIntent().hasExtra("uid")) {
+        if (getIntent().hasExtra("uid") && getIntent().hasExtra("admin_uid")) {
             uid = getIntent().getStringExtra("uid");
+            admin_uid = getIntent().getStringExtra("admin_uid");
 
             classList = new ArrayList<>();
             classList.add("Class");
@@ -56,7 +56,7 @@ public class NewClass extends AppCompatActivity {
             Button new_class = findViewById(R.id.new_class);
             progressBar = findViewById(R.id.progressBar);
             progressBar.setVisibility(View.GONE);
-            parentLayout = findViewById(R.id.new_class_parent);
+            parentLayout = findViewById(R.id.new_class_teacher_parent);
 
             Toolbar toolbar = findViewById(R.id.my_toolbar);
             setSupportActionBar(toolbar);
@@ -69,7 +69,7 @@ public class NewClass extends AppCompatActivity {
 
             spinner = findViewById(R.id.spinner);
 
-            rootRef.collection("Institute Classes").document(uid).collection("Classes").get().addOnCompleteListener(task -> {
+            rootRef.collection("Institute Classes").document(admin_uid).collection("Classes").get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()){
                     for (final DocumentSnapshot document : task.getResult()) {
                         String Name = document.getString("Name");
@@ -77,7 +77,7 @@ public class NewClass extends AppCompatActivity {
                     }
                 }
             }).addOnCompleteListener(task -> {
-                ArrayAdapter<String> myAdapter = new ArrayAdapter<>(NewClass.this,
+                ArrayAdapter<String> myAdapter = new ArrayAdapter<>(NewClassTeacher.this,
                         android.R.layout.simple_list_item_1, classList);
 
                 myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -110,10 +110,12 @@ public class NewClass extends AppCompatActivity {
             name_class.setError("Name required");
             name_class.requestFocus();
         }else if (spinner == null || spinner.getSelectedItem() ==null || section.equals("Class")) {
-            KToast.warningToast(this,"Class Required",Gravity.BOTTOM,KToast.LENGTH_SHORT);
+            KToast.warningToast(this,"Class Required", Gravity.BOTTOM,KToast.LENGTH_SHORT);
         }else if (!isInternetAvailable()){
             Snackbar.make(parentLayout, "This action requires Internet Connection", Snackbar.LENGTH_LONG).show();
         }else {
+            progressBar.setVisibility(View.VISIBLE);
+
             progressBar.setVisibility(View.VISIBLE);
 
             rootRef.collection("Users").document(uid).get().addOnCompleteListener(task -> {
@@ -154,10 +156,10 @@ public class NewClass extends AppCompatActivity {
                                             newClass.put("Class_id", myId);
 
                                             rootRef.collection("Attendance").document(myId).set(newClass);
-                                            rootRef.collection("Current Classes").document(uid).collection("Classes").document(myId).set(newClass);
+                                            rootRef.collection("Current Classes").document(admin_uid).collection("Classes").document(myId).set(newClass);
 
                                             progressBar.setVisibility(View.INVISIBLE);
-                                            KToast.successToast(NewClass.this, "New Class Created", Gravity.BOTTOM, KToast.LENGTH_SHORT);
+                                            KToast.successToast(NewClassTeacher.this, "New Class Created", Gravity.BOTTOM, KToast.LENGTH_SHORT);
                                             finish();
                                         }
                                     });
@@ -184,28 +186,8 @@ public class NewClass extends AppCompatActivity {
 
     private void notifyUser(String error) {
         progressBar.setVisibility(View.INVISIBLE);
-        KToast.errorToast(NewClass.this,error,Gravity.BOTTOM,KToast.LENGTH_SHORT);
+        KToast.errorToast(NewClassTeacher.this,error,Gravity.BOTTOM,KToast.LENGTH_SHORT);
     }
-
-    /*public void onFailure(@NonNull Exception e) {
-        if (!isInternetAvailable()){
-            notifyUser("Internet connection required for this action.");
-        }
-        else if (e instanceof FirebaseAuthInvalidUserException) {
-            String errorCode = ((FirebaseAuthInvalidUserException) e).getErrorCode();
-            //   if (errorCode.equals("ERROR_USER_NOT_FOUND")) {
-            if ("ERROR_USER_NOT_FOUND".equals(errorCode)) {
-                notifyUser("No matching Account found");
-            } else if ("ERROR_USER_DISABLED".equals(errorCode)) {
-                notifyUser("User account has been disabled");
-            } else {
-                notifyUser(e.getLocalizedMessage());
-            }
-        }
-        else{
-            notifyUser("Error with the servers. Please close the app and try again.");
-        }
-    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

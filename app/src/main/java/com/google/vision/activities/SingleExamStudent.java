@@ -98,13 +98,13 @@ public class SingleExamStudent extends AppCompatActivity {
             yr.setAxisMinimum(0f);
 
 
-            mFirestore.collection("Marks").document(class_id).collection("Exams").document(exam_id).get().addOnCompleteListener(task -> {
+            mFirestore.collection("Marks").document(exam_id).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()){
                     DocumentSnapshot document = task.getResult();
                     Max = document.getLong("Highest");
                     Avg = document.getLong("Average");
                 }
-            }).addOnCompleteListener(task -> mFirestore.collection("Marks").document(class_id).collection("Exams").document(exam_id).collection("Students").document(uid).get().addOnCompleteListener(task1 -> {
+            }).addOnCompleteListener(task -> mFirestore.collection("Marks").document(exam_id).collection("Students").document(uid).get().addOnCompleteListener(task1 -> {
                 if (task1.isSuccessful()) {
                     DocumentSnapshot document1 = task1.getResult();
                     Marks = document1.getLong("Marks");

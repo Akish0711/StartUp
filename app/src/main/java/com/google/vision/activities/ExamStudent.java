@@ -60,7 +60,7 @@ public class ExamStudent extends AppCompatActivity {
 
             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
 
-            rootRef.collection("Marks").document(class_id).collection("Exams").orderBy("TimeStamp").addSnapshotListener((documentSnapshots, e) -> {
+            rootRef.collection("Marks").whereEqualTo("Class_id", class_id).orderBy("TimeStamp").addSnapshotListener((documentSnapshots, e) -> {
                 for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
                     switch (doc.getType()) {
                         case ADDED:

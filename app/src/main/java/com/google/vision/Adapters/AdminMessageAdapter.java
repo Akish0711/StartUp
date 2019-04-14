@@ -40,7 +40,7 @@ public class AdminMessageAdapter extends RecyclerView.Adapter<AdminMessageAdapte
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         if(viewType == 1){
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_class, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_no_announcement, parent, false);
             return new ViewHolder(view);
         }
         else{

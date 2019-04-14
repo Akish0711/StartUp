@@ -50,50 +50,59 @@ public class ExamsAdapter  extends RecyclerView.Adapter<ExamsAdapter.ViewHolder>
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_exams,parent,false);
-        return new ViewHolder(view);
+        View view;
+        if(viewType == 1){
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_no_exams, parent, false);
+            return new ViewHolder(view);
+        }
+        else{
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_exams,parent,false);
+            return new ViewHolder(view);
+        }
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String exam_id = examsList.get(position).examID;
-        // Use ViewBindHelper to restore and save the open/close state of the SwipeRevealView
-        // put an unique string id as value, can be any string which uniquely define the data
-        viewBinderHelper.bind(holder.swipeLayout, exam_id);
-        viewBinderHelper.setOpenOnlyOne(true);
-        String examName = examsList.get(position).getName();
-        String maxMarks = examsList.get(position).getMax_Marks();
-        String examDate = examsList.get(position).getDate();
-        holder.exam_name.setText(examName);
-        holder.max_marks.setText("Max Marks: "+maxMarks);
-        holder.date.setText(examDate);
+        int viewType = getItemViewType(position);
+        if(viewType == 2) {
+            String exam_id = examsList.get(position).examID;
+            // Use ViewBindHelper to restore and save the open/close state of the SwipeRevealView
+            // put an unique string id as value, can be any string which uniquely define the data
+            viewBinderHelper.bind(holder.swipeLayout, exam_id);
+            viewBinderHelper.setOpenOnlyOne(true);
+            String examName = examsList.get(position).getName();
+            String maxMarks = examsList.get(position).getMax_Marks();
+            String examDate = examsList.get(position).getDate();
+            holder.exam_name.setText(examName);
+            holder.max_marks.setText("Max Marks: " + maxMarks);
+            holder.date.setText(examDate);
 
-        holder.frontLayout.setOnClickListener(view -> {
-            Intent intent = new Intent(context, SingleExamAdmin.class);
-            intent.putExtra("class_id", class_id);
-            intent.putExtra("exam_id", exam_id);
-            intent.putExtra("exam_name", examName);
-            intent.putExtra("max_marks", maxMarks);
-            context.startActivity(intent);
-        });
+            holder.frontLayout.setOnClickListener(view -> {
+                Intent intent = new Intent(context, SingleExamAdmin.class);
+                intent.putExtra("class_id", class_id);
+                intent.putExtra("exam_id", exam_id);
+                intent.putExtra("exam_name", examName);
+                intent.putExtra("max_marks", maxMarks);
+                context.startActivity(intent);
+            });
 
-        holder.delete.setOnClickListener(v -> {
-            if (isInternetAvailable()) {
-                new AlertDialog.Builder(context)
-                        .setTitle("Delete this Exam?")
-                        .setMessage("Warning : You cannot undo this.")
-                        .setCancelable(false)
-                        .setPositiveButton("DELETE", (dialog, id) ->
-                                mFirestore.collection("Marks").document(class_id).collection("Exams")
-                                        .document(exam_id).delete().addOnSuccessListener(aVoid -> {
-                                    KToast.successToast((Activity) context, "Exam Deleted", Gravity.BOTTOM, KToast.LENGTH_SHORT);
-                                }).addOnFailureListener(e -> Toast.makeText(context, "Error in deleting classes", Toast.LENGTH_SHORT).show()))
-                        .setNegativeButton("Cancel", null)
-                        .show();
-            }else{
-                Snackbar.make(parentLayout, "This action requires Internet Connection", Snackbar.LENGTH_LONG).show();
-            }
-        });
+            holder.delete.setOnClickListener(v -> {
+                if (isInternetAvailable()) {
+                    new AlertDialog.Builder(context)
+                            .setTitle("Delete this Exam?")
+                            .setMessage("Warning : You cannot undo this.")
+                            .setCancelable(false)
+                            .setPositiveButton("DELETE", (dialog, id) ->
+                                    mFirestore.collection("Marks").document(exam_id).delete().addOnSuccessListener(aVoid -> {
+                                        KToast.successToast((Activity) context, "Exam Deleted", Gravity.BOTTOM, KToast.LENGTH_SHORT);
+                                    }).addOnFailureListener(e -> Toast.makeText(context, "Error in deleting classes", Toast.LENGTH_SHORT).show()))
+                            .setNegativeButton("Cancel", null)
+                            .show();
+                } else {
+                    Snackbar.make(parentLayout, "This action requires Internet Connection", Snackbar.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 
     public boolean isInternetAvailable() {
@@ -110,7 +119,16 @@ public class ExamsAdapter  extends RecyclerView.Adapter<ExamsAdapter.ViewHolder>
 
     @Override
     public int getItemCount() {
+        if(examsList.size() == 0){return 1;}
         return examsList.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (getItemCount() == 1 && examsList.size() == 0) {
+            return 1;
+        }
+        return 2;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

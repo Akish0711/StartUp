@@ -4,7 +4,6 @@ import java.util.Comparator;
 
 public class Users {
     private String Name, Username, Uid;
-    private boolean isSelected;
 
     public Users(){
     }

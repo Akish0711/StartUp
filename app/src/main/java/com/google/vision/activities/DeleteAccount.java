@@ -33,7 +33,7 @@ import java.util.Map;
 
 public class DeleteAccount extends AppCompatActivity {
     ProgressBar progressBar;
-    String Institute, uid, StringYear;
+    String Code, uid, StringYear;
     int year;
     private long left_students;
 
@@ -71,7 +71,7 @@ public class DeleteAccount extends AppCompatActivity {
             rootRef.collection("Users").document(uid).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()){
                     DocumentSnapshot documentSnapshot = task.getResult();
-                    Institute = documentSnapshot.getString("Institute");
+                    Code = documentSnapshot.getString("Code");
                 }
             });
 
@@ -82,7 +82,7 @@ public class DeleteAccount extends AppCompatActivity {
                     email.requestFocus();
                 }else if (isEmailValid(user_email)){
                     progressBar.setVisibility(View.VISIBLE);
-                    rootRef.collection("Users").whereEqualTo("Institute_Admin",Institute+"_No").whereEqualTo("Email",user_email).get().addOnCompleteListener(task -> {
+                    rootRef.collection("Users").whereEqualTo("Code_Admin",Code+"_No").whereEqualTo("Email",user_email).get().addOnCompleteListener(task -> {
                         if (task.isSuccessful() && !task.getResult().isEmpty()){
                             for (final DocumentSnapshot documentSnapshot : task.getResult()) {
                                 if (documentSnapshot.exists()) {
@@ -104,7 +104,7 @@ public class DeleteAccount extends AppCompatActivity {
                     }).addOnFailureListener(this::onFailure);
                 }else if (!isEmailValid(user_email)){
                     progressBar.setVisibility(View.VISIBLE);
-                    rootRef.collection("Users").whereEqualTo("Institute_Admin",Institute+"_No").whereEqualTo("Username",user_email.toUpperCase()).get().addOnCompleteListener(task -> {
+                    rootRef.collection("Users").whereEqualTo("Code_Admin",Code+"_No").whereEqualTo("Username",user_email.toUpperCase()).get().addOnCompleteListener(task -> {
                         if (task.isSuccessful() && !task.getResult().isEmpty()){
                             for (final DocumentSnapshot documentSnapshot : task.getResult()) {
                                 if (documentSnapshot.exists()) {

@@ -36,7 +36,7 @@ public class MainActivityTeacher extends AppCompatActivity {
     private ClassesListAdapter classesListAdapter;
     private List<Classes> classesList;
     private List<String> keyList;
-    String name, uid,admin_uid;
+    String name, uid, admin_uid;
     FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
     View parentLayout;
 
@@ -67,6 +67,13 @@ public class MainActivityTeacher extends AppCompatActivity {
         parentLayout = findViewById(R.id.teacher_main_parent);
         TextView id = findViewById(R.id.student_id);
         ImageView imgProfile = findViewById(R.id.img_profile);
+
+        rootRef.collection("Users").document(uid).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                DocumentSnapshot document = task.getResult();
+                admin_uid = document.getString("Admin_Uid");
+            }
+        });
 
         rootRef.collection("Users").document(uid).addSnapshotListener((documentSnapshot, e) -> {
             name = documentSnapshot.getString("Name");
@@ -109,16 +116,10 @@ public class MainActivityTeacher extends AppCompatActivity {
         recyclerView.setAdapter(classesListAdapter);
         LinearLayout institute = findViewById(R.id.institute_teacher);
 
-        rootRef.collection("Users").document(uid).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()){
-                DocumentSnapshot document = task.getResult();
-                admin_uid = document.getString("Admin_Uid");
-            }
-        });
-
         new_class.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivityTeacher.this,NewClass.class);
+            Intent intent = new Intent(MainActivityTeacher.this,NewClassTeacher.class);
             intent.putExtra("uid", uid);
+            intent.putExtra("admin_uid",admin_uid);
             startActivity(intent);
         });
 
@@ -163,7 +164,7 @@ public class MainActivityTeacher extends AppCompatActivity {
         });
 
         institute.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivityTeacher.this,InstituteOthers.class);
+            Intent intent = new Intent(MainActivityTeacher.this,InstituteTeachers.class);
             intent.putExtra("uid", uid);
             intent.putExtra("admin_uid",admin_uid);
             startActivity(intent);

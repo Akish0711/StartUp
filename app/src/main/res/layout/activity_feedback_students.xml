@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.PaymentAdmin">
+    tools:context=".activities.FeedbackStudents">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
@@ -39,7 +39,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:fontFamily="@font/roboto_regular"
-        android:text="This feature is only available in the paid version"
+        android:text="There is no feedback form generated for this class."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView3" />

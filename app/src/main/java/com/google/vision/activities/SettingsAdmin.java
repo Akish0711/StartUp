@@ -66,12 +66,16 @@ public class SettingsAdmin extends AppCompatActivity {
                             .setPositiveButton("Logout", (dialog, id1) -> {
                                 if (isInternetAvailable()) {
                                     FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-                                    rootRef.collection("Users").document(uid).update("token", FieldValue.delete());
-                                    FirebaseAuth.getInstance().signOut();
-                                    finishAffinity();
-                                    Intent intent = new Intent(SettingsAdmin.this, Login.class);
-                                    startActivity(intent);
-                                    KToast.successToast(SettingsAdmin.this, "Logged Out", Gravity.BOTTOM, KToast.LENGTH_SHORT);
+                                    rootRef.collection("Users").document(uid).update("token", FieldValue.delete()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            finishAffinity();
+                                            Intent intent = new Intent(SettingsAdmin.this, Login.class);
+                                            startActivity(intent);
+                                            FirebaseAuth.getInstance().signOut();
+                                            KToast.successToast(SettingsAdmin.this, "Logged Out", Gravity.BOTTOM, KToast.LENGTH_SHORT);
+                                        }
+                                    });
                                 }else{
                                     Snackbar.make(parentLayout, "This action requires Internet Connection", Snackbar.LENGTH_LONG).show();
                                 }

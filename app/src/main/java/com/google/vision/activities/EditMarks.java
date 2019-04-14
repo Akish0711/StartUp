@@ -75,7 +75,7 @@ public class EditMarks extends AppCompatActivity {
             mMainList.setLayoutManager(new LinearLayoutManager(this));
             mMainList.setAdapter(mAdapter);
 
-            mFirestore.collection("Marks").document(class_id).collection("Exams").document(exam_id).collection("Students").get().addOnCompleteListener(task -> {
+            mFirestore.collection("Marks").document(exam_id).collection("Students").get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()){
                     for (final DocumentSnapshot document : task.getResult()) {
                         Marks marks = document.toObject(Marks.class);
@@ -165,15 +165,14 @@ public class EditMarks extends AppCompatActivity {
                     exam.put("Date", date);
                     exam.put("TimeStamp", FieldValue.serverTimestamp());
 
-                    mFirestore.collection("Marks").document(class_id).collection("Exams").document(exam_id).set(exam).addOnCompleteListener(task -> {
+                    mFirestore.collection("Marks").document(exam_id).set(exam).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             for (int x=0;x<uidList.size();x++){
                                 final Map<String, Object> data = new HashMap<>();
                                 data.put("Marks",userMarks.get(x));
                                 data.put("Name", nameList.get(x));
                                 data.put("Username", usernameList.get(x));
-                                mFirestore.collection("Marks").document(class_id).collection("Exams")
-                                        .document(exam_id).collection("Students").document(uidList.get(x)).set(data);
+                                mFirestore.collection("Marks").document(exam_id).collection("Students").document(uidList.get(x)).set(data);
                             }
                         }
                     }).addOnCompleteListener(task -> {

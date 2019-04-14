@@ -124,11 +124,9 @@ public class AnnouncementStudents extends AppCompatActivity {
                 }
             });
 
-            feedback.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
+            feedback.setOnClickListener(v -> {
+                Intent intent = new Intent(AnnouncementStudents.this, FeedbackStudents.class);
+                startActivity(intent);
             });
 
             attendance.setOnClickListener(view -> {

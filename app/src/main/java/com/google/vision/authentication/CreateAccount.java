@@ -110,7 +110,7 @@ public class CreateAccount extends AppCompatActivity {
                 datePickerDialog.show();
             });
 
-            rootRef.collection("Users").document(uid).collection("Classes").get().addOnCompleteListener(task -> {
+            rootRef.collection("Institute Classes").document(uid).collection("Classes").get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()){
                     for (final DocumentSnapshot document : task.getResult()) {
                         String Name = document.getString("Name");
@@ -347,8 +347,10 @@ public class CreateAccount extends AppCompatActivity {
                                 Map<String, Object> data = new HashMap<>();
                                 data.put("Name", user_name);
                                 data.put("Username",new_username);
-                                data.put("Institute_Batch", Institute +"_"+ batch[0]);
-                                data.put("Institute_Admin", Institute+"_No");
+                                //data.put("Institute_Batch", Institute +"_"+ batch[0]);
+                                data.put("Code_Admin", code+"_No");
+                                data.put("Code_Student", code+"_Yes");
+                                data.put("Institute", Institute);
                                 data.put("Admin","No");
                                 data.put("Teacher","No");
                                 data.put("Phone",user_number);
@@ -361,7 +363,7 @@ public class CreateAccount extends AppCompatActivity {
                                 data.put("Gender", gender);
                                 data.put("FTP", genPswd);
 
-                                rootRef.collection("Users").document(user2Uid).set(data).addOnCompleteListener(task123 -> rootRef.collection("Users").document(uid).collection("Current Classes").whereEqualTo("Batch",batch[0]).get().addOnCompleteListener(task2 -> {
+                                rootRef.collection("Users").document(user2Uid).set(data).addOnCompleteListener(task123 -> rootRef.collection("Current Classes").document(uid).collection("Classes").whereEqualTo("Batch",batch[0]).get().addOnCompleteListener(task2 -> {
                                     if (task2.isSuccessful()){
                                         for (final DocumentSnapshot document1 : task2.getResult()) {
                                             String Classid = document1.getString("Class_id");

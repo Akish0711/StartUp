@@ -15,8 +15,7 @@
         android:background="@color/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/MyTheme"
-        tools:layout_editor_absoluteX="0dp" />
+        app:popupTheme="@style/MyTheme" />
 
     <ScrollView
         android:layout_width="match_parent"
