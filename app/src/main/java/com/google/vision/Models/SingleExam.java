@@ -9,8 +9,6 @@ public class SingleExam {
     public SingleExam(){
     }
 
-    public static final Comparator<SingleExam> BY_NAME_ALPHABETICAL = (marks, t1) -> marks.Username.compareTo(t1.Username);
-
     public SingleExam(String name, String username, double marks) {
         Name = name;
         Username = username;

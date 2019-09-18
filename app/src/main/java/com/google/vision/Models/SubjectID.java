@@ -1,6 +1,6 @@
 package com.google.vision.Models;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public class SubjectID {
     public String subjectID;

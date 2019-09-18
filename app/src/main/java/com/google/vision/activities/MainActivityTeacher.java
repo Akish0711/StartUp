@@ -1,12 +1,11 @@
 package com.google.vision.activities;
 
 import android.content.Intent;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +15,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.vision.Adapters.ClassesListAdapter;
 import com.google.vision.Models.Classes;
 import com.google.vision.R;
@@ -39,6 +39,7 @@ public class MainActivityTeacher extends AppCompatActivity {
     String name, uid, admin_uid;
     FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
     View parentLayout;
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,16 +53,15 @@ public class MainActivityTeacher extends AppCompatActivity {
             getSupportActionBar().setTitle("Home");
         }
 
-        FirebaseUser user;
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
         if(firebaseAuth.getCurrentUser()== null){
             finish();
             startActivity(new Intent(this, Login.class));
+        }else{
+            user = firebaseAuth.getCurrentUser();
+            uid = user.getUid();
         }
-
-        user = firebaseAuth.getCurrentUser();
-        uid = user.getUid();
 
         TextView name_field = findViewById(R.id.student_name);
         parentLayout = findViewById(R.id.teacher_main_parent);

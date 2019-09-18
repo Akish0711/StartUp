@@ -1,13 +1,15 @@
 package com.google.vision.Adapters;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.vision.Models.Users;
 import com.google.vision.R;
 
@@ -86,4 +88,19 @@ public class AddStudentsAdapter extends RecyclerView.Adapter<AddStudentsAdapter.
             check = mView.findViewById(R.id.check);
         }
     }
+
+    /*public void sortByName(boolean isDescending) {
+        if (usersList.size() > 0) {
+            Collections.sort(usersList, new Comparator<Users>() {
+                @Override
+                public int compare(Users object1, Users object2) {
+                    if (isDescending)
+                        return object2.getUsername().toLowerCase().compareTo(object1.getUsername().toLowerCase());
+                    else
+                        return object1.getUsername().toLowerCase().compareTo(object2.getUsername().toLowerCase());
+                }
+            });
+            notifyDataSetChanged();
+        }
+    }*/
 }

@@ -1,16 +1,16 @@
 package com.google.vision.activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.vision.Adapters.ExamsAdapter;
-import com.google.vision.Models.Classes;
 import com.google.vision.Models.Exams;
 import com.google.vision.R;
 import com.google.firebase.firestore.DocumentChange;
@@ -44,7 +44,7 @@ public class ExamsAdmin extends AppCompatActivity {
             List<Exams> examList = new ArrayList<>();
             List<String> keyList = new ArrayList<>();
 
-            android.support.design.widget.FloatingActionButton add_exam = findViewById(R.id.add_exam);
+            FloatingActionButton add_exam = findViewById(R.id.add_exam);
             parentLayout = findViewById(R.id.exams_admin_parent);
 
             ExamsAdapter mAdapter = new ExamsAdapter(this, examList, class_id, parentLayout);

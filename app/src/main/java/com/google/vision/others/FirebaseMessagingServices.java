@@ -1,9 +1,7 @@
 package com.google.vision.others;
 
-import android.app.PendingIntent;
-import android.content.Intent;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.google.vision.R;
 import com.google.firebase.messaging.FirebaseMessagingService;

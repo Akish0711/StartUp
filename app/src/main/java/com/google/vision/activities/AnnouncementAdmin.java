@@ -2,15 +2,18 @@ package com.google.vision.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.vision.Adapters.AdminMessageAdapter;
 import com.google.vision.Models.Message;
 import com.google.vision.R;
@@ -67,7 +70,7 @@ public class AnnouncementAdmin extends AppCompatActivity {
             RelativeLayout take_attendance = findViewById(R.id.take_attendance);
             RelativeLayout marks = findViewById(R.id.marks);
             RelativeLayout remove = findViewById(R.id.remove);
-            android.support.design.widget.FloatingActionButton announcement = findViewById(R.id.announcement);
+            FloatingActionButton announcement = findViewById(R.id.announcement);
             mAdapter = new AdminMessageAdapter(this,messageList,class_id,uid);
             mMessagesList = findViewById(R.id.messages_list);
             LinearLayoutManager mLinearLayout = new LinearLayoutManager(this);

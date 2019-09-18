@@ -9,8 +9,6 @@ public class Attendance {
     public Attendance(){
     }
 
-    public static final Comparator<Attendance> BY_NAME_ALPHABETICAL = (attendance, t1) -> attendance.Username.compareTo(t1.Username);
-
     public Attendance(String name, String username, String uid, int percentage) {
         Name = name;
         Username = username;

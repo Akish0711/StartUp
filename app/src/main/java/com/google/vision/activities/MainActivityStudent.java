@@ -1,11 +1,11 @@
 package com.google.vision.activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -36,6 +36,7 @@ public class MainActivityStudent extends AppCompatActivity {
     private List<String> keyList;
     FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
     String uid, admin_uid;
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,16 +50,17 @@ public class MainActivityStudent extends AppCompatActivity {
             getSupportActionBar().setTitle("Home");
         }
 
-        FirebaseUser user;
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
         if(firebaseAuth.getCurrentUser()== null){
             finish();
             startActivity(new Intent(this, Login.class));
+        }else{
+            user = firebaseAuth.getCurrentUser();
+            uid = user.getUid();
         }
 
-        user = firebaseAuth.getCurrentUser();
-        uid = user.getUid();
+
 
         RecyclerView recyclerView = findViewById(R.id.main_list);
         keyList = new ArrayList<>();

@@ -7,7 +7,6 @@ public class Users {
 
     public Users(){
     }
-    public static final Comparator<Users> BY_NAME_ALPHABETICAL = (users, t1) -> users.Username.compareTo(t1.Username);
 
     public String getName() {
         return Name;

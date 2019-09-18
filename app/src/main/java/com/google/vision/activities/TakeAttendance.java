@@ -3,19 +3,20 @@ package com.google.vision.activities;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.vision.Adapters.AttendanceListAdapter;
 import com.google.vision.Models.Attendance;
+import com.google.vision.Models.Users;
 import com.google.vision.R;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -28,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -87,7 +89,17 @@ public class TakeAttendance extends AppCompatActivity {
                         Attendance attendance = document.toObject(Attendance.class);
                         //presentList.add(attendance.getUid());
                         attendanceList.add(attendance);
-                        Collections.sort(attendanceList, Attendance.BY_NAME_ALPHABETICAL);
+                        Collections.sort(attendanceList, new Comparator<Attendance>() {
+                            public int compare(Attendance o1, Attendance o2) {
+                                return extractInt(o1.getUsername()) - extractInt(o2.getUsername());
+                            }
+
+                            int extractInt(String s) {
+                                String num = s.replaceAll("\\D", "");
+                                // return 0 if no digits found
+                                return num.isEmpty() ? 0 : Integer.parseInt(num);
+                            }
+                        });
                         attendanceListAdapter.notifyDataSetChanged();
                     }
                 }

@@ -1,23 +1,27 @@
 package com.google.vision.activities;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.vision.Adapters.AdminMessageAdapter;
 import com.google.vision.Fragments.MainActivitySlider1;
 import com.google.vision.Fragments.MainActivitySlider2;
@@ -65,7 +69,7 @@ public class InstituteAdmin extends AppCompatActivity {
             String class_id = "Institute";
             mAdapter = new AdminMessageAdapter(this,messageList,class_id,uid);
             mMessagesList = findViewById(R.id.main_list);
-            android.support.design.widget.FloatingActionButton announcement = findViewById(R.id.announcement);
+            FloatingActionButton announcement = findViewById(R.id.announcement);
 
             LinearLayoutManager mLinearLayout = new LinearLayoutManager(this);
             mLinearLayout.setReverseLayout(true);

@@ -1,19 +1,18 @@
 package com.google.vision.activities;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.vision.R;
@@ -23,6 +22,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.onurkaganaldemir.ktoastlib.KToast;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SettingsAdmin extends AppCompatActivity {
     String uid;
@@ -66,14 +67,20 @@ public class SettingsAdmin extends AppCompatActivity {
                             .setPositiveButton("Logout", (dialog, id1) -> {
                                 if (isInternetAvailable()) {
                                     FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-                                    rootRef.collection("Users").document(uid).update("token", FieldValue.delete()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            finishAffinity();
-                                            Intent intent = new Intent(SettingsAdmin.this, Login.class);
-                                            startActivity(intent);
-                                            FirebaseAuth.getInstance().signOut();
-                                            KToast.successToast(SettingsAdmin.this, "Logged Out", Gravity.BOTTOM, KToast.LENGTH_SHORT);
+                                    rootRef.collection("Users").document(uid).get().addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()){
+                                            DocumentSnapshot document = task.getResult();
+                                            Map<String, Object> data = new HashMap<>();
+                                            data.put("token", FieldValue.delete());
+                                            document.getReference().update(data).addOnCompleteListener(task1 -> {
+                                                if (task1.isSuccessful()){
+                                                    finishAffinity();
+                                                    Intent intent = new Intent(SettingsAdmin.this, Login.class);
+                                                    startActivity(intent);
+                                                    FirebaseAuth.getInstance().signOut();
+                                                    KToast.successToast(SettingsAdmin.this, "Logged Out", Gravity.BOTTOM, KToast.LENGTH_SHORT);
+                                                }
+                                            });
                                         }
                                     });
                                 }else{

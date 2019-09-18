@@ -7,7 +7,7 @@
     tools:context=".activities.RemoveStudents"
     android:id="@+id/remove_students_parent">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
@@ -15,7 +15,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/MyTheme5" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/remove_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
