@@ -4,6 +4,7 @@ import java.util.Comparator;
 
 public class Users {
     private String Name, Username, Uid;
+    private boolean Checked = false;
 
     public Users(){
     }
@@ -13,6 +14,13 @@ public class Users {
     }
     public void setName(String name) {
         Name = name;
+    }
+
+    public boolean getChecked() {
+        return Checked;
+    }
+    public void setChecked(boolean checked) {
+        Checked = checked;
     }
 
     public String getUsername() {

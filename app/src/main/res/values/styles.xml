@@ -17,7 +17,7 @@
         <item name="colorPrimaryDark">#ffffff</item>
     </style>
 
-    <style name="Login" parent="TextAppearance.AppCompat">
+    <style name="Login" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
         <!-- Hint color and label color in FALSE state -->
         <item name="android:textColorHint">#c0c8d6</item>
 

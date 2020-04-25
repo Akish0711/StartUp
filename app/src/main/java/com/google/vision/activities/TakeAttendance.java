@@ -87,7 +87,7 @@ public class TakeAttendance extends AppCompatActivity {
                 if (task.isSuccessful()){
                     for (final DocumentSnapshot document : task.getResult()) {
                         Attendance attendance = document.toObject(Attendance.class);
-                        //presentList.add(attendance.getUid());
+                        presentList.add(attendance.getUid());
                         attendanceList.add(attendance);
                         Collections.sort(attendanceList, new Comparator<Attendance>() {
                             public int compare(Attendance o1, Attendance o2) {

@@ -1,10 +1,10 @@
 package com.google.vision.Models;
 
-import java.util.Comparator;
 
 public class Attendance {
     private String Name, Username, Uid;
     private int Percentage;
+    private boolean Checked;
 
     public Attendance(){
     }
@@ -21,6 +21,15 @@ public class Attendance {
     }
     public void setName(String name) {
         Name = name;
+    }
+
+
+    public boolean getChecked() {
+        return Checked;
+    }
+
+    public void setChecked(boolean checked) {
+        Checked = checked;
     }
 
     public String getUsername() {

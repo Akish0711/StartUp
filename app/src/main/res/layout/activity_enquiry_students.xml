@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.EnquiryStudents">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/MyTheme" />
+
+    <TextView
+        app:layout_constraintTop_toBottomOf="@id/my_toolbar"
+        android:id="@+id/identity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Identity will be kept as annonymous if the Type is complaint.">
+    </TextView>
+
+
+    <LinearLayout
+        android:id="@+id/type_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/identity"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Type"
+            android:textSize="16sp" />
+
+        <RadioGroup
+            android:id="@+id/type_radiogroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enquiry"
+                android:textSize="16sp" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Complaint"
+                android:textSize="16sp" />
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/subjectHolder"
+        android:layout_width="match_parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/type_layout">
+        <EditText
+            android:id="@+id/enquiry_subject"
+            android:layout_width="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_height="40dp"
+            android:hint="Subject"
+            android:background="@android:color/transparent"
+            android:inputType="textCapWords" />
+
+    </androidx.cardview.widget.CardView>
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/subjectHolder"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        app:cardCornerRadius="10dp">
+
+        <EditText
+            android:id="@+id/enquiry_description"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:ems="10"
+            android:gravity="top"
+            android:inputType="textMultiLine"
+            android:hint="Description about the issue...."
+            android:background="@android:color/transparent"/>
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/enquiry_submit"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:textColor="@color/colorAccent"
+        android:layout_height="wrap_content"
+        android:text="SUBMIT"
+        tools:layout_editor_absoluteX="146dp"
+        tools:layout_editor_absoluteY="664dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

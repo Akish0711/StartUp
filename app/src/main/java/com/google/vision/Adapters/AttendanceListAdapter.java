@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.google.vision.Models.Attendance;
 import com.google.vision.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AttendanceListAdapter extends RecyclerView.Adapter<AttendanceListAdapter.ViewHolder> {
@@ -49,29 +50,28 @@ public class AttendanceListAdapter extends RecyclerView.Adapter<AttendanceListAd
         if(viewType == 2) {
             holder.user_name.setText(attendanceList.get(position).getUsername());
             holder.display_name.setText(attendanceList.get(position).getName());
+            holder.check.setImageResource(attendanceList.get(position).getChecked()? R.drawable.checked_remove: R.drawable.present_check);
+
+            String UID = attendanceList.get(position).getUid();
+
             int percentage = attendanceList.get(position).getPercentage();
 
             if (percentage >= 75) {
                 holder.percentage.setTextColor(Color.rgb(139, 194, 74));
-                holder.percentage.setText(String.valueOf(percentage) + "%");
+                holder.percentage.setText(percentage + "%");
             } else {
                 holder.percentage.setTextColor(Color.rgb(229, 57, 53));
-                holder.percentage.setText(String.valueOf(percentage) + "%");
+                holder.percentage.setText(percentage + "%");
             }
 
-            String UID = attendanceList.get(position).getUid();
-            presentList.add(UID);
-
-            final boolean[] showingFirst = {true};
             holder.check.setOnClickListener(v -> {
-                if (showingFirst[0]) {
+                attendanceList.get(position).setChecked(!attendanceList.get(position).getChecked());
+                if (attendanceList.get(position).getChecked()) {
                     holder.check.setImageResource(R.drawable.checked_remove);
-                    showingFirst[0] = false;
                     presentList.remove(UID);
                     absentList.add(UID);
                 } else {
                     holder.check.setImageResource(R.drawable.present_check);
-                    showingFirst[0] = true;
                     presentList.add(UID);
                     absentList.remove(UID);
                 }

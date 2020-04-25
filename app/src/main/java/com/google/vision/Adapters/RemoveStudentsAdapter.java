@@ -47,16 +47,15 @@ public class RemoveStudentsAdapter extends RecyclerView.Adapter<RemoveStudentsAd
             holder.user_name.setText(usersList.get(position).getUsername());
             holder.display_name.setText(usersList.get(position).getName());
 
-            final boolean[] showingFirst = {true};
+            holder.check.setImageResource(usersList.get(position).getChecked()? R.drawable.checked_remove: R.drawable.checkbox_outline);
 
             holder.check.setOnClickListener(v -> {
-                if (showingFirst[0]) {
+                usersList.get(position).setChecked(!usersList.get(position).getChecked());
+                if (usersList.get(position).getChecked()) {
                     holder.check.setImageResource(R.drawable.checked_remove);
-                    showingFirst[0] = false;
                     selectedUid.add(usersList.get(position).getUid());
                 } else {
                     holder.check.setImageResource(R.drawable.checkbox_outline);
-                    showingFirst[0] = true;
                     selectedUid.remove(usersList.get(position).getUid());
                 }
             });

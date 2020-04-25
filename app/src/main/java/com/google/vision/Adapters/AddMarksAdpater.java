@@ -3,6 +3,7 @@ package com.google.vision.Adapters;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import java.util.List;
 
 public class AddMarksAdpater extends RecyclerView.Adapter<AddMarksAdpater.ViewHolder> {
 
+    private static final String TAG = "MyActivity";
     private List<Marks> marksList;
     private List<String> nameList;
     private List<String> usernameList;
@@ -46,13 +48,19 @@ public class AddMarksAdpater extends RecyclerView.Adapter<AddMarksAdpater.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String name = marksList.get(position).getName();
         String username = marksList.get(position).getUsername();
+        String Uid = marksList.get(position).getUid();
         holder.user_name.setText(username);
         holder.display_name.setText(name);
 
-        nameList.add(name);
-        uidList.add(marksList.get(position).getUid());
-        usernameList.add(username);
-        marks.add(null);
+        int length = marksList.size();
+        if (marks.size()<length) {
+            for (int i = 0; i<length;i++ ){
+                marks.add(null);
+                nameList.add(null);
+                uidList.add(null);
+                usernameList.add(null);
+            }
+        }
 
         holder.marks.addTextChangedListener(new TextWatcher() {
             @Override
@@ -68,13 +76,32 @@ public class AddMarksAdpater extends RecyclerView.Adapter<AddMarksAdpater.ViewHo
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.toString().equals("")||editable.toString().equals(".")) {
+                    nameList.set(position, null);
+                    uidList.set(position, null);
+                    usernameList.set(position,null);
                     marks.set(position, null);
+                    Log.v(TAG, "true=" + marks.size() + "value: "+ marks.get(position) + "position:" + position);
 
                 }else{
-                    marks.set(position, Double.parseDouble(editable.toString()));
+                    nameList.set(position, name);
+                    uidList.set(position, Uid);
+                    usernameList.set(position,username);
+                    marks.set(position,Double.parseDouble(editable.toString()));
+                    Log.v(TAG, "false=" + marks.size() + "value: "+ marks.get(position) + "position:" + position);
+
                 }
             }
         });
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     @Override

@@ -87,7 +87,7 @@ public class InstituteOthers extends AppCompatActivity {
             });
 
             enquiries.setOnClickListener(v -> {
-                Intent intent = new Intent(this, EnquiryAdmin.class);
+                Intent intent = new Intent(this, EnquiryStudentList.class);
                 intent.putExtra("uid", uid);
                 startActivity(intent);
             });

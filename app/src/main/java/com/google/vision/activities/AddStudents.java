@@ -149,18 +149,23 @@ public class AddStudents extends AppCompatActivity {
                                     Map<String, Object> data3 = new HashMap<>();
                                     data3.put("Total_Students", new_total_student);
                                     mFirestore.collection("Users").document(uid).collection("Subjects").document(class_id).update(data3);
-                                    if (selectedUid.size() == 1) {
-                                        KToast.successToast(AddStudents.this, selectedUid.size() + " Student Added", Gravity.BOTTOM, KToast.LENGTH_SHORT);
-                                    }
-                                    if (selectedUid.size() > 1) {
-                                        KToast.successToast(AddStudents.this, selectedUid.size() + " Students Added", Gravity.BOTTOM, KToast.LENGTH_SHORT);
-                                    }
-                                    startActivity(new Intent(AddStudents.this, MainActivity.class));
-                                    finish();
+
                                 }
                             });
                         }
-                    } else {
+
+                    }
+                    if (selectedUid.size() == 1) {
+                        KToast.successToast(AddStudents.this, "1 Student Added", Gravity.BOTTOM, KToast.LENGTH_SHORT);
+                        startActivity(new Intent(AddStudents.this, MainActivity.class));
+                        finish();
+                    }
+                    if (selectedUid.size() > 1) {
+                        KToast.successToast(AddStudents.this, selectedUid.size() + " Students Added", Gravity.BOTTOM, KToast.LENGTH_SHORT);
+                        startActivity(new Intent(AddStudents.this, MainActivity.class));
+                        finish();
+                    }
+                    else {
                         KToast.errorToast(AddStudents.this, "No Students Selected", Gravity.CENTER, KToast.LENGTH_SHORT);
                     }
                 }else{

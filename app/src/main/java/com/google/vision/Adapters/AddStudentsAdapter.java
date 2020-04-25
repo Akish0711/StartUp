@@ -1,6 +1,7 @@
 package com.google.vision.Adapters;
 
 import android.content.Context;
+import android.graphics.ColorSpace;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,20 +47,19 @@ public class AddStudentsAdapter extends RecyclerView.Adapter<AddStudentsAdapter.
 
         holder.user_name.setText(Username);
         holder.display_name.setText(Name);
+        holder.check.setImageResource(usersList.get(position).getChecked()? R.drawable.check_box: R.drawable.checkbox_outline);
+
         String UID = usersList.get(position).getUid();
 
-        final boolean[] showingFirst = {true};
-
         holder.check.setOnClickListener(v -> {
-            if (showingFirst[0]){
+            usersList.get(position).setChecked(!usersList.get(position).getChecked());
+            if (usersList.get(position).getChecked()){
                 holder.check.setImageResource(R.drawable.check_box);
-                showingFirst[0] = false;
                 selectedUid.add(UID);
                 name.add(Name);
                 username.add(Username);
             }else{
                 holder.check.setImageResource(R.drawable.checkbox_outline);
-                showingFirst[0] = true;
                 selectedUid.remove(UID);
                 name.remove(Name);
                 username.remove(Username);

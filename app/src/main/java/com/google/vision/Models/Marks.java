@@ -4,12 +4,12 @@ import java.util.Comparator;
 
 public class Marks {
     private String Name, Username, Uid;
-    private double Marks;
+    private Double Marks;
 
     public Marks(){
     }
 
-    public Marks(String name, String username, double marks, String uid) {
+    public Marks(String name, String username, Double marks, String uid) {
         Name = name;
         Username = username;
         Marks = marks;
@@ -37,10 +37,10 @@ public class Marks {
         Username = username;
     }
 
-    public double getMarks() {
+    public Double getMarks() {
         return Marks;
     }
-    public void setMarks(double marks) {
+    public void setMarks(Double marks) {
         Marks = marks;
     }
 }

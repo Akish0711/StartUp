@@ -10,7 +10,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.google.vision.activities.AboutUs;
 import com.google.vision.activities.MainActivity;
 import com.google.vision.activities.MainActivityStudent;
 import com.google.vision.activities.MainActivityTeacher;
@@ -56,8 +58,8 @@ public class Login extends AppCompatActivity {
             mEmailField = findViewById(R.id.username);
             mPasswordField = findViewById(R.id.password);
             Button mLoginBtn = findViewById(R.id.login);
-            Button forgot = findViewById(R.id.forgot);
-            Button trouble = findViewById(R.id.trouble);
+            TextView forgot = findViewById(R.id.forgot);
+            TextView disclaimer = findViewById(R.id.disclaimer);
 
             mProgressBar =  findViewById(R.id.progressBar2);
             mProgressBar.setVisibility(View.INVISIBLE);
@@ -68,8 +70,8 @@ public class Login extends AppCompatActivity {
                 startActivity(new Intent(Login.this, ForgotPassword.class));
             });
 
-            trouble.setOnClickListener(v -> {
-                startActivity(new Intent(Login.this, ForgotPassword.class));
+            disclaimer.setOnClickListener(v -> {
+                startActivity(new Intent(Login.this, AboutUs.class));
             });
         }
     }

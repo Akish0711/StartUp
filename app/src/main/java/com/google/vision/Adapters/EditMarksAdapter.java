@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,12 @@ import com.google.vision.R;
 
 import java.util.List;
 
+import static com.bumptech.glide.gifdecoder.GifHeaderParser.TAG;
+
 public class EditMarksAdapter extends RecyclerView.Adapter<EditMarksAdapter.ViewHolder> {
+
+
+    private static final String TAG = "MyActivity1";
     private List<Marks> marksList;
     private List<String> nameList;
     private List<String> usernameList;
@@ -44,7 +50,7 @@ public class EditMarksAdapter extends RecyclerView.Adapter<EditMarksAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String name = marksList.get(position).getName();
         String username = marksList.get(position).getUsername();
-        double userMarks = marksList.get(position).getMarks();
+        Double userMarks = marksList.get(position).getMarks();
 
         holder.user_name.setText(username);
         holder.display_name.setText(name);
@@ -52,7 +58,7 @@ public class EditMarksAdapter extends RecyclerView.Adapter<EditMarksAdapter.View
 
         nameList.add(name);
         usernameList.add(username);
-        userMarksList.add(userMarks);
+        userMarksList.add(Double.valueOf(userMarks));
         uidList.add(marksList.get(position).getUid());
 
         holder.marks.addTextChangedListener(new TextWatcher() {
@@ -71,11 +77,24 @@ public class EditMarksAdapter extends RecyclerView.Adapter<EditMarksAdapter.View
                 if (editable.toString().equals("")) {
                     userMarksList.set(position, null);
 
+                   // Log.v(TAG, "true=" + marks.size() + "value: "+ marks.get(position) + "position:" + position);
+
                 }else{
                     userMarksList.set(position, Double.parseDouble(editable.toString()));
                 }
             }
         });
+    }
+
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     @Override
